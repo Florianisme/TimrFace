@@ -22,7 +22,6 @@ import android.view.WindowInsets;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.TimeZone;
 
 public class WatchFaceService extends CanvasWatchFaceService {
@@ -60,10 +59,15 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
         Bitmap scale;
 
+        String hours;
+        String minutes;
+        float seconds;
+        String time;
+        String date;
+
         private boolean mRegisteredTimeZoneReceiver = false;
-        private final long INTERACTIVE_UPDATE_RATE_MS = 16;
+        private final long INTERACTIVE_UPDATE_RATE_MS = 40;
         private Resources resources;
-        Date date;
         SimpleDateFormat format;
 
         final Handler mUpdateTimeHandler = new Handler() {
@@ -73,10 +77,8 @@ public class WatchFaceService extends CanvasWatchFaceService {
                     case MSG_UPDATE_TIME:
                         invalidate();
                         if (shouldTimerBeRunning()) {
-                            long timeMs = System.currentTimeMillis();
-                            long delayMs = INTERACTIVE_UPDATE_RATE_MS
-                                    - (timeMs % INTERACTIVE_UPDATE_RATE_MS);
-                            mUpdateTimeHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIME, delayMs);
+                            mUpdateTimeHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIME, INTERACTIVE_UPDATE_RATE_MS
+                                    - (System.currentTimeMillis() % INTERACTIVE_UPDATE_RATE_MS));
                         }
                         break;
                 }
@@ -103,13 +105,15 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
             resources = WatchFaceService.this.getResources();
             scale = BitmapFactory.decodeResource(resources, R.drawable.scale);
-            scale = scale.createScaledBitmap(scale, 600, 50, false);
+            scale = scale.createScaledBitmap(scale, 600, 50, true);
 
             mBackgroundPaint = new Paint();
             mTilePaint = new Paint();
             mScalePaint = new Paint();
             mArrowPaint = new Paint();
             mBorderPaint = new Paint();
+
+            mScalePaint.setAntiAlias(false);
 
             mHourPaint = createTextPaint(resources.getColor(R.color.text), TYPEFACE);
             mMinutePaint = createTextPaint(resources.getColor(R.color.tile), TYPEFACE);
@@ -158,10 +162,12 @@ public class WatchFaceService extends CanvasWatchFaceService {
         public void onDraw(Canvas canvas, Rect bounds) {
             mTime.setToNow();
 
-            float seconds = getSeconds();
-            String minutes = getMinutes();
-            String date = getDate();
-            String time = getAmPm();
+            seconds = getSeconds();
+            minutes = getMinutes();
+            hours = getHours();
+            date = getDate();
+            time = getAmPm();
+
 
             canvas.drawRect(0, bounds.centerY() + 45, bounds.width(), bounds.height(), mTilePaint);
             canvas.drawRect(0, 0, bounds.width(), bounds.centerY() + 45, mBackgroundPaint);
@@ -176,7 +182,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             canvas.drawBitmap(scale, seconds + 155, bounds.centerY() + 60, mScalePaint);
             canvas.drawBitmap(scale, seconds + 755, bounds.centerY() + 60, mScalePaint);
 
-            canvas.drawText(String.valueOf(mTime.hour), HOUR_X, HOUR_Y, mHourPaint);
+            canvas.drawText(hours, HOUR_X, HOUR_Y, mHourPaint);
             canvas.drawText(minutes, MINUTE_X, MINUTE_Y, mMinutePaint);
             canvas.drawText(date, bounds.centerX() - mDatePaint.getStrokeWidth() / 2, DATE_Y, mDatePaint);
             canvas.drawText(time, TIME_X, TIME_Y, mTimePaint);
@@ -248,29 +254,28 @@ public class WatchFaceService extends CanvasWatchFaceService {
         }
 
         private float getSeconds () {
-            long now = System.currentTimeMillis();
-            mTime.set(now);
-            int milliseconds = (int) (now % 1000);
-            float seconds = mTime.second + milliseconds / 1000f;
-            return seconds * -10;
+            mTime.set(System.currentTimeMillis());
+            return (mTime.second + (System.currentTimeMillis() % 1000) / 1000f )* (-10);
         }
 
         private String getDate() {
-            date = Calendar.getInstance().getTime();
             format = new SimpleDateFormat("EEEE, F. MMMM");
-            return format.format(date);
+            return format.format(Calendar.getInstance().getTime());
         }
 
         private String getAmPm() {
-            date = Calendar.getInstance().getTime();
             format = new SimpleDateFormat("a");
-            return format.format(date);
+            return format.format(Calendar.getInstance().getTime());
         }
 
         private String getMinutes() {
-             boolean hours = (mTime.minute > 9);
-             return (hours
+             return (mTime.minute > 9
                     ? String.valueOf(mTime.minute) : "0" + String.valueOf(mTime.minute));
+        }
+
+        private String getHours() {
+            return (String.valueOf(mTime.hour).length() > 1
+                    ? String.valueOf(mTime.hour) : "0" + String.valueOf(mTime.hour));
         }
 
     }
