@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
+import android.text.format.DateFormat;
 import android.text.format.Time;
 import android.view.SurfaceHolder;
 import android.view.WindowInsets;
@@ -33,6 +34,7 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class WatchFaceService extends CanvasWatchFaceService {
@@ -99,7 +101,12 @@ public class WatchFaceService extends CanvasWatchFaceService {
         String time;
         String date;
         boolean mRegisteredTimeZoneReceiver = false;
+        boolean is24Hour = false;
         SimpleDateFormat format;
+        DateFormat df;
+        Calendar cal = Calendar.getInstance();
+        Context context = getApplicationContext();
+
         GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(WatchFaceService.this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -145,7 +152,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             mArrowPaint.setShadowLayer(8.0f, 4.0f, 4.0f, resources.getColor(R.color.shadow));
 
             mTime = new Time();
-        }
+       }
 
         private Paint createTextPaint(int color, Typeface typeface) {
             Paint paint = new Paint();
@@ -173,6 +180,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         public void onDraw(Canvas canvas, Rect bounds) {
             seconds = getSeconds();
             minutes = getMinutes();
+            is24Hour = df.is24HourFormat(context);
             hours = getHours();
             date = getDate();
             time = getAmPm();
@@ -224,22 +232,36 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
         private String getDate() {
             format = new SimpleDateFormat("EEEE, F. MMMM");
-            return format.format(Calendar.getInstance().getTime());
-        }
-
-        private String getAmPm() {
-            format = new SimpleDateFormat("a");
-            return format.format(Calendar.getInstance().getTime());
+            return format.format(cal.getTime());
         }
 
         private String getMinutes() {
-            return (mTime.minute > 9
-                    ? String.valueOf(mTime.minute) : "0" + String.valueOf(mTime.minute));
+            return formatTwoDigits(mTime.minute);
         }
 
+
+        private String getAmPm() {
+            if (!is24Hour) {
+                format = new SimpleDateFormat("a", Locale.getDefault());
+                return format.format(cal.getTime());
+            }
+            else {
+                return "";
+            }
+        }
+
+        private String formatTwoDigits (int number) {
+            return String.format("%02d", number);
+        }
+
+
         private String getHours() {
-            return (String.valueOf(mTime.hour).length() > 1
-                    ? String.valueOf(mTime.hour) : "0" + String.valueOf(mTime.hour));
+            if (is24Hour) {
+                return formatTwoDigits(cal.get(Calendar.HOUR_OF_DAY));
+            }
+            else {
+                return formatTwoDigits(cal.get(Calendar.HOUR));
+            }
         }
 
         private void setInteractiveBackgroundColor(int color) {
@@ -366,7 +388,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
                     DataMapItem dataMapItem = DataMapItem.fromDataItem(dataItem);
                     DataMap config = dataMapItem.getDataMap();
-                    System.out.println("Data Changed");
                     updateUiForConfigDataMap(config);
                 }
             } finally {
@@ -380,9 +401,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
                 if (!config.containsKey(configKey)) {
                     continue;
                 }
-                //int color = config.getInt(configKey);
                 String color = WatchFaceUtil.KEY_BACKGROUND_COLOR;
-                System.out.println("Color: "+color);
                 if (updateUiForKey(configKey, color)) {
                     uiUpdated = true;
                 }
@@ -399,8 +418,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
          * @return whether UI has been updated
          */
         private boolean updateUiForKey(String configKey, String color) {
-            System.out.println("Update");
-            System.out.println(configKey);
             if (configKey.equals(WatchFaceUtil.KEY_BACKGROUND_COLOR) && !WatchFaceUtil.KEY_BACKGROUND_COLOR.equals("BACKGROUND_COLOR")) {
                 setInteractiveBackgroundColor(Color.parseColor(color));
                 setInteractiveMinuteDigitsColor(Color.parseColor(color));
@@ -411,7 +428,5 @@ public class WatchFaceService extends CanvasWatchFaceService {
         }
 
     }
-
-
 }
 
