@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2014 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.android.timrface;
 
 import android.graphics.Color;
@@ -33,9 +17,9 @@ import com.google.android.gms.wearable.Wearable;
 public final class WatchFaceUtil {
     private static final String TAG = "DigitalWatchFaceUtil";
 
-    public static final String KEY_BACKGROUND_COLOR = "BACKGROUND_COLOR";
+    public static String KEY_BACKGROUND_COLOR = "BACKGROUND_COLOR";
 
-    public static final String KEY_MINUTES_COLOR = "MINUTES_COLOR";
+    public static String KEY_MINUTES_COLOR = "MINUTES_COLOR";
 
     public static final String PATH_WITH_FEATURE = "/watch_face_config/Digital";
 
@@ -52,8 +36,6 @@ public final class WatchFaceUtil {
     }
 
     private static int parseColor(String colorName) {
-        System.out.println(colorName);
-        System.out.println("ParseColor: "+colorName);
         return Color.parseColor(colorName);
     }
 

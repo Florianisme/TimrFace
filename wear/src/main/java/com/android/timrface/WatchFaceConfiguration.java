@@ -119,8 +119,10 @@ public class WatchFaceConfiguration extends Activity implements
         DataMap configKeysToOverwrite = new DataMap();
         configKeysToOverwrite.putString(WatchFaceUtil.KEY_BACKGROUND_COLOR,
                 backgroundColor);
-        System.out.println("BackgroundColor: "+backgroundColor + "Util: "+ WatchFaceUtil.KEY_BACKGROUND_COLOR);
+        System.out.println("BackgroundColor: "+backgroundColor + " Util: "+ WatchFaceUtil.KEY_BACKGROUND_COLOR);
         WatchFaceUtil.overwriteKeysInConfigDataMap(mGoogleApiClient, configKeysToOverwrite);
+        WatchFaceUtil.KEY_BACKGROUND_COLOR = backgroundColor;
+        WatchFaceUtil.KEY_MINUTES_COLOR = backgroundColor;
     }
 
     private class ColorListAdapter extends WearableListView.Adapter {

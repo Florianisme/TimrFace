@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -35,6 +36,12 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 public class WatchFaceService extends CanvasWatchFaceService {
+
+    public static int mInteractiveBackgroundColor =
+            WatchFaceUtil.COLOR_VALUE_DEFAULT_AND_AMBIENT_BACKGROUND;
+    public static int mInteractiveMinuteDigitsColor =
+            WatchFaceUtil.COLOR_VALUE_DEFAULT_AND_AMBIENT_MINUTE_DIGITS;
+
     @Override
     public Engine onCreateEngine() {
         return new Engine();
@@ -42,49 +49,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
     public class Engine extends CanvasWatchFaceService.Engine implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, DataApi.DataListener {
 
-        Time mTime;
-
-        private final Typeface TYPEFACE =
-                Typeface.createFromAsset(getAssets(), "font.ttf");
-
         static final int MSG_UPDATE_TIME = 0;
-
-        private final int HOUR_X = 35;
-        private final int HOUR_Y = 170;
-        private final int MINUTE_X = 160;
-        private final int MINUTE_Y = 170;
-        private final int DATE_Y = 60;
-        private final int TIME_X = 230;
-        private final int TIME_Y = 195;
-
-        Paint mBackgroundPaint;
-        Paint mTilePaint;
-        Paint mScalePaint;
-        Paint mHourPaint;
-        Paint mMinutePaint;
-        Paint mDatePaint;
-        Paint mArrowPaint;
-        Paint mTimePaint;
-        Paint mBorderPaint;
-
-        Bitmap scale;
-
-        String hours;
-        String minutes;
-        float seconds;
-        String time;
-        String date;
-
-        private boolean mRegisteredTimeZoneReceiver = false;
-        private long INTERACTIVE_UPDATE_RATE_MS = 100;
-        private Resources resources;
-        SimpleDateFormat format;
-
-        int mInteractiveBackgroundColor =
-                WatchFaceUtil.COLOR_VALUE_DEFAULT_AND_AMBIENT_BACKGROUND;
-        int mInteractiveMinuteDigitsColor =
-                WatchFaceUtil.COLOR_VALUE_DEFAULT_AND_AMBIENT_MINUTE_DIGITS;
-
         final Handler mUpdateTimeHandler = new Handler() {
             @Override
             public void handleMessage(Message message) {
@@ -101,13 +66,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
                 }
             }
         };
-
-        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(WatchFaceService.this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Wearable.API)
-                .build();
-
         final BroadcastReceiver mTimeZoneReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -115,6 +73,40 @@ public class WatchFaceService extends CanvasWatchFaceService {
                 mTime.setToNow();
             }
         };
+        private final Typeface TYPEFACE =
+                Typeface.createFromAsset(getAssets(), "font.ttf");
+        private final int HOUR_X = 35;
+        private final int HOUR_Y = 170;
+        private final int MINUTE_X = 160;
+        private final int MINUTE_Y = 170;
+        private final int DATE_Y = 60;
+        private final int TIME_X = 230;
+        private final int TIME_Y = 195;
+        Time mTime;
+        Paint mBackgroundPaint;
+        Paint mTilePaint;
+        Paint mScalePaint;
+        Paint mHourPaint;
+        Paint mMinutePaint;
+        Paint mDatePaint;
+        Paint mArrowPaint;
+        Paint mTimePaint;
+        Paint mBorderPaint;
+        Bitmap scale;
+        String hours;
+        String minutes;
+        float seconds;
+        String time;
+        String date;
+        boolean mRegisteredTimeZoneReceiver = false;
+        SimpleDateFormat format;
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(WatchFaceService.this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Wearable.API)
+                .build();
+        private long INTERACTIVE_UPDATE_RATE_MS = 100;
+        private Resources resources;
 
         @Override
         public void onCreate(SurfaceHolder holder) {
@@ -250,6 +242,85 @@ public class WatchFaceService extends CanvasWatchFaceService {
                     ? String.valueOf(mTime.hour) : "0" + String.valueOf(mTime.hour));
         }
 
+        private void setInteractiveBackgroundColor(int color) {
+            mInteractiveBackgroundColor = color;
+            mTilePaint.setColor(color);
+        }
+
+
+        private void setInteractiveMinuteDigitsColor(int color) {
+            mInteractiveMinuteDigitsColor = color;
+            mMinutePaint.setColor(color);
+    }
+
+        @Override
+        public void onDestroy() {
+            mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
+            super.onDestroy();
+        }
+
+        @Override
+        public void onVisibilityChanged(boolean visible) {
+            super.onVisibilityChanged(visible);
+
+            if (visible) {
+                mGoogleApiClient.connect();
+
+                registerReceiver();
+
+                // Update time zone in case it changed while we weren't visible.
+                mTime.clear(TimeZone.getDefault().getID());
+                mTime.setToNow();
+            } else {
+                unregisterReceiver();
+
+                if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+                    Wearable.DataApi.removeListener(mGoogleApiClient, this);
+                    mGoogleApiClient.disconnect();
+                }
+            }
+
+            // Whether the timer should be running depends on whether we're visible (as well as
+            // whether we're in ambient mode), so we may need to start or stop the timer.
+            updateTimer();
+        }
+
+        private void registerReceiver() {
+            if (mRegisteredTimeZoneReceiver) {
+                return;
+            }
+            mRegisteredTimeZoneReceiver = true;
+            IntentFilter filter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
+            WatchFaceService.this.registerReceiver(mTimeZoneReceiver, filter);
+        }
+
+        private void unregisterReceiver() {
+            if (!mRegisteredTimeZoneReceiver) {
+                return;
+            }
+            mRegisteredTimeZoneReceiver = false;
+            WatchFaceService.this.unregisterReceiver(mTimeZoneReceiver);
+        }
+
+        private void updateTimer() {
+            mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
+            if (shouldTimerBeRunning()) {
+                mUpdateTimeHandler.sendEmptyMessage(MSG_UPDATE_TIME);
+            }
+        }
+
+        private boolean shouldTimerBeRunning() {
+            return isVisible();
+        }
+
+        @Override  // GoogleApiClient.ConnectionCallbacks
+        public void onConnectionSuspended(int cause) {
+        }
+
+        @Override  // GoogleApiClient.OnConnectionFailedListener
+        public void onConnectionFailed(ConnectionResult result) {
+        }
+
         private void updateConfigDataItemAndUiOnStartup() {
             WatchFaceUtil.fetchConfigDataMap(mGoogleApiClient,
                     new WatchFaceUtil.FetchConfigDataMapCallback() {
@@ -259,6 +330,8 @@ public class WatchFaceService extends CanvasWatchFaceService {
                             // use the default values.
                             setDefaultValuesForMissingConfigKeys(startupConfig);
                             WatchFaceUtil.putConfigDataItem(mGoogleApiClient, startupConfig);
+
+                            updateUiForConfigDataMap(startupConfig);
                         }
                     }
             );
@@ -267,6 +340,8 @@ public class WatchFaceService extends CanvasWatchFaceService {
         private void setDefaultValuesForMissingConfigKeys(DataMap config) {
             addIntKeyIfMissing(config, WatchFaceUtil.KEY_BACKGROUND_COLOR,
                     WatchFaceUtil.COLOR_VALUE_DEFAULT_AND_AMBIENT_BACKGROUND);
+            addIntKeyIfMissing(config, WatchFaceUtil.KEY_MINUTES_COLOR,
+                    WatchFaceUtil.COLOR_VALUE_DEFAULT_AND_AMBIENT_MINUTE_DIGITS);
         }
 
         private void addIntKeyIfMissing(DataMap config, String key, int color) {
@@ -291,6 +366,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
                     DataMapItem dataMapItem = DataMapItem.fromDataItem(dataItem);
                     DataMap config = dataMapItem.getDataMap();
+                    System.out.println("Data Changed");
                     updateUiForConfigDataMap(config);
                 }
             } finally {
@@ -304,7 +380,9 @@ public class WatchFaceService extends CanvasWatchFaceService {
                 if (!config.containsKey(configKey)) {
                     continue;
                 }
-                int color = config.getInt(configKey);
+                //int color = config.getInt(configKey);
+                String color = WatchFaceUtil.KEY_BACKGROUND_COLOR;
+                System.out.println("Color: "+color);
                 if (updateUiForKey(configKey, color)) {
                     uiUpdated = true;
                 }
@@ -314,132 +392,26 @@ public class WatchFaceService extends CanvasWatchFaceService {
             }
         }
 
-        private boolean updateUiForKey(String configKey, int color) {
-            if (configKey.equals(WatchFaceUtil.KEY_BACKGROUND_COLOR)) {
-                setInteractiveBackgroundColor(color);
-            } else if (configKey.equals(WatchFaceUtil.KEY_MINUTES_COLOR)) {
-                setInteractiveMinuteDigitsColor(color);
+        /**
+         * Updates the color of a UI item according to the given {@code configKey}. Does nothing if
+         * {@code configKey} isn't recognized.
+         *
+         * @return whether UI has been updated
+         */
+        private boolean updateUiForKey(String configKey, String color) {
+            System.out.println("Update");
+            System.out.println(configKey);
+            if (configKey.equals(WatchFaceUtil.KEY_BACKGROUND_COLOR) && !WatchFaceUtil.KEY_BACKGROUND_COLOR.equals("BACKGROUND_COLOR")) {
+                setInteractiveBackgroundColor(Color.parseColor(color));
+                setInteractiveMinuteDigitsColor(Color.parseColor(color));
             } else {
                 return false;
             }
             return true;
         }
 
-        private void setInteractiveBackgroundColor(int color) {
-            mInteractiveBackgroundColor = color;
-            updatePaintIfInteractive(mBackgroundPaint, color);
-        }
-
-        private void updatePaintIfInteractive(Paint paint, int interactiveColor) {
-            if (paint != null) {
-                paint.setColor(interactiveColor);
-            }
-        }
-        private void setInteractiveMinuteDigitsColor(int color) {
-            mInteractiveMinuteDigitsColor = color;
-            updatePaintIfInteractive(mMinutePaint, color);
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        @Override
-    public void onDestroy() {
-        mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
-        super.onDestroy();
     }
 
-    @Override
-    public void onVisibilityChanged(boolean visible) {
-        super.onVisibilityChanged(visible);
 
-        if (visible) {
-            mGoogleApiClient.connect();
-
-            registerReceiver();
-
-            // Update time zone in case it changed while we weren't visible.
-            mTime.clear(TimeZone.getDefault().getID());
-            mTime.setToNow();
-        } else {
-            unregisterReceiver();
-
-            if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-                Wearable.DataApi.removeListener(mGoogleApiClient, this);
-                mGoogleApiClient.disconnect();
-            }
-        }
-
-        // Whether the timer should be running depends on whether we're visible (as well as
-        // whether we're in ambient mode), so we may need to start or stop the timer.
-        updateTimer();
-    }
-
-    private void registerReceiver() {
-        if (mRegisteredTimeZoneReceiver) {
-            return;
-        }
-        mRegisteredTimeZoneReceiver = true;
-        IntentFilter filter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
-        WatchFaceService.this.registerReceiver(mTimeZoneReceiver, filter);
-    }
-
-    private void unregisterReceiver() {
-        if (!mRegisteredTimeZoneReceiver) {
-            return;
-        }
-        mRegisteredTimeZoneReceiver = false;
-        WatchFaceService.this.unregisterReceiver(mTimeZoneReceiver);
-    }
-
-    private void updateTimer() {
-        mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
-        if (shouldTimerBeRunning()) {
-            mUpdateTimeHandler.sendEmptyMessage(MSG_UPDATE_TIME);
-        }
-    }
-
-    private boolean shouldTimerBeRunning() {
-        return isVisible();
-    }
-
-    @Override  // GoogleApiClient.ConnectionCallbacks
-    public void onConnectionSuspended(int cause) {
-    }
-
-    @Override  // GoogleApiClient.OnConnectionFailedListener
-    public void onConnectionFailed(ConnectionResult result) {
-    }
 }
-
-
-    }
 
