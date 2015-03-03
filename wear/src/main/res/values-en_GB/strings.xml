@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Timr Face</string>
     <string name="config_name">Settings</string>
-    <string name="configuration_header">Colors</string>
+    <string name="configuration_header">Colours</string>
 
     <string-array name="color_array">
         <item>Orange</item>

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Timr Face</string>
-    <string name="config_name">Settings</string>
-    <string name="configuration_header">Colors</string>
+    <string name="config_name">Einstellungen</string>
+    <string name="configuration_header">Farben</string>
 
     <string-array name="color_array">
         <item>Orange</item>
         <item>Pink</item>
-        <item>Purple</item>
-        <item>Dark Blue</item>
-        <item>Blue</item>
-        <item>Light Blue</item>
-        <item>Teal</item>
-        <item>Green</item>
-        <item>Deep Orange</item>
-        <item>Red</item>
-        <item>Amber</item>
+        <item>Lila</item>
+        <item>Dunkelblau</item>
+        <item>Blau</item>
+        <item>Hellblau</item>
+        <item>Blaugrün</item>
+        <item>Grün</item>
+        <item>Dunkelorange</item>
+        <item>Rot</item>
+        <item>Gelb</item>
     </string-array>
 
 

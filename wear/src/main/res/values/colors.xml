@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="partition">#424242</color>
-    <color name="tile">#FF9800</color>
     <color name="background">#FAFAFA</color>
     <color name="text">#424242</color>
     <color name="shadow">#20000000</color>
