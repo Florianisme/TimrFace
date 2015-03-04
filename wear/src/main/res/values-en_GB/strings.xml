@@ -8,7 +8,7 @@
         <item>Orange</item>
         <item>Pink</item>
         <item>Purple</item>
-        <item>Dark Blue</item>
+        <item>Deep Blue</item>
         <item>Blue</item>
         <item>Light Blue</item>
         <item>Teal</item>
@@ -16,20 +16,5 @@
         <item>Deep Orange</item>
         <item>Red</item>
         <item>Amber</item>
-    </string-array>
-
-
-    <string-array name="colors">
-        <item>#FF9800</item>
-        <item>#E91E63</item>
-        <item>#9C27B0</item>
-        <item>#3F51B5</item>
-        <item>#2196F3</item>
-        <item>#03A9F4</item>
-        <item>#009688</item>
-        <item>#4CAF50</item>
-        <item>#FF5722</item>
-        <item>#F44336</item>
-        <item>#FFC107</item>
     </string-array>
 </resources>

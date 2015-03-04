@@ -28,11 +28,11 @@
                 android:name="android.service.wallpaper"
                 android:resource="@xml/watch_face" />
             <meta-data
-                android:name="com.google.android.wearable.watchface.preview_circular"
-                android:resource="@drawable/preview_circle" />
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/preview" />
             <meta-data
                 android:name="com.google.android.wearable.watchface.wearableConfigurationAction"
-                android:value="com.example.android.wearable.watchface.CONFIG_DIGITAL" />
+                android:value="com.android.timrface.CONFIG_DIGITAL" />
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
                 <category
@@ -45,11 +45,16 @@
             android:name=".WatchFaceConfiguration"
             android:label="@string/config_name">
             <intent-filter>
-                <action android:name="com.example.android.wearable.watchface.CONFIG_DIGITAL" />
+                <action android:name="com.android.timrface.CONFIG_DIGITAL" />
                 <category android:name="com.google.android.wearable.watchface.category.WEARABLE_CONFIGURATION" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
     </application>
 
 </manifest>

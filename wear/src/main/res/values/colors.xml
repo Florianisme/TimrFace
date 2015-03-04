@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="partition">#424242</color>
     <color name="background">#FAFAFA</color>
     <color name="text">#424242</color>
     <color name="shadow">#20000000</color>
+
+    <color name="background_reversed">#424242</color>
+    <color name="text_reversed">#FAFAFA</color>
 
     <color name="header">#959595</color>
 </resources>

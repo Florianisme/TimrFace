@@ -104,7 +104,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         boolean is24Hour = false;
         SimpleDateFormat format;
         DateFormat df;
-        Calendar cal = Calendar.getInstance();
+        Calendar cal;
         Context context = getApplicationContext();
 
         GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(WatchFaceService.this)
@@ -112,7 +112,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
                 .addOnConnectionFailedListener(this)
                 .addApi(Wearable.API)
                 .build();
-        private long INTERACTIVE_UPDATE_RATE_MS = 100;
+        private long INTERACTIVE_UPDATE_RATE_MS = 110;
         private Resources resources;
 
         @Override
@@ -123,6 +123,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
                     .setCardPeekMode(WatchFaceStyle.PEEK_MODE_SHORT)
                     .setBackgroundVisibility(WatchFaceStyle.BACKGROUND_VISIBILITY_INTERRUPTIVE)
                     .setShowSystemUiTime(false)
+                    .setViewProtection(WatchFaceStyle.PROTECT_STATUS_BAR)
                     .build());
 
             resources = WatchFaceService.this.getResources();
@@ -180,6 +181,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         public void onDraw(Canvas canvas, Rect bounds) {
             seconds = getSeconds();
             minutes = getMinutes();
+            cal = Calendar.getInstance();
             is24Hour = df.is24HourFormat(context);
             hours = getHours();
             date = getDate();
@@ -209,15 +211,9 @@ public class WatchFaceService extends CanvasWatchFaceService {
         public void onApplyWindowInsets(WindowInsets insets) {
             super.onApplyWindowInsets(insets);
             Resources resources = WatchFaceService.this.getResources();
-            boolean isRound = insets.isRound();
-            float textSize = resources.getDimension(isRound
-                    ? R.dimen.text_size_round : R.dimen.text_size);
-            float amPmSize = resources.getDimension(isRound
-                    ? R.dimen.am_pm_size_round : R.dimen.am_pm_size);
-            float dateTextSize = resources.getDimension(isRound
-                    ? R.dimen.date_size_round : R.dimen.date_size);
-            float timeTextSize = resources.getDimension(isRound
-                    ? R.dimen.time_size_round : R.dimen.time_size);
+            float textSize = resources.getDimension(R.dimen.text_size);
+            float dateTextSize = resources.getDimension(R.dimen.date_size);
+            float timeTextSize = resources.getDimension(R.dimen.time_size);
 
             mHourPaint.setTextSize(textSize);
             mMinutePaint.setTextSize(textSize);
@@ -231,7 +227,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         }
 
         private String getDate() {
-            format = new SimpleDateFormat("EEEE, F. MMMM");
+            format = new SimpleDateFormat("EEEE, d MMMM");
             return format.format(cal.getTime());
         }
 
@@ -257,10 +253,12 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
         private String getHours() {
             if (is24Hour) {
-                return formatTwoDigits(cal.get(Calendar.HOUR_OF_DAY));
+                format = new SimpleDateFormat("H");
+                return format.format(cal.getTime());
             }
             else {
-                return formatTwoDigits(cal.get(Calendar.HOUR));
+                format = new SimpleDateFormat("K");
+                return format.format(cal.getTime());
             }
         }
 
@@ -301,9 +299,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
                     mGoogleApiClient.disconnect();
                 }
             }
-
-            // Whether the timer should be running depends on whether we're visible (as well as
-            // whether we're in ambient mode), so we may need to start or stop the timer.
             updateTimer();
         }
 
