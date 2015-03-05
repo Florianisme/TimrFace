@@ -5,11 +5,12 @@ import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.wearable.companion.WatchFaceCompanion;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -19,28 +20,17 @@ import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
-import com.google.android.gms.wearable.MessageApi;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
-
-import java.util.concurrent.TimeUnit;
 
 public class WatchFaceConfiguration extends ActionBarActivity
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         ResultCallback<DataApi.DataItemResult> {
 
     // TODO: use the shared constants (needs covering all the samples with Gradle build model)
-    private static final String KEY_BACKGROUND_COLOR = "BACKGROUND_COLOR";
-    private static final String KEY_MAIN_COLOR = "MAIN_COLOR";
     private static final String PATH_WITH_FEATURE = "/watch_face_config/Digital";
 
     private GoogleApiClient mGoogleApiClient;
     private String mPeerId;
-    private NodeApi.NodeListener nodeListener;
-    private MessageApi.MessageListener messageListener;
-    private String remoteNodeId;
-    Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +41,15 @@ public class WatchFaceConfiguration extends ActionBarActivity
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.settings);
 
+        CheckBox cb = (CheckBox) findViewById(R.id.checkBox);
+        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                                               @Override
+                                               public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                                                   sendConfigUpdateMessage("", String.valueOf(isChecked));
+                                               }
+                                           }
+        );
 
         mPeerId = getIntent().getStringExtra(WatchFaceCompanion.EXTRA_PEER_ID);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -58,29 +57,6 @@ public class WatchFaceConfiguration extends ActionBarActivity
                 .addOnConnectionFailedListener(this)
                 .addApi(Wearable.API)
                 .build();
-
-        nodeListener = new NodeApi.NodeListener() {
-            @Override
-            public void onPeerConnected(Node node) {
-                remoteNodeId = node.getId();
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        displayNoConnectedDeviceDialog();
-                    }
-                });
-            }
-
-            @Override
-            public void onPeerDisconnected(Node node) {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        displayNoConnectedDeviceDialog();
-                    }
-                });
-            }
-        };
     }
 
     @Override
@@ -114,7 +90,7 @@ public class WatchFaceConfiguration extends ActionBarActivity
             DataItem configDataItem = dataItemResult.getDataItem();
             DataMapItem dataMapItem = DataMapItem.fromDataItem(configDataItem);
             DataMap config = dataMapItem.getDataMap();
-            setUpAllPickers();
+            setUpAllColors();
     }
 
     @Override // GoogleApiClient.ConnectionCallbacks
@@ -139,7 +115,7 @@ public class WatchFaceConfiguration extends ActionBarActivity
         alert.show();
     }
 
-    private void setUpAllPickers() {
+    private void setUpAllColors() {
         String[] array = getResources().getStringArray(R.array.colors);
         setUpColorListener(R.id.white, "M", array[0]);
         setUpColorListener(R.id.dark, "M", array[1]);
@@ -173,30 +149,12 @@ public class WatchFaceConfiguration extends ActionBarActivity
     }
 
     private void sendConfigUpdateMessage(String configKey, String color) {
-        System.out.println("Sending...");
         if (mPeerId != null) {
             DataMap config = new DataMap();
             config.putString(configKey, color);
             byte[] rawData = config.toByteArray();
             Wearable.MessageApi.sendMessage(mGoogleApiClient, mPeerId, color, rawData);
-            System.out.println("Sent color: "+ color);
         }
     }
 
-    private void sendMessage(final String key, final String color) {
-        {
-
-            if (remoteNodeId != null) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mGoogleApiClient.blockingConnect(30, TimeUnit.MILLISECONDS);
-                        Wearable.MessageApi.sendMessage(mGoogleApiClient, remoteNodeId, color, null);
-                        mGoogleApiClient.disconnect();
-
-                        System.out.println("Sent color: " + color);
-                    }
-                }).start();
-            }
-        }
-    }}
+    }

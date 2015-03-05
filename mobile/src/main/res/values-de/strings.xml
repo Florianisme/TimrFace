@@ -4,6 +4,8 @@
     <string name="settings">Einstellungen</string>
     <string name="background">Hintergrundfarbe</string>
     <string name="colors">Hauptfarbe</string>
+    <string name="view">Anzeige</string>
+    <string name="checkbox">Animierte Sekunden</string>
 
     <string name="title_no_device_connected">Keine Verbindung zur Wearable.</string>
     <string name="ok_no_device_connected">OK</string>

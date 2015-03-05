@@ -166,7 +166,30 @@
                 android:background="@color/amber" />
         </LinearLayout>
 
-    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/view"
+            android:paddingBottom="10dp"
+            android:textIsSelectable="false"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/checkbox"
+            android:id="@+id/checkBox"
+            android:checked="true" />
+
     </LinearLayout>
 
 </LinearLayout>
+    </LinearLayout>

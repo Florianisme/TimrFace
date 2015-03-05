@@ -44,6 +44,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
     public static int mInteractiveMainColor =
             WatchFaceUtil.COLOR_VALUE_DEFAULT_AND_AMBIENT_MAIN;
     public static int mInteractiveTextColor = WatchFaceUtil.COLOR_VALUE_DEFAULT_AND_AMBIENT_TEXT;
+    public static long INTERACTIVE_UPDATE_RATE_MS = 110;
 
     @Override
     public Engine onCreateEngine() {
@@ -113,7 +114,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
                 .addOnConnectionFailedListener(this)
                 .addApi(Wearable.API)
                 .build();
-        private long INTERACTIVE_UPDATE_RATE_MS = 110;
         private Resources resources;
 
         @Override
@@ -388,7 +388,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
                 if (!config.containsKey(configKey)) {
                     continue;
                 }
-                if (updateUiForKey(configKey, WatchFaceUtil.KEY_BACKGROUND_COLOR, WatchFaceUtil.KEY_MAIN_COLOR)) {
+                if (updateUiForKey(WatchFaceUtil.KEY_BACKGROUND_COLOR, WatchFaceUtil.KEY_MAIN_COLOR, WatchFaceUtil.SMOOTH_SECONDS)) {
                     uiUpdated = true;
                 }
             }
@@ -397,8 +397,13 @@ public class WatchFaceService extends CanvasWatchFaceService {
             }
         }
 
-        private boolean updateUiForKey(String configKey, String color, String color2) {
-            System.out.println("Updating... Color: "+color+" Color2: "+color2);
+        private boolean updateUiForKey(String color, String color2, boolean key) {
+            if (key) {
+                INTERACTIVE_UPDATE_RATE_MS = 110;
+            }
+            else {
+                INTERACTIVE_UPDATE_RATE_MS = 1000;
+            }
             if (!WatchFaceUtil.KEY_BACKGROUND_COLOR.equals("BACKGROUND_COLOR")) {
                 setInteractiveBackgroundColor(Color.parseColor(color));
             }

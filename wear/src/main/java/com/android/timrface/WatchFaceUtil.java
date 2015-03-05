@@ -23,6 +23,8 @@ public final class WatchFaceUtil {
 
     public static String KEY_TEXT_COLOR = "TEXT_COLOR";
 
+    public static boolean SMOOTH_SECONDS = true;
+
     public static final String PATH_WITH_FEATURE = "/watch_face_config/Digital";
 
     public static final String COLOR_NAME_DEFAULT_AND_AMBIENT_BACKGROUND = "#FF9800";
@@ -81,8 +83,10 @@ public final class WatchFaceUtil {
     }
 
     public static void overwriteKeys(String key) {
-        System.out.println("Updated Color: "+key);
-        if (key.equals("#FAFAFA") || key.equals("#424242") || key.equals("#000000")) {
+        if (key.equals("true") || key.equals("false")) {
+            SMOOTH_SECONDS = Boolean.valueOf(key);
+        }
+        else if (key.equals("#FAFAFA") || key.equals("#424242") || key.equals("#000000")) {
             KEY_MAIN_COLOR = key;
             if (key.equals("#FAFAFA")) {
                 KEY_TEXT_COLOR = "#424242";
