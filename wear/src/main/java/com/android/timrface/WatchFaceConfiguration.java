@@ -19,13 +19,19 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class WatchFaceConfiguration extends Activity implements
         WearableListView.ClickListener, WearableListView.OnScrollListener {
 
     private GoogleApiClient mGoogleApiClient;
     private TextView mHeader;
+    String nodeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,10 +125,38 @@ public class WatchFaceConfiguration extends Activity implements
         DataMap configKeysToOverwrite = new DataMap();
         configKeysToOverwrite.putString(WatchFaceUtil.KEY_BACKGROUND_COLOR,
                 backgroundColor);
-        System.out.println("BackgroundColor: "+backgroundColor + " Util: "+ WatchFaceUtil.KEY_BACKGROUND_COLOR);
         WatchFaceUtil.overwriteKeysInConfigDataMap(mGoogleApiClient, configKeysToOverwrite);
+        System.out.println("Changed Color "+ backgroundColor);
         WatchFaceUtil.KEY_BACKGROUND_COLOR = backgroundColor;
-        WatchFaceUtil.KEY_MINUTES_COLOR = backgroundColor;
+        retrieveDeviceNode();
+/*
+        if (nodeId != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mGoogleApiClient.blockingConnect(1000, TimeUnit.MILLISECONDS);
+                    Wearable.MessageApi.sendMessage(mGoogleApiClient, nodeId, "B:"+backgroundColor, null);
+                    mGoogleApiClient.disconnect();
+                }
+            }).start();
+        }*/
+
+    }
+
+    private void retrieveDeviceNode() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mGoogleApiClient.blockingConnect(1000, TimeUnit.MILLISECONDS);
+                NodeApi.GetConnectedNodesResult result =
+                        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
+                List<Node> nodes = result.getNodes();
+                if (nodes.size() > 0) {
+                    nodeId = nodes.get(0).getId();
+                }
+                mGoogleApiClient.disconnect();
+            }
+        }).start();
     }
 
     private class ColorListAdapter extends WearableListView.Adapter {

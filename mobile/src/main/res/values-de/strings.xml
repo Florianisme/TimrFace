@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Timr Face</string>
+    <string name="settings">Einstellungen</string>
+    <string name="background">Hintergrundfarbe</string>
+    <string name="colors">Hauptfarbe</string>
+
+    <string name="title_no_device_connected">Keine Verbindung zur Wearable.</string>
+    <string name="ok_no_device_connected">OK</string>
+
+</resources>

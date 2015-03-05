@@ -19,7 +19,9 @@ public final class WatchFaceUtil {
 
     public static String KEY_BACKGROUND_COLOR = "BACKGROUND_COLOR";
 
-    public static String KEY_MINUTES_COLOR = "MINUTES_COLOR";
+    public static String KEY_MAIN_COLOR = "MAIN_COLOR";
+
+    public static String KEY_TEXT_COLOR = "TEXT_COLOR";
 
     public static final String PATH_WITH_FEATURE = "/watch_face_config/Digital";
 
@@ -27,9 +29,13 @@ public final class WatchFaceUtil {
     public static final int COLOR_VALUE_DEFAULT_AND_AMBIENT_BACKGROUND =
             parseColor(COLOR_NAME_DEFAULT_AND_AMBIENT_BACKGROUND);
 
-    public static final String COLOR_NAME_DEFAULT_AND_AMBIENT_MINUTE_DIGITS = "#FF9800";
-    public static final int COLOR_VALUE_DEFAULT_AND_AMBIENT_MINUTE_DIGITS =
-            parseColor(COLOR_NAME_DEFAULT_AND_AMBIENT_MINUTE_DIGITS);
+    public static final String COLOR_NAME_DEFAULT_AND_AMBIENT_MAIN = "#FAFAFA";
+    public static final int COLOR_VALUE_DEFAULT_AND_AMBIENT_MAIN =
+            parseColor(COLOR_NAME_DEFAULT_AND_AMBIENT_MAIN);
+
+    public static final String COLOR_NAME_DEFAULT_AND_AMBIENT_TEXT = "#424242";
+    public static final int COLOR_VALUE_DEFAULT_AND_AMBIENT_TEXT =
+            parseColor(COLOR_NAME_DEFAULT_AND_AMBIENT_TEXT);
 
     public interface FetchConfigDataMapCallback {
         void onConfigDataMapFetched(DataMap config);
@@ -58,14 +64,6 @@ public final class WatchFaceUtil {
         );
     }
 
-    /**
-     * Overwrites (or sets, if not present) the keys in the current config {@link DataItem} with
-     * the ones appearing in the given {@link DataMap}. If the config DataItem doesn't exist,
-     * it's created.
-     * <p>
-     * It is allowed that only some of the keys used in the config DataItem appear in
-     * {@code configKeysToOverwrite}. The rest of the keys remains unmodified in this case.
-     */
     public static void overwriteKeysInConfigDataMap(final GoogleApiClient googleApiClient,
                                                     final DataMap configKeysToOverwrite) {
 
@@ -80,6 +78,22 @@ public final class WatchFaceUtil {
                     }
                 }
         );
+    }
+
+    public static void overwriteKeys(String key) {
+        System.out.println("Updated Color: "+key);
+        if (key.equals("#FAFAFA") || key.equals("#424242") || key.equals("#000000")) {
+            KEY_MAIN_COLOR = key;
+            if (key.equals("#FAFAFA")) {
+                KEY_TEXT_COLOR = "#424242";
+            }
+            else {
+                KEY_TEXT_COLOR = "#FAFAFA";
+            }
+        }
+        else {
+            KEY_BACKGROUND_COLOR = key;
+        }
     }
 
     /**

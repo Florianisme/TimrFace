@@ -33,11 +33,20 @@
             <meta-data
                 android:name="com.google.android.wearable.watchface.wearableConfigurationAction"
                 android:value="com.android.timrface.CONFIG_DIGITAL" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.companionConfigurationAction"
+                android:value="com.android.timrface.CONFIG_DIGITAL" />
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
                 <category
                     android:name=
                         "com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+        </service>
+
+        <service android:name=".ConfigListenerService">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
             </intent-filter>
         </service>
 

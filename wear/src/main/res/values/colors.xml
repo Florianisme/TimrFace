@@ -4,8 +4,11 @@
     <color name="text">#424242</color>
     <color name="shadow">#20000000</color>
 
-    <color name="background_reversed">#424242</color>
-    <color name="text_reversed">#FAFAFA</color>
+    <color name="background_dark">#424242</color>
+    <color name="text_dark">#FAFAFA</color>
+
+    <color name="background_black">#000000</color>
+    <color name="text_black">#FAFAFA</color>
 
     <color name="header">#959595</color>
 </resources>

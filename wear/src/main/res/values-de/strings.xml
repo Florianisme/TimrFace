@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Timr Face</string>
     <string name="config_name">Einstellungen</string>
+    <string name="background_configuration_header">Hintergrund</string>
     <string name="configuration_header">Farben</string>
 
     <string-array name="color_array">
@@ -16,5 +17,32 @@
         <item>Dunkelorange</item>
         <item>Rot</item>
         <item>Gelb</item>
+    </string-array>
+
+    <string-array name="background_color_array">
+        <item>Weiß</item>
+        <item>Grau</item>
+        <item>Schwarz</item>
+    </string-array>
+
+
+    <string-array name="colors">
+        <item>#FF9800</item>
+        <item>#E91E63</item>
+        <item>#9C27B0</item>
+        <item>#3F51B5</item>
+        <item>#2196F3</item>
+        <item>#03A9F4</item>
+        <item>#009688</item>
+        <item>#4CAF50</item>
+        <item>#FF5722</item>
+        <item>#F44336</item>
+        <item>#FFC107</item>
+    </string-array>
+
+    <string-array name="background_colors">
+        <item>#FAFAFA</item>
+        <item>#424242</item>
+        <item>#000000</item>
     </string-array>
 </resources>

@@ -1,3 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Timr Face</string>
+    <string name="settings">Settings</string>
+    <string name="background">Background Colour</string>
+    <string name="colors">Main Color</string>
+
+    <string name="title_no_device_connected">No wearable device is currently connected.</string>
+    <string name="ok_no_device_connected">OK</string>
+
+
+    <string-array name="colors">
+        <item>#FAFAFA</item>
+        <item>#424242</item>
+        <item>#000000</item>
+        <item>#FF9800</item>
+        <item>#E91E63</item>
+        <item>#9C27B0</item>
+        <item>#3F51B5</item>
+        <item>#2196F3</item>
+        <item>#03A9F4</item>
+        <item>#009688</item>
+        <item>#4CAF50</item>
+        <item>#FF5722</item>
+        <item>#F44336</item>
+        <item>#FFC107</item>
+    </string-array>
+
 </resources>

@@ -41,8 +41,9 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
     public static int mInteractiveBackgroundColor =
             WatchFaceUtil.COLOR_VALUE_DEFAULT_AND_AMBIENT_BACKGROUND;
-    public static int mInteractiveMinuteDigitsColor =
-            WatchFaceUtil.COLOR_VALUE_DEFAULT_AND_AMBIENT_MINUTE_DIGITS;
+    public static int mInteractiveMainColor =
+            WatchFaceUtil.COLOR_VALUE_DEFAULT_AND_AMBIENT_MAIN;
+    public static int mInteractiveTextColor = WatchFaceUtil.COLOR_VALUE_DEFAULT_AND_AMBIENT_TEXT;
 
     @Override
     public Engine onCreateEngine() {
@@ -138,16 +139,16 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
             mScalePaint.setAntiAlias(false);
 
-            mHourPaint = createTextPaint(resources.getColor(R.color.text), TYPEFACE);
+            mHourPaint = createTextPaint(mInteractiveTextColor, TYPEFACE);
             mMinutePaint = createTextPaint(mInteractiveBackgroundColor, TYPEFACE);
-            mDatePaint = createTextPaint(resources.getColor(R.color.text), TYPEFACE);
-            mTimePaint = createTextPaint(resources.getColor(R.color.text), TYPEFACE);
+            mDatePaint = createTextPaint(mInteractiveTextColor, TYPEFACE);
+            mTimePaint = createTextPaint(mInteractiveTextColor, TYPEFACE);
             mDatePaint.setTextAlign(Paint.Align.CENTER);
 
-            mBackgroundPaint.setColor(resources.getColor(R.color.background));
-            mArrowPaint.setColor(resources.getColor(R.color.background));
+            mBackgroundPaint.setColor(mInteractiveMainColor);
+            mArrowPaint.setColor(mInteractiveMainColor);
             mTilePaint.setColor(mInteractiveBackgroundColor);
-            mBorderPaint.setColor(resources.getColor(R.color.background));
+            mBorderPaint.setColor(mInteractiveMainColor);
 
             mBackgroundPaint.setShadowLayer(8.0f, 0.0f, 4.0f, resources.getColor(R.color.shadow));
             mArrowPaint.setShadowLayer(8.0f, 4.0f, 4.0f, resources.getColor(R.color.shadow));
@@ -262,17 +263,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
             }
         }
 
-        private void setInteractiveBackgroundColor(int color) {
-            mInteractiveBackgroundColor = color;
-            mTilePaint.setColor(color);
-        }
-
-
-        private void setInteractiveMinuteDigitsColor(int color) {
-            mInteractiveMinuteDigitsColor = color;
-            mMinutePaint.setColor(color);
-    }
-
         @Override
         public void onDestroy() {
             mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
@@ -357,8 +347,10 @@ public class WatchFaceService extends CanvasWatchFaceService {
         private void setDefaultValuesForMissingConfigKeys(DataMap config) {
             addIntKeyIfMissing(config, WatchFaceUtil.KEY_BACKGROUND_COLOR,
                     WatchFaceUtil.COLOR_VALUE_DEFAULT_AND_AMBIENT_BACKGROUND);
-            addIntKeyIfMissing(config, WatchFaceUtil.KEY_MINUTES_COLOR,
-                    WatchFaceUtil.COLOR_VALUE_DEFAULT_AND_AMBIENT_MINUTE_DIGITS);
+            addIntKeyIfMissing(config, WatchFaceUtil.KEY_MAIN_COLOR,
+                    WatchFaceUtil.COLOR_VALUE_DEFAULT_AND_AMBIENT_MAIN);
+            addIntKeyIfMissing(config, WatchFaceUtil.KEY_TEXT_COLOR,
+                    WatchFaceUtil.COLOR_VALUE_DEFAULT_AND_AMBIENT_TEXT);
         }
 
         private void addIntKeyIfMissing(DataMap config, String key, int color) {
@@ -396,8 +388,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
                 if (!config.containsKey(configKey)) {
                     continue;
                 }
-                String color = WatchFaceUtil.KEY_BACKGROUND_COLOR;
-                if (updateUiForKey(configKey, color)) {
+                if (updateUiForKey(configKey, WatchFaceUtil.KEY_BACKGROUND_COLOR, WatchFaceUtil.KEY_MAIN_COLOR)) {
                     uiUpdated = true;
                 }
             }
@@ -406,22 +397,49 @@ public class WatchFaceService extends CanvasWatchFaceService {
             }
         }
 
-        /**
-         * Updates the color of a UI item according to the given {@code configKey}. Does nothing if
-         * {@code configKey} isn't recognized.
-         *
-         * @return whether UI has been updated
-         */
-        private boolean updateUiForKey(String configKey, String color) {
-            if (configKey.equals(WatchFaceUtil.KEY_BACKGROUND_COLOR) && !WatchFaceUtil.KEY_BACKGROUND_COLOR.equals("BACKGROUND_COLOR")) {
+        private boolean updateUiForKey(String configKey, String color, String color2) {
+            System.out.println("Updating... Color: "+color+" Color2: "+color2);
+            if (!WatchFaceUtil.KEY_BACKGROUND_COLOR.equals("BACKGROUND_COLOR")) {
                 setInteractiveBackgroundColor(Color.parseColor(color));
-                setInteractiveMinuteDigitsColor(Color.parseColor(color));
-            } else {
+            }
+            if (!WatchFaceUtil.KEY_MAIN_COLOR.equals("MAIN_COLOR")) {
+                setInteractiveMainColor(Color.parseColor(color2));
+                System.out.println("Changed Main into "+Color.parseColor(color2));
+                if (Color.parseColor(color2)!= Color.parseColor("#FAFAFA")) {
+                    setInteractiveTextColor(Color.parseColor("#FAFAFA"));
+                    System.out.println("Changed Text Back");
+                }
+                else {
+                    setInteractiveTextColor(Color.parseColor("#424242"));
+                    System.out.println("Changed Text");
+                }
+            }
+            else {
                 return false;
             }
             return true;
         }
 
+
+        private void setInteractiveBackgroundColor(int color) {
+            mInteractiveBackgroundColor = color;
+            mTilePaint.setColor(color);
+            mMinutePaint.setColor(color);
+        }
+
+
+        private void setInteractiveMainColor(int color) {
+            mInteractiveMainColor = color;
+            mBackgroundPaint.setColor(color);
+            mArrowPaint.setColor(color);
+            mBorderPaint.setColor(color);
+        }
+
+        private void setInteractiveTextColor(int color) {
+            mHourPaint.setColor(color);
+            mDatePaint.setColor(color);
+            mTimePaint.setColor(color);
+        }
+
     }
 }
-

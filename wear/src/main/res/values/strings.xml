@@ -2,20 +2,27 @@
 <resources>
     <string name="app_name">Timr Face</string>
     <string name="config_name">Settings</string>
+    <string name="background_configuration_header">Background</string>
     <string name="configuration_header">Colors</string>
 
     <string-array name="color_array">
-        <item>Orange</item>
-        <item>Pink</item>
-        <item>Purple</item>
-        <item>Dark Blue</item>
-        <item>Blue</item>
-        <item>Light Blue</item>
-        <item>Teal</item>
-        <item>Green</item>
-        <item>Dark Orange</item>
-        <item>Red</item>
-        <item>Amber</item>
+    <item>Orange</item>
+    <item>Pink</item>
+    <item>Purple</item>
+    <item>Dark Blue</item>
+    <item>Blue</item>
+    <item>Light Blue</item>
+    <item>Teal</item>
+    <item>Green</item>
+    <item>Dark Orange</item>
+    <item>Red</item>
+    <item>Amber</item>
+</string-array>
+
+    <string-array name="background_color_array">
+        <item>White</item>
+        <item>Grey</item>
+        <item>Black</item>
     </string-array>
 
 
@@ -31,5 +38,11 @@
         <item>#FF5722</item>
         <item>#F44336</item>
         <item>#FFC107</item>
+    </string-array>
+
+    <string-array name="background_colors">
+        <item>#FAFAFA</item>
+        <item>#424242</item>
+        <item>#000000</item>
     </string-array>
 </resources>
