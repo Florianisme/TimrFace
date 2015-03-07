@@ -2,16 +2,15 @@ package com.android.timrface;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.wearable.companion.WatchFaceCompanion;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -26,7 +25,6 @@ public class WatchFaceConfiguration extends ActionBarActivity
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         ResultCallback<DataApi.DataItemResult> {
 
-    // TODO: use the shared constants (needs covering all the samples with Gradle build model)
     private static final String PATH_WITH_FEATURE = "/watch_face_config/Digital";
 
     private GoogleApiClient mGoogleApiClient;
@@ -35,9 +33,7 @@ public class WatchFaceConfiguration extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.watch_face_config);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setContentView(R.layout.watch_face_config);Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.settings);
 
@@ -89,8 +85,7 @@ public class WatchFaceConfiguration extends ActionBarActivity
     public void onResult(DataApi.DataItemResult dataItemResult) {
             DataItem configDataItem = dataItemResult.getDataItem();
             DataMapItem dataMapItem = DataMapItem.fromDataItem(configDataItem);
-            DataMap config = dataMapItem.getDataMap();
-            setUpAllColors();
+        setUpAllColors();
     }
 
     @Override // GoogleApiClient.ConnectionCallbacks
@@ -137,13 +132,12 @@ public class WatchFaceConfiguration extends ActionBarActivity
 
 
     private void setUpColorListener(int spinnerId, final String configKey, final String color) {
-        ImageView img = (ImageView) findViewById(spinnerId);
-        ColorDrawable drawable = (ColorDrawable) img.getBackground();
-        img.setOnClickListener(new View.OnClickListener() {
+        final Button imgButton = (Button) findViewById(spinnerId);
+        imgButton.setOnClickListener(new View.OnClickListener() {
             //@Override
             public void onClick(View v) {
-
                 sendConfigUpdateMessage(configKey, color);
+                System.out.println(imgButton.getBackground());
             }
         });
     }

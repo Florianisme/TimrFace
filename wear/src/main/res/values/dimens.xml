@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <dimen name="hour_x">10dp</dimen>
+    <dimen name="hour_minute_y">105dp</dimen>
+    <dimen name="minute_x">95dp</dimen>
+    <dimen name="time_x">130dp</dimen>
+    <dimen name="time_y">117dp</dimen>
+
+    <dimen name="hour_x_round">20dp</dimen>
+    <dimen name="hour_minute_y_round">120dp</dimen>
+    <dimen name="minute_x_round">110dp</dimen>
+    <dimen name="time_x_round">145dp</dimen>
+    <dimen name="time_y_round">132dp</dimen>
+
     <dimen name="text_size">75dp</dimen>
     <dimen name="am_pm_size">30dp</dimen>
     <dimen name="date_size">11dp</dimen>

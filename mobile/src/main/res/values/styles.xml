@@ -5,6 +5,7 @@
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:buttonStyle">?android:borderlessButtonStyle</item>
     </style>
 
     <style name="Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">

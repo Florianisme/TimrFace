@@ -82,7 +82,7 @@
                 android:id="@+id/orange"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginRight="13dp"
+                android:layout_marginRight="15dp"
                 android:background="@drawable/orange"
                 style="?android:borderlessButtonStyle" />
 
@@ -90,7 +90,7 @@
                 android:id="@+id/pink"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginRight="13dp"
+                android:layout_marginRight="15dp"
                 android:background="@drawable/pink"
                 style="?android:borderlessButtonStyle" />
 
@@ -98,7 +98,7 @@
                 android:id="@+id/purple"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginRight="13dp"
+                android:layout_marginRight="15dp"
                 android:background="@drawable/purple"
                 style="?android:borderlessButtonStyle" />
 
@@ -106,7 +106,7 @@
                 android:id="@+id/deep_blue"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginRight="13dp"
+                android:layout_marginRight="15dp"
                 android:background="@drawable/deep_blue"
                 style="?android:borderlessButtonStyle" />
 
@@ -114,22 +114,15 @@
                 android:id="@+id/blue"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginRight="13dp"
+                android:layout_marginRight="15dp"
                 android:background="@drawable/blue"
                 style="?android:borderlessButtonStyle" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/light_blue"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginRight="13dp"
+                android:layout_marginRight="15dp"
                 android:background="@drawable/light_blue"
                 style="?android:borderlessButtonStyle" />
 
@@ -137,7 +130,7 @@
                 android:id="@+id/teal"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginRight="13dp"
+                android:layout_marginRight="15dp"
                 android:background="@drawable/teal"
                 style="?android:borderlessButtonStyle" />
 
@@ -145,7 +138,7 @@
                 android:id="@+id/green"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginRight="13dp"
+                android:layout_marginRight="15dp"
                 android:background="@drawable/green"
                 style="?android:borderlessButtonStyle" />
 
@@ -153,7 +146,7 @@
                 android:id="@+id/deep_orange"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginRight="13dp"
+                android:layout_marginRight="15dp"
                 android:background="@drawable/deep_orange"
                 style="?android:borderlessButtonStyle" />
 
@@ -161,22 +154,15 @@
                 android:id="@+id/red"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginRight="13dp"
+                android:layout_marginRight="15dp"
                 android:background="@drawable/red"
                 style="?android:borderlessButtonStyle" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:orientation="horizontal" >
 
             <Button
                 android:id="@+id/amber"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginRight="13dp"
+                android:layout_marginRight="15dp"
                 android:background="@drawable/amber"
                 style="?android:borderlessButtonStyle" />
         </LinearLayout>

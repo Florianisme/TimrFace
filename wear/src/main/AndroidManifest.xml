@@ -29,7 +29,10 @@
                 android:resource="@xml/watch_face" />
             <meta-data
                 android:name="com.google.android.wearable.watchface.preview"
-                android:resource="@drawable/preview" />
+                android:resource="@drawable/preview_sqaure" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/preview_round" />
             <meta-data
                 android:name="com.google.android.wearable.watchface.wearableConfigurationAction"
                 android:value="com.android.timrface.CONFIG_DIGITAL" />
