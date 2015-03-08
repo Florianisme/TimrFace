@@ -1,4 +1,4 @@
-package com.android.timrface;
+package com.timrface;
 
 import android.os.Bundle;
 import android.util.Log;

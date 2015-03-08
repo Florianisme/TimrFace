@@ -1,4 +1,4 @@
-package com.android.timrface;
+package com.timrface;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -54,7 +54,13 @@ public class WatchFaceService extends CanvasWatchFaceService {
     public class Engine extends CanvasWatchFaceService.Engine implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, DataApi.DataListener {
 
         static final int MSG_UPDATE_TIME = 0;
-        final Handler mUpdateTimeHandler = new Handler() {
+        final BroadcastReceiver mTimeZoneReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mTime.clear(intent.getStringExtra("time-zone"));
+                mTime.setToNow();
+            }
+        };        final Handler mUpdateTimeHandler = new Handler() {
             @Override
             public void handleMessage(Message message) {
                 switch (message.what) {
@@ -70,21 +76,8 @@ public class WatchFaceService extends CanvasWatchFaceService {
                 }
             }
         };
-        final BroadcastReceiver mTimeZoneReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                mTime.clear(intent.getStringExtra("time-zone"));
-                mTime.setToNow();
-            }
-        };
         private final Typeface TYPEFACE =
                 Typeface.createFromAsset(getAssets(), "font.ttf");
-        private float HOUR_X;
-        private float HOUR_MINUTE_Y;
-        private float MINUTE_X;
-        private float DATE_Y;
-        private float TIME_X;
-        private float TIME_Y;
         Time mTime;
         Paint mBackgroundPaint;
         Paint mTilePaint;
@@ -107,12 +100,17 @@ public class WatchFaceService extends CanvasWatchFaceService {
         DateFormat df;
         Calendar cal;
         Context context = getApplicationContext();
-
         GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(WatchFaceService.this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Wearable.API)
                 .build();
+        private float HOUR_X;
+        private float HOUR_MINUTE_Y;
+        private float MINUTE_X;
+        private float DATE_Y;
+        private float TIME_X;
+        private float TIME_Y;
         private Resources resources;
 
         @Override
@@ -153,7 +151,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             mArrowPaint.setShadowLayer(8.0f, 4.0f, 4.0f, resources.getColor(R.color.shadow));
 
             mTime = new Time();
-       }
+        }
 
         private Paint createTextPaint(int color, Typeface typeface) {
             Paint paint = new Paint();
@@ -163,12 +161,11 @@ public class WatchFaceService extends CanvasWatchFaceService {
             return paint;
         }
 
-        @Override  // GoogleApiClient.ConnectionCallbacks
+        @Override
         public void onConnected(Bundle connectionHint) {
             Wearable.DataApi.addListener(mGoogleApiClient, Engine.this);
             updateConfigDataItemAndUiOnStartup();
         }
-
 
         @Override
         public void onTimeTick() {
@@ -176,24 +173,18 @@ public class WatchFaceService extends CanvasWatchFaceService {
             invalidate();
         }
 
-
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
             seconds = getSeconds();
-            minutes = getMinutes();
             cal = Calendar.getInstance();
             is24Hour = df.is24HourFormat(context);
-            hours = getHours();
-            date = getDate();
-            time = getAmPm();
-
 
             canvas.drawRect(0, bounds.centerY() + 45, bounds.width(), bounds.height(), mTilePaint);
             canvas.drawRect(0, 0, bounds.width(), bounds.centerY() + 45, mBackgroundPaint);
 
-            canvas.drawBitmap(scale, seconds - 445, bounds.centerY() + 60, mScalePaint);
-            canvas.drawBitmap(scale, seconds + 155, bounds.centerY() + 60, mScalePaint);
-            canvas.drawBitmap(scale, seconds + 755, bounds.centerY() + 60, mScalePaint);
+            canvas.drawBitmap(scale, seconds - 447, bounds.centerY() + 60, mScalePaint);
+            canvas.drawBitmap(scale, seconds + 153, bounds.centerY() + 60, mScalePaint);
+            canvas.drawBitmap(scale, seconds + 753, bounds.centerY() + 60, mScalePaint);
 
             canvas.save();
             canvas.rotate(45, bounds.centerX(), bounds.centerY());
@@ -201,10 +192,10 @@ public class WatchFaceService extends CanvasWatchFaceService {
             canvas.restore();
 
             canvas.drawRect(bounds.centerX() - 30, bounds.centerY() + 15, bounds.centerX() + 30, bounds.centerY() + 45, mBorderPaint);
-            canvas.drawText(hours, HOUR_X, HOUR_MINUTE_Y, mHourPaint);
-            canvas.drawText(minutes, MINUTE_X, HOUR_MINUTE_Y, mMinutePaint);
-            canvas.drawText(date, bounds.centerX() - mDatePaint.getStrokeWidth() / 2, DATE_Y, mDatePaint);
-            canvas.drawText(time, TIME_X, TIME_Y, mTimePaint);
+            canvas.drawText(getHours(), HOUR_X, HOUR_MINUTE_Y, mHourPaint);
+            canvas.drawText(getMinutes(), MINUTE_X, HOUR_MINUTE_Y, mMinutePaint);
+            canvas.drawText(getDate(), bounds.centerX() - mDatePaint.getStrokeWidth() / 2, DATE_Y, mDatePaint);
+            canvas.drawText(getAmPm(), TIME_X, TIME_Y, mTimePaint);
         }
 
         @Override
@@ -217,20 +208,19 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
             boolean isRound = insets.isRound();
             if (isRound) {
-                HOUR_X = resources.getDimension(R.dimen.hour_x_round);
-                HOUR_MINUTE_Y = resources.getDimension(R.dimen.hour_minute_y_round);
-                MINUTE_X = resources.getDimension(R.dimen.minute_x_round);
+                HOUR_X = 35;
+                HOUR_MINUTE_Y = 170;
+                MINUTE_X = 160;
                 DATE_Y = 60;
-                TIME_X = resources.getDimension(R.dimen.time_x_round);
-                TIME_Y = resources.getDimension(R.dimen.time_y_round);
-            }
-            else {
-                HOUR_X = resources.getDimension(R.dimen.hour_x);
-                HOUR_MINUTE_Y = resources.getDimension(R.dimen.hour_minute_y);
-                MINUTE_X = resources.getDimension(R.dimen.minute_x);
-                DATE_Y = 60;
-                TIME_X = resources.getDimension(R.dimen.time_x);
-                TIME_Y = resources.getDimension(R.dimen.time_y);
+                TIME_X = 230;
+                TIME_Y = 195;
+            } else {
+                HOUR_X = 15;
+                HOUR_MINUTE_Y = 160;
+                MINUTE_X = 140;
+                DATE_Y = 40;
+                TIME_X = 215;
+                TIME_Y = 177;
             }
 
             mHourPaint.setTextSize(textSize);
@@ -240,15 +230,14 @@ public class WatchFaceService extends CanvasWatchFaceService {
         }
 
         private float getSeconds() {
-                mTime.set(System.currentTimeMillis());
-                return (mTime.second + (System.currentTimeMillis() % 1000) / 1000f) * (-10);
+            mTime.set(System.currentTimeMillis());
+            return (mTime.second + (System.currentTimeMillis() % 1000) / 1000f) * (-10);
         }
 
         private String getDate() {
             if (is24Hour) {
                 format = new SimpleDateFormat("EEEE, d. MMMM");
-            }
-            else {
+            } else {
                 format = new SimpleDateFormat("EEEE, d MMMM");
             }
             return format.format(cal.getTime());
@@ -258,28 +247,24 @@ public class WatchFaceService extends CanvasWatchFaceService {
             return formatTwoDigits(mTime.minute);
         }
 
-
         private String getAmPm() {
             if (!is24Hour) {
                 format = new SimpleDateFormat("a", Locale.getDefault());
                 return format.format(cal.getTime());
-            }
-            else {
+            } else {
                 return "";
             }
         }
 
-        private String formatTwoDigits (int number) {
+        private String formatTwoDigits(int number) {
             return String.format("%02d", number);
         }
-
 
         private String getHours() {
             if (is24Hour) {
                 format = new SimpleDateFormat("H");
                 return formatTwoDigits(Integer.valueOf(format.format(cal.getTime())));
-            }
-            else {
+            } else {
                 format = new SimpleDateFormat("K");
                 return formatTwoDigits(Integer.valueOf(format.format(cal.getTime())));
             }
@@ -378,7 +363,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             }
         }
 
-        @Override 
+        @Override
         public void onDataChanged(DataEventBuffer dataEvents) {
             try {
                 for (DataEvent dataEvent : dataEvents) {
@@ -419,8 +404,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         private boolean updateUiForKey(String color, String color2, boolean key) {
             if (key) {
                 INTERACTIVE_UPDATE_RATE_MS = 100;
-            }
-            else {
+            } else {
                 INTERACTIVE_UPDATE_RATE_MS = 1000;
             }
             if (!WatchFaceUtil.KEY_BACKGROUND_COLOR.equals("BACKGROUND_COLOR")) {
@@ -428,29 +412,23 @@ public class WatchFaceService extends CanvasWatchFaceService {
             }
             if (!WatchFaceUtil.KEY_MAIN_COLOR.equals("MAIN_COLOR")) {
                 setInteractiveMainColor(Color.parseColor(color2));
-                System.out.println("Changed Main into "+Color.parseColor(color2));
-                if (Color.parseColor(color2)!= Color.parseColor("#FAFAFA")) {
+                if (Color.parseColor(color2) != Color.parseColor("#FAFAFA")) {
                     setInteractiveTextColor(Color.parseColor("#FAFAFA"));
-                    System.out.println("Changed Text Back");
-                }
-                else {
+                } else {
                     setInteractiveTextColor(Color.parseColor("#424242"));
                     System.out.println("Changed Text");
                 }
-            }
-            else {
+            } else {
                 return false;
             }
             return true;
         }
-
 
         private void setInteractiveBackgroundColor(int color) {
             mInteractiveBackgroundColor = color;
             mTilePaint.setColor(color);
             mMinutePaint.setColor(color);
         }
-
 
         private void setInteractiveMainColor(int color) {
             mInteractiveMainColor = color;
@@ -464,6 +442,8 @@ public class WatchFaceService extends CanvasWatchFaceService {
             mDatePaint.setColor(color);
             mTimePaint.setColor(color);
         }
+
+
 
     }
 }

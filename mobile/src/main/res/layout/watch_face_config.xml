@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary"
+        android:elevation="5dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/Toolbar"
-        android:elevation="5dp" />
+        app:theme="@style/Toolbar" />
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="15dp"
-    android:layout_marginTop="20dp"
-    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/textView"
@@ -37,28 +37,28 @@
             android:orientation="horizontal">
 
             <Button
-            android:id="@+id/white"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/white"
-            style="?android:borderlessButtonStyle"/>
+                android:id="@+id/white"
+                style="?android:borderlessButtonStyle"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/white" />
 
             <Button
                 android:id="@+id/dark"
+                style="?android:borderlessButtonStyle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="15dp"
-                android:background="@drawable/grey"
-                style="?android:borderlessButtonStyle" />
+                android:background="@drawable/grey" />
 
             <Button
                 android:id="@+id/black"
+                style="?android:borderlessButtonStyle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="15dp"
-                android:background="@drawable/black"
-                style="?android:borderlessButtonStyle" />
+                android:background="@drawable/black" />
 
         </LinearLayout>
 
@@ -66,11 +66,11 @@
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:text="@string/colors"
             android:textIsSelectable="false"
             android:textSize="15dp"
-            android:textStyle="bold"
-            android:layout_marginTop="20dp" />
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -80,43 +80,43 @@
 
             <Button
                 android:id="@+id/orange"
+                style="?android:borderlessButtonStyle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="13dp"
-                android:background="@drawable/orange"
-                style="?android:borderlessButtonStyle" />
+                android:background="@drawable/orange" />
 
             <Button
                 android:id="@+id/pink"
+                style="?android:borderlessButtonStyle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="13dp"
-                android:background="@drawable/pink"
-                style="?android:borderlessButtonStyle" />
+                android:background="@drawable/pink" />
 
             <Button
                 android:id="@+id/purple"
+                style="?android:borderlessButtonStyle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="13dp"
-                android:background="@drawable/purple"
-                style="?android:borderlessButtonStyle" />
+                android:background="@drawable/purple" />
 
             <Button
                 android:id="@+id/deep_blue"
+                style="?android:borderlessButtonStyle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="13dp"
-                android:background="@drawable/deep_blue"
-                style="?android:borderlessButtonStyle" />
+                android:background="@drawable/deep_blue" />
 
             <Button
                 android:id="@+id/blue"
+                style="?android:borderlessButtonStyle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="13dp"
-                android:background="@drawable/blue"
-                style="?android:borderlessButtonStyle" />
+                android:background="@drawable/blue" />
         </LinearLayout>
 
         <LinearLayout
@@ -127,85 +127,85 @@
 
             <Button
                 android:id="@+id/light_blue"
+                style="?android:borderlessButtonStyle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="13dp"
-                android:background="@drawable/light_blue"
-                style="?android:borderlessButtonStyle" />
+                android:background="@drawable/light_blue" />
 
             <Button
                 android:id="@+id/teal"
+                style="?android:borderlessButtonStyle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="13dp"
-                android:background="@drawable/teal"
-                style="?android:borderlessButtonStyle" />
+                android:background="@drawable/teal" />
 
             <Button
                 android:id="@+id/green"
+                style="?android:borderlessButtonStyle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="13dp"
-                android:background="@drawable/green"
-                style="?android:borderlessButtonStyle" />
+                android:background="@drawable/green" />
 
             <Button
                 android:id="@+id/deep_orange"
+                style="?android:borderlessButtonStyle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="13dp"
-                android:background="@drawable/deep_orange"
-                style="?android:borderlessButtonStyle" />
+                android:background="@drawable/deep_orange" />
 
             <Button
                 android:id="@+id/red"
+                style="?android:borderlessButtonStyle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="13dp"
-                android:background="@drawable/red"
-                style="?android:borderlessButtonStyle" />
+                android:background="@drawable/red" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/amber"
+                style="?android:borderlessButtonStyle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="13dp"
-                android:background="@drawable/amber"
-                style="?android:borderlessButtonStyle" />
+                android:background="@drawable/amber" />
         </LinearLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_marginTop="20dp"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/view"
-            android:paddingBottom="10dp"
-            android:textIsSelectable="false"
-            android:textSize="15dp"
-            android:textStyle="bold" />
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
 
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/checkbox"
-            android:id="@+id/checkBox"
-            android:checked="true"
-            android:buttonTint="@color/orange" />
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:text="@string/view"
+                android:textIsSelectable="false"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/orange"
+                android:checked="true"
+                android:text="@string/checkbox" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
 </LinearLayout>
-    </LinearLayout>

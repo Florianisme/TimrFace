@@ -1,4 +1,4 @@
-package com.android.timrface;
+package com.timrface;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -29,9 +29,9 @@ import java.util.concurrent.TimeUnit;
 public class WatchFaceConfiguration extends Activity implements
         WearableListView.ClickListener, WearableListView.OnScrollListener {
 
+    String nodeId;
     private GoogleApiClient mGoogleApiClient;
     private TextView mHeader;
-    String nodeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,10 +104,12 @@ public class WatchFaceConfiguration extends Activity implements
     }
 
     @Override // WearableListView.ClickListener
-    public void onTopEmptyRegionClick() {}
+    public void onTopEmptyRegionClick() {
+    }
 
     @Override // WearableListView.OnScrollListener
-    public void onScroll(int scroll) {}
+    public void onScroll(int scroll) {
+    }
 
     @Override // WearableListView.OnScrollListener
     public void onAbsoluteScrollChange(int scroll) {
@@ -116,17 +118,19 @@ public class WatchFaceConfiguration extends Activity implements
     }
 
     @Override // WearableListView.OnScrollListener
-    public void onScrollStateChanged(int scrollState) {}
+    public void onScrollStateChanged(int scrollState) {
+    }
 
     @Override // WearableListView.OnScrollListener
-    public void onCentralPositionChanged(int centralPosition) {}
+    public void onCentralPositionChanged(int centralPosition) {
+    }
 
     private void updateConfigDataItem(final String backgroundColor) {
         DataMap configKeysToOverwrite = new DataMap();
         configKeysToOverwrite.putString(WatchFaceUtil.KEY_BACKGROUND_COLOR,
                 backgroundColor);
         WatchFaceUtil.overwriteKeysInConfigDataMap(mGoogleApiClient, configKeysToOverwrite);
-        System.out.println("Changed Color "+ backgroundColor);
+        System.out.println("Changed Color " + backgroundColor);
         WatchFaceUtil.KEY_BACKGROUND_COLOR = backgroundColor;
         retrieveDeviceNode();
 /*
@@ -159,51 +163,18 @@ public class WatchFaceConfiguration extends Activity implements
         }).start();
     }
 
-    private class ColorListAdapter extends WearableListView.Adapter {
-        private final String[] mColors;
-
-        public ColorListAdapter(String[] colors) {
-            mColors = colors;
-        }
-
-        @Override
-        public ColorItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ColorItemViewHolder(new ColorItem(parent.getContext()));
-        }
-
-        @Override
-        public void onBindViewHolder(WearableListView.ViewHolder holder, int position) {
-            ColorItemViewHolder colorItemViewHolder = (ColorItemViewHolder) holder;
-            String colorName = mColors[position];
-            colorItemViewHolder.mColorItem.setColor(colorName, position);
-
-            RecyclerView.LayoutParams layoutParams =
-                    new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT);
-            int colorPickerItemMargin = 32;
-            // Add margins to first and last item to make it possible for user to tap on them.
-            if (position == 0) {
-                layoutParams.setMargins(0, colorPickerItemMargin, 0, 0);
-            } else if (position == mColors.length - 1) {
-                layoutParams.setMargins(0, 0, 0, colorPickerItemMargin);
-            } else {
-                layoutParams.setMargins(0, 0, 0, 0);
-            }
-            colorItemViewHolder.itemView.setLayoutParams(layoutParams);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mColors.length;
-        }
-    }
-
-    /** The layout of a color item including image and label. */
+    /**
+     * The layout of a color item including image and label.
+     */
     private static class ColorItem extends LinearLayout implements
             WearableListView.OnCenterProximityListener {
-        /** The duration of the expand/shrink animation. */
+        /**
+         * The duration of the expand/shrink animation.
+         */
         private static final int ANIMATION_DURATION_MS = 150;
-        /** The ratio for the size of a circle in shrink state. */
+        /**
+         * The ratio for the size of a circle in shrink state.
+         */
         private static final float SHRINK_CIRCLE_RATIO = .75f;
 
         private static final float SHRINK_LABEL_ALPHA = .5f;
@@ -298,6 +269,45 @@ public class WatchFaceConfiguration extends Activity implements
         public ColorItemViewHolder(ColorItem colorItem) {
             super(colorItem);
             mColorItem = colorItem;
+        }
+    }
+
+    private class ColorListAdapter extends WearableListView.Adapter {
+        private final String[] mColors;
+
+        public ColorListAdapter(String[] colors) {
+            mColors = colors;
+        }
+
+        @Override
+        public ColorItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ColorItemViewHolder(new ColorItem(parent.getContext()));
+        }
+
+        @Override
+        public void onBindViewHolder(WearableListView.ViewHolder holder, int position) {
+            ColorItemViewHolder colorItemViewHolder = (ColorItemViewHolder) holder;
+            String colorName = mColors[position];
+            colorItemViewHolder.mColorItem.setColor(colorName, position);
+
+            RecyclerView.LayoutParams layoutParams =
+                    new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
+            int colorPickerItemMargin = 32;
+            // Add margins to first and last item to make it possible for user to tap on them.
+            if (position == 0) {
+                layoutParams.setMargins(0, colorPickerItemMargin, 0, 0);
+            } else if (position == mColors.length - 1) {
+                layoutParams.setMargins(0, 0, 0, colorPickerItemMargin);
+            } else {
+                layoutParams.setMargins(0, 0, 0, 0);
+            }
+            colorItemViewHolder.itemView.setLayoutParams(layoutParams);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mColors.length;
         }
     }
 }

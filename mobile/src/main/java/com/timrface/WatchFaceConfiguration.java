@@ -1,4 +1,4 @@
-package com.android.timrface;
+package com.timrface;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -33,18 +33,19 @@ public class WatchFaceConfiguration extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.watch_face_config);Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setContentView(R.layout.watch_face_config);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.settings);
 
         CheckBox cb = (CheckBox) findViewById(R.id.checkBox);
         cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
-                                               @Override
-                                               public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                                                   sendConfigUpdateMessage("", String.valueOf(isChecked));
-                                               }
-                                           }
+                                          @Override
+                                          public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                              sendConfigUpdateMessage("", String.valueOf(isChecked));
+                                          }
+                                      }
         );
 
         mPeerId = getIntent().getStringExtra(WatchFaceCompanion.EXTRA_PEER_ID);
@@ -83,8 +84,8 @@ public class WatchFaceConfiguration extends ActionBarActivity
 
     @Override // ResultCallback<DataApi.DataItemResult>
     public void onResult(DataApi.DataItemResult dataItemResult) {
-            DataItem configDataItem = dataItemResult.getDataItem();
-            DataMapItem dataMapItem = DataMapItem.fromDataItem(configDataItem);
+        DataItem configDataItem = dataItemResult.getDataItem();
+        DataMapItem dataMapItem = DataMapItem.fromDataItem(configDataItem);
         setUpAllColors();
     }
 
@@ -151,4 +152,4 @@ public class WatchFaceConfiguration extends ActionBarActivity
         }
     }
 
-    }
+}

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.timrface"
+    package="com.timrface"
     android:versionCode="1"
-    android:versionName="1" >
+    android:versionName="1">
 
-    <uses-sdk android:minSdkVersion="21"
+    <uses-sdk
+        android:minSdkVersion="21"
         android:targetSdkVersion="21" />
 
     <uses-feature android:name="android.hardware.type.watch" />
+
     <uses-permission android:name="com.google.android.permission.PROVIDE_BACKGROUND" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
@@ -16,14 +18,14 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.DeviceDefault" >
+        android:theme="@android:style/Theme.DeviceDefault">
 
         <service
-            android:name=".WatchFaceService"
-            android:label="@string/app_name"
+            android:name="com.timrface.WatchFaceService"
             android:allowEmbedded="true"
-            android:taskAffinity=""
-            android:permission="android.permission.BIND_WALLPAPER" >
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_WALLPAPER"
+            android:taskAffinity="">
             <meta-data
                 android:name="android.service.wallpaper"
                 android:resource="@xml/watch_face" />
@@ -39,25 +41,25 @@
             <meta-data
                 android:name="com.google.android.wearable.watchface.companionConfigurationAction"
                 android:value="com.android.timrface.CONFIG_DIGITAL" />
+
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
-                <category
-                    android:name=
-                        "com.google.android.wearable.watchface.category.WATCH_FACE" />
+                <category android:name="com.google.android.wearable.watchface.category.WATCH_FACE" />
             </intent-filter>
         </service>
 
-        <service android:name=".ConfigListenerService">
+        <service android:name="com.timrface.ConfigListenerService">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
             </intent-filter>
         </service>
 
         <activity
-            android:name=".WatchFaceConfiguration"
+            android:name="com.timrface.WatchFaceConfiguration"
             android:label="@string/config_name">
             <intent-filter>
                 <action android:name="com.android.timrface.CONFIG_DIGITAL" />
+
                 <category android:name="com.google.android.wearable.watchface.category.WEARABLE_CONFIGURATION" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
