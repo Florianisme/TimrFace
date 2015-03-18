@@ -19,12 +19,7 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class WatchFaceConfiguration extends Activity implements
         WearableListView.ClickListener, WearableListView.OnScrollListener {
@@ -99,7 +94,7 @@ public class WatchFaceConfiguration extends Activity implements
     public void onClick(WearableListView.ViewHolder viewHolder) {
         String[] array = getResources().getStringArray(R.array.colors);
         ColorItemViewHolder colorItemViewHolder = (ColorItemViewHolder) viewHolder;
-        updateConfigDataItem(array[colorItemViewHolder.getPosition()]);
+        updateConfigDataItem(Color.parseColor(array[colorItemViewHolder.getPosition()]));
         finish();
     }
 
@@ -125,14 +120,10 @@ public class WatchFaceConfiguration extends Activity implements
     public void onCentralPositionChanged(int centralPosition) {
     }
 
-    private void updateConfigDataItem(final String backgroundColor) {
+    private void updateConfigDataItem(final int backgroundColor) {
         DataMap configKeysToOverwrite = new DataMap();
-        configKeysToOverwrite.putString(WatchFaceUtil.KEY_BACKGROUND_COLOR,
-                backgroundColor);
         WatchFaceUtil.overwriteKeysInConfigDataMap(mGoogleApiClient, configKeysToOverwrite);
-        System.out.println("Changed Color " + backgroundColor);
         WatchFaceUtil.KEY_BACKGROUND_COLOR = backgroundColor;
-        retrieveDeviceNode();
 /*
         if (nodeId != null) {
             new Thread(new Runnable() {
@@ -145,22 +136,6 @@ public class WatchFaceConfiguration extends Activity implements
             }).start();
         }*/
 
-    }
-
-    private void retrieveDeviceNode() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mGoogleApiClient.blockingConnect(1000, TimeUnit.MILLISECONDS);
-                NodeApi.GetConnectedNodesResult result =
-                        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
-                List<Node> nodes = result.getNodes();
-                if (nodes.size() > 0) {
-                    nodeId = nodes.get(0).getId();
-                }
-                mGoogleApiClient.disconnect();
-            }
-        }).start();
     }
 
     /**

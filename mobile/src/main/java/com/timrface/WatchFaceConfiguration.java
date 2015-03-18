@@ -16,9 +16,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.DataApi;
-import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.Wearable;
 
 public class WatchFaceConfiguration extends ActionBarActivity
@@ -84,8 +82,6 @@ public class WatchFaceConfiguration extends ActionBarActivity
 
     @Override // ResultCallback<DataApi.DataItemResult>
     public void onResult(DataApi.DataItemResult dataItemResult) {
-        DataItem configDataItem = dataItemResult.getDataItem();
-        DataMapItem dataMapItem = DataMapItem.fromDataItem(configDataItem);
         setUpAllColors();
     }
 
@@ -138,7 +134,6 @@ public class WatchFaceConfiguration extends ActionBarActivity
             //@Override
             public void onClick(View v) {
                 sendConfigUpdateMessage(configKey, color);
-                System.out.println(imgButton.getBackground());
             }
         });
     }

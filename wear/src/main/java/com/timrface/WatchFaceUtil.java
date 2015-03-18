@@ -2,7 +2,6 @@ package com.timrface;
 
 import android.graphics.Color;
 import android.net.Uri;
-import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -16,19 +15,13 @@ import com.google.android.gms.wearable.Wearable;
 
 public final class WatchFaceUtil {
     public static final String PATH_WITH_FEATURE = "/watch_face_config/Digital";
-    public static final String COLOR_NAME_DEFAULT_AND_AMBIENT_BACKGROUND = "#FF9800";
-    public static final int COLOR_VALUE_DEFAULT_AND_AMBIENT_BACKGROUND =
-            parseColor(COLOR_NAME_DEFAULT_AND_AMBIENT_BACKGROUND);
-    public static final String COLOR_NAME_DEFAULT_AND_AMBIENT_MAIN = "#FAFAFA";
-    public static final int COLOR_VALUE_DEFAULT_AND_AMBIENT_MAIN =
-            parseColor(COLOR_NAME_DEFAULT_AND_AMBIENT_MAIN);
-    public static final String COLOR_NAME_DEFAULT_AND_AMBIENT_TEXT = "#424242";
-    public static final int COLOR_VALUE_DEFAULT_AND_AMBIENT_TEXT =
-            parseColor(COLOR_NAME_DEFAULT_AND_AMBIENT_TEXT);
-    private static final String TAG = "DigitalWatchFaceUtil";
-    public static String KEY_BACKGROUND_COLOR = "BACKGROUND_COLOR";
-    public static String KEY_MAIN_COLOR = "MAIN_COLOR";
-    public static String KEY_TEXT_COLOR = "TEXT_COLOR";
+
+    public static final int AMBIENT_BACKGROUND = parseColor("#000000");
+    public static final int AMBIENT_TEXT = parseColor("#FFFFFF");
+
+    public static int KEY_BACKGROUND_COLOR = parseColor("#FF9800");
+    public static int KEY_MAIN_COLOR = parseColor("#FAFAFA");
+    public static int KEY_TEXT_COLOR = parseColor("#424242");
     public static boolean SMOOTH_SECONDS = true;
 
     private WatchFaceUtil() {
@@ -77,14 +70,14 @@ public final class WatchFaceUtil {
         if (key.equals("true") || key.equals("false")) {
             SMOOTH_SECONDS = Boolean.valueOf(key);
         } else if (key.equals("#FAFAFA") || key.equals("#424242") || key.equals("#000000")) {
-            KEY_MAIN_COLOR = key;
+            KEY_MAIN_COLOR = Color.parseColor(key);
             if (key.equals("#FAFAFA")) {
-                KEY_TEXT_COLOR = "#424242";
+                KEY_TEXT_COLOR = Color.parseColor("#424242");
             } else {
-                KEY_TEXT_COLOR = "#FAFAFA";
+                KEY_TEXT_COLOR = Color.parseColor("#FAFAFA");
             }
         } else {
-            KEY_BACKGROUND_COLOR = key;
+            KEY_BACKGROUND_COLOR = Color.parseColor(key);
         }
     }
 
@@ -100,9 +93,6 @@ public final class WatchFaceUtil {
                 .setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
                     @Override
                     public void onResult(DataApi.DataItemResult dataItemResult) {
-                        if (Log.isLoggable(TAG, Log.DEBUG)) {
-                            Log.d(TAG, "putDataItem result status: " + dataItemResult.getStatus());
-                        }
                     }
                 });
     }
