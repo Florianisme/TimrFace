@@ -48,7 +48,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
     public static int mInteractiveTextColor =
             WatchFaceUtil.KEY_TEXT_COLOR;
 
-    public static long INTERACTIVE_UPDATE_RATE_MS = 120;
+    public static long INTERACTIVE_UPDATE_RATE_MS = 110;
 
     @Override
     public Engine onCreateEngine() {
@@ -92,11 +92,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         Paint mTimePaint;
         Paint mBorderPaint;
         Bitmap scale;
-        String hours;
-        String minutes;
         float seconds;
-        String time;
-        String date;
         boolean mRegisteredTimeZoneReceiver = false;
         boolean is24Hour = false;
         boolean ambientMode = false;
@@ -116,6 +112,8 @@ public class WatchFaceService extends CanvasWatchFaceService {
         private float TIME_X;
         private float TIME_Y;
         private Resources resources;
+        int width;
+        int height;
 
         @Override
         public void onCreate(SurfaceHolder holder) {
@@ -189,32 +187,31 @@ public class WatchFaceService extends CanvasWatchFaceService {
         public void onDraw(Canvas canvas, Rect bounds) {
             seconds = getSeconds();
             cal = Calendar.getInstance();
+            width = bounds.width() / 2;
+            height = bounds.height() / 2;
 
-            canvas.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
+            canvas.drawRect(0, 0, width * 2, height * 2, mBackgroundPaint);
 
             if (!ambientMode) {
-                canvas.drawRect(0, 0, bounds.width(), bounds.centerY() + 45, mBackgroundPaint);
-                canvas.drawRect(0, bounds.centerY() + 45, bounds.width(), bounds.height(), mTilePaint);
+                canvas.drawRect(0, height + 45, width * 2, height * 2, mTilePaint);
                 if (seconds - 447 > -620) {
-                    canvas.drawBitmap(scale, seconds - 447, bounds.centerY() + 60, mScalePaint);
+                    canvas.drawBitmap(scale, seconds - 447, height + 60, mScalePaint);
                 }
-                canvas.drawBitmap(scale, seconds + 153, bounds.centerY() + 60, mScalePaint);
-                if (seconds + 753 < 300) {
-                    canvas.drawBitmap(scale, seconds + 753, bounds.centerY() + 60, mScalePaint);
+                else {
+                    canvas.drawBitmap(scale, seconds + 753, height + 60, mScalePaint);
                 }
+                canvas.drawBitmap(scale, seconds + 153, height + 60, mScalePaint);
+                
                 canvas.save();
-                canvas.rotate(45, bounds.centerX(), bounds.centerY());
-                canvas.drawRect(bounds.centerX() + 15, bounds.centerY() + 15, bounds.centerX() + 45f, bounds.centerY() + 45f, mArrowPaint);
+                canvas.rotate(45, width, height);
+                canvas.drawRect(width + 15, height + 15, width + 45, height + 45, mArrowPaint);
                 canvas.restore();
-                canvas.drawRect(bounds.centerX() - 30, bounds.centerY() + 15, bounds.centerX() + 30, bounds.centerY() + 45, mBorderPaint);
-            }
-            else {
-                canvas.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
+                canvas.drawRect(width - 30, height + 15, width + 30, height + 45, mBorderPaint);
             }
 
             canvas.drawText(getHours(), HOUR_X, HOUR_MINUTE_Y, mHourPaint);
             canvas.drawText(getMinutes(), MINUTE_X, HOUR_MINUTE_Y, mMinutePaint);
-            canvas.drawText(getDate(), bounds.centerX() - mDatePaint.getStrokeWidth() / 2, DATE_Y, mDatePaint);
+            canvas.drawText(getDate(), width - mDatePaint.getStrokeWidth() / 2, DATE_Y, mDatePaint);
             canvas.drawText(getAmPm(), TIME_X, TIME_Y, mTimePaint);
         }
 
@@ -324,7 +321,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
                 format = new SimpleDateFormat("H");
                 return formatTwoDigits(Integer.valueOf(format.format(cal.getTime())));
             } else {
-                format = new SimpleDateFormat("K");
+                format = new SimpleDateFormat("h");
                 return formatTwoDigits(Integer.valueOf(format.format(cal.getTime())));
             }
         }
@@ -485,10 +482,5 @@ public class WatchFaceService extends CanvasWatchFaceService {
         private boolean shouldTimerBeRunning() {
             return isVisible() && !isInAmbientMode();
         }
-
-
-
-
-
     }
 }

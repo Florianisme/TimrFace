@@ -10,7 +10,6 @@
     <string name="title_no_device_connected">No wearable device is currently connected.</string>
     <string name="ok_no_device_connected">OK</string>
 
-
     <string-array name="colors">
         <item>#FAFAFA</item>
         <item>#424242</item>
