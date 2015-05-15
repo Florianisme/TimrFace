@@ -7,7 +7,9 @@
     <string name="view">Anzeige</string>
     <string name="checkbox">Animierte Sekunden</string>
 
-    <string name="title_no_device_connected">Keine Verbindung zur Wearable.</string>
-    <string name="ok_no_device_connected">OK</string>
+    <string name="dialog_message">Durch eine Spende können Sie mich bei meiner Arbeit unterstützden und mir helfen, diese App zu verbessern :)</string>
+    <string name="dialog_title">Spende</string>
+    <string name="buy">Spenden!</string>
+    <string name="cancel">Abbrechen</string>
 
 </resources>

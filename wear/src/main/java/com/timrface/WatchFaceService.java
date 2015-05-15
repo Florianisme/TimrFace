@@ -22,22 +22,27 @@ import android.text.format.Time;
 import android.view.SurfaceHolder;
 import android.view.WindowInsets;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.wearable.DataApi;
-import com.google.android.gms.wearable.DataEvent;
-import com.google.android.gms.wearable.DataEventBuffer;
-import com.google.android.gms.wearable.DataItem;
-import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.DataMapItem;
-import com.google.android.gms.wearable.Wearable;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import helper.TeleportClient;
+
 public class WatchFaceService extends CanvasWatchFaceService {
+
+    TeleportClient.OnGetMessageTask mMessageTask;
+    static TeleportClient teleportClient;
+
+    static Paint mBackgroundPaint;
+    static Paint mTilePaint;
+    static Paint mScalePaint;
+    static Paint mHourPaint;
+    static Paint mMinutePaint;
+    static Paint mDatePaint;
+    static Paint mArrowPaint;
+    static Paint mTimePaint;
+    static Paint mBorderPaint;
 
     public static int mInteractiveBackgroundColor =
             WatchFaceUtil.KEY_BACKGROUND_COLOR;
@@ -50,12 +55,51 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
     public static long INTERACTIVE_UPDATE_RATE_MS = 110;
 
+    public static void updateUi(String color, String color2, boolean key) {
+        teleportClient.connect();
+        teleportClient.sendMessage(color, String.valueOf(color).getBytes());
+        teleportClient.sendMessage(color2, String.valueOf(color).getBytes());
+        teleportClient.sendMessage(String.valueOf(key), String.valueOf(color).getBytes());
+        if (key) {
+            INTERACTIVE_UPDATE_RATE_MS = 100;
+        } else {
+            INTERACTIVE_UPDATE_RATE_MS = 1000;
+        }
+        setInteractiveBackgroundColor(Color.parseColor(color));
+        setInteractiveMainColor(Color.parseColor(color2));
+        if (!color2.equals("#FAFAFA")) {
+            setInteractiveTextColor(Color.parseColor("#FAFAFA"));
+        } else {
+            setInteractiveTextColor(Color.parseColor("#424242"));
+        }
+    }
+
+    public static void setInteractiveBackgroundColor(int color) {
+        mInteractiveBackgroundColor = color;
+        mTilePaint.setColor(color);
+        mMinutePaint.setColor(color);
+    }
+
+    public static void  setInteractiveMainColor(int color) {
+        mInteractiveMainColor = color;
+        mBackgroundPaint.setColor(color);
+        mArrowPaint.setColor(color);
+        mBorderPaint.setColor(color);
+    }
+
+    public static void setInteractiveTextColor(int color) {
+        mInteractiveTextColor = color;
+        mHourPaint.setColor(color);
+        mDatePaint.setColor(color);
+        mTimePaint.setColor(color);
+    }
+
     @Override
     public Engine onCreateEngine() {
         return new Engine();
     }
 
-    public class Engine extends CanvasWatchFaceService.Engine implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, DataApi.DataListener {
+    public class Engine extends CanvasWatchFaceService.Engine {
 
         static final int MSG_UPDATE_TIME = 0;
         final BroadcastReceiver mTimeZoneReceiver = new BroadcastReceiver() {
@@ -64,8 +108,11 @@ public class WatchFaceService extends CanvasWatchFaceService {
                 mTime.clear(intent.getStringExtra("time-zone"));
                 mTime.setToNow();
             }
-        };                private final Typeface TYPEFACE =
-                Typeface.createFromAsset(getAssets(), "font.ttf");final Handler mUpdateTimeHandler = new Handler() {
+        };
+        private final Typeface TYPEFACE =
+                Typeface.createFromAsset(getAssets(), "font.ttf");
+
+        final Handler mUpdateTimeHandler = new Handler() {
             @Override
             public void handleMessage(Message message) {
                 switch (message.what) {
@@ -81,16 +128,9 @@ public class WatchFaceService extends CanvasWatchFaceService {
                 }
             }
         };
+
+
         Time mTime;
-        Paint mBackgroundPaint;
-        Paint mTilePaint;
-        Paint mScalePaint;
-        Paint mHourPaint;
-        Paint mMinutePaint;
-        Paint mDatePaint;
-        Paint mArrowPaint;
-        Paint mTimePaint;
-        Paint mBorderPaint;
         Bitmap scale;
         float seconds;
         boolean mRegisteredTimeZoneReceiver = false;
@@ -100,11 +140,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
         DateFormat df;
         Calendar cal;
         Context context = getApplicationContext();
-        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(WatchFaceService.this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Wearable.API)
-                .build();
         private float HOUR_X;
         private float HOUR_MINUTE_Y;
         private float MINUTE_X;
@@ -125,6 +160,13 @@ public class WatchFaceService extends CanvasWatchFaceService {
                     .setShowSystemUiTime(false)
                     .setViewProtection(WatchFaceStyle.PROTECT_STATUS_BAR)
                     .build());
+
+            mMessageTask = new updateDataTask();
+
+            teleportClient = new TeleportClient(context);
+            teleportClient.connect();
+            teleportClient.setOnGetMessageTask(mMessageTask);
+
 
             resources = WatchFaceService.this.getResources();
             scale = BitmapFactory.decodeResource(resources, R.drawable.scale);
@@ -166,12 +208,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
         }
 
         @Override
-        public void onConnected(Bundle connectionHint) {
-            Wearable.DataApi.addListener(mGoogleApiClient, Engine.this);
-            updateConfigDataItemAndUiOnStartup();
-        }
-
-        @Override
         public void onTimeTick() {
             super.onTimeTick();
             invalidate();
@@ -196,12 +232,11 @@ public class WatchFaceService extends CanvasWatchFaceService {
                 canvas.drawRect(0, height + 45, width * 2, height * 2, mTilePaint);
                 if (seconds - 447 > -620) {
                     canvas.drawBitmap(scale, seconds - 447, height + 60, mScalePaint);
-                }
-                else {
+                } else {
                     canvas.drawBitmap(scale, seconds + 753, height + 60, mScalePaint);
                 }
                 canvas.drawBitmap(scale, seconds + 153, height + 60, mScalePaint);
-                
+
                 canvas.save();
                 canvas.rotate(45, width, height);
                 canvas.drawRect(width + 15, height + 15, width + 45, height + 45, mArrowPaint);
@@ -236,14 +271,14 @@ public class WatchFaceService extends CanvasWatchFaceService {
             adjustPaintColorToCurrentMode(mBorderPaint, mInteractiveMainColor,
                     WatchFaceUtil.AMBIENT_BACKGROUND);
 
-                mHourPaint.setAntiAlias(!ambientMode);
-                mMinutePaint.setAntiAlias(!ambientMode);
-                mTilePaint.setAntiAlias(!ambientMode);
-                mDatePaint.setAntiAlias(!ambientMode);
-                mTimePaint.setAntiAlias(!ambientMode);
-                mBackgroundPaint.setAntiAlias(!ambientMode);
-                mArrowPaint.setAntiAlias(!ambientMode);
-                mBorderPaint.setAntiAlias(!ambientMode);
+            mHourPaint.setAntiAlias(!ambientMode);
+            mMinutePaint.setAntiAlias(!ambientMode);
+            mTilePaint.setAntiAlias(!ambientMode);
+            mDatePaint.setAntiAlias(!ambientMode);
+            mTimePaint.setAntiAlias(!ambientMode);
+            mBackgroundPaint.setAntiAlias(!ambientMode);
+            mArrowPaint.setAntiAlias(!ambientMode);
+            mBorderPaint.setAntiAlias(!ambientMode);
 
             invalidate();
             updateTimer();
@@ -330,6 +365,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         public void onDestroy() {
             mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
             super.onDestroy();
+            teleportClient.disconnect();
         }
 
         @Override
@@ -337,19 +373,12 @@ public class WatchFaceService extends CanvasWatchFaceService {
             super.onVisibilityChanged(visible);
 
             if (visible) {
-                mGoogleApiClient.connect();
-
                 registerReceiver();
 
                 mTime.clear(TimeZone.getDefault().getID());
                 mTime.setToNow();
             } else {
                 unregisterReceiver();
-
-                if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-                    Wearable.DataApi.removeListener(mGoogleApiClient, this);
-                    mGoogleApiClient.disconnect();
-                }
             }
             updateTimer();
         }
@@ -371,101 +400,35 @@ public class WatchFaceService extends CanvasWatchFaceService {
             WatchFaceService.this.unregisterReceiver(mTimeZoneReceiver);
         }
 
-        @Override
-        public void onConnectionSuspended(int cause) {
-        }
-
-        @Override
-        public void onConnectionFailed(ConnectionResult result) {
-        }
-
-        private void updateConfigDataItemAndUiOnStartup() {
-            WatchFaceUtil.fetchConfigDataMap(mGoogleApiClient,
-                    new WatchFaceUtil.FetchConfigDataMapCallback() {
-                        @Override
-                        public void onConfigDataMapFetched(DataMap startupConfig) {
-                            WatchFaceUtil.putConfigDataItem(mGoogleApiClient, startupConfig);
-
-                            updateUiForConfigDataMap(startupConfig);
-                        }
-                    }
-            );
-        }
-
-        private void addIntKeyIfMissing(DataMap config, String key, int color) {
-            if (!config.containsKey(key)) {
-                config.putInt(key, color);
-            }
-        }
-
-        @Override
-        public void onDataChanged(DataEventBuffer dataEvents) {
-            try {
-                for (DataEvent dataEvent : dataEvents) {
-                    if (dataEvent.getType() != DataEvent.TYPE_CHANGED) {
-                        continue;
-                    }
-
-                    DataItem dataItem = dataEvent.getDataItem();
-                    if (!dataItem.getUri().getPath().equals(
-                            WatchFaceUtil.PATH_WITH_FEATURE)) {
-                        continue;
-                    }
-
-                    DataMapItem dataMapItem = DataMapItem.fromDataItem(dataItem);
-                    DataMap config = dataMapItem.getDataMap();
-                    updateUiForConfigDataMap(config);
-                }
-            } finally {
-                dataEvents.close();
-            }
-        }
-
-        private void updateUiForConfigDataMap(final DataMap config) {
-            boolean uiUpdated = false;
-            for (String configKey : config.keySet()) {
-                if (!config.containsKey(configKey)) {
-                    continue;
-                }
-                if (updateUiForKey(WatchFaceUtil.KEY_BACKGROUND_COLOR, WatchFaceUtil.KEY_MAIN_COLOR, WatchFaceUtil.SMOOTH_SECONDS)) {
-                    uiUpdated = true;
-                }
-            }
-            if (uiUpdated) {
-                invalidate();
-            }
-        }
-
-        private boolean updateUiForKey(int color, int color2, boolean key) {
+        public void updateUi(int color, int color2, boolean key) {
             if (key) {
                 INTERACTIVE_UPDATE_RATE_MS = 100;
             } else {
                 INTERACTIVE_UPDATE_RATE_MS = 1000;
             }
-                setInteractiveBackgroundColor(color);
-                setInteractiveMainColor(color2);
-                if (color2 != Color.parseColor("#FAFAFA")) {
-                    setInteractiveTextColor(Color.parseColor("#FAFAFA"));
-                } else {
-                    setInteractiveTextColor(Color.parseColor("#424242"));
-                }
-            return true;
+            setInteractiveBackgroundColor(color);
+            setInteractiveMainColor(color2);
+            if (color2 != Color.parseColor("#FAFAFA")) {
+                setInteractiveTextColor(Color.parseColor("#FAFAFA"));
+            } else {
+                setInteractiveTextColor(Color.parseColor("#424242"));
+            }
         }
 
-        private void setInteractiveBackgroundColor(int color) {
+        public void setInteractiveBackgroundColor(int color) {
             mInteractiveBackgroundColor = color;
             mTilePaint.setColor(color);
             mMinutePaint.setColor(color);
         }
 
-        private void setInteractiveMainColor(int color) {
+        public void  setInteractiveMainColor(int color) {
             mInteractiveMainColor = color;
             mBackgroundPaint.setColor(color);
             mArrowPaint.setColor(color);
             mBorderPaint.setColor(color);
         }
 
-        private void setInteractiveTextColor(int color) {
+        public void setInteractiveTextColor(int color) {
             mInteractiveTextColor = color;
             mHourPaint.setColor(color);
             mDatePaint.setColor(color);
@@ -481,6 +444,16 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
         private boolean shouldTimerBeRunning() {
             return isVisible() && !isInAmbientMode();
+        }
+
+        public class updateDataTask extends TeleportClient.OnGetMessageTask {
+
+            @Override
+            protected void onPostExecute(String path) {
+                WatchFaceUtil.overwriteKeys(path);
+                updateUi(WatchFaceUtil.KEY_BACKGROUND_COLOR, WatchFaceUtil.KEY_MAIN_COLOR, WatchFaceUtil.SMOOTH_SECONDS);
+                teleportClient.setOnGetMessageTask(new updateDataTask());
+            }
         }
     }
 }

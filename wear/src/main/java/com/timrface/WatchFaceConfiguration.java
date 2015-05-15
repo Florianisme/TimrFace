@@ -16,16 +16,9 @@ import android.view.WindowInsets;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.Wearable;
-
 public class WatchFaceConfiguration extends Activity implements
         WearableListView.ClickListener, WearableListView.OnScrollListener {
 
-    String nodeId;
-    private GoogleApiClient mGoogleApiClient;
     private TextView mHeader;
 
     @Override
@@ -57,44 +50,13 @@ public class WatchFaceConfiguration extends Activity implements
         String[] colors = getResources().getStringArray(R.array.color_array);
         listView.setAdapter(new ColorListAdapter(colors));
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(Bundle connectionHint) {
-                    }
-
-                    @Override
-                    public void onConnectionSuspended(int cause) {
-                    }
-                })
-                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(ConnectionResult result) {
-                    }
-                })
-                .addApi(Wearable.API)
-                .build();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    protected void onStop() {
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-        super.onStop();
     }
 
     @Override // WearableListView.ClickListener
     public void onClick(WearableListView.ViewHolder viewHolder) {
         String[] array = getResources().getStringArray(R.array.colors);
         ColorItemViewHolder colorItemViewHolder = (ColorItemViewHolder) viewHolder;
-        updateConfigDataItem(Color.parseColor(array[colorItemViewHolder.getPosition()]));
+        updateConfigDataItem(array[colorItemViewHolder.getPosition()]);
         finish();
     }
 
@@ -120,22 +82,9 @@ public class WatchFaceConfiguration extends Activity implements
     public void onCentralPositionChanged(int centralPosition) {
     }
 
-    private void updateConfigDataItem(final int backgroundColor) {
-        DataMap configKeysToOverwrite = new DataMap();
-        WatchFaceUtil.overwriteKeysInConfigDataMap(mGoogleApiClient, configKeysToOverwrite);
-        WatchFaceUtil.KEY_BACKGROUND_COLOR = backgroundColor;
-/*
-        if (nodeId != null) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    mGoogleApiClient.blockingConnect(1000, TimeUnit.MILLISECONDS);
-                    Wearable.MessageApi.sendMessage(mGoogleApiClient, nodeId, "B:"+backgroundColor, null);
-                    mGoogleApiClient.disconnect();
-                }
-            }).start();
-        }*/
-
+    private void updateConfigDataItem(final String backgroundColor) {
+        WatchFaceUtil.overwriteKeys(backgroundColor);
+        WatchFaceService.updateUi(String.format("#%06X", (0xFFFFFF & WatchFaceUtil.KEY_BACKGROUND_COLOR)), String.format("#%06X", (0xFFFFFF & WatchFaceUtil.KEY_MAIN_COLOR)), WatchFaceUtil.SMOOTH_SECONDS);
     }
 
     /**
@@ -232,10 +181,6 @@ public class WatchFaceConfiguration extends Activity implements
             mColor.setCircleColor(Color.parseColor(array[pos]));
         }
 
-
-        private int getColor() {
-            return mColor.getDefaultCircleColor();
-        }
     }
 
     private static class ColorItemViewHolder extends WearableListView.ViewHolder {

@@ -7,8 +7,10 @@
     <string name="view">View</string>
     <string name="checkbox">smooth seconds</string>
 
-    <string name="title_no_device_connected">No wearable device is currently connected.</string>
-    <string name="ok_no_device_connected">OK</string>
+    <string name="dialog_message">A donation supports and helps me improving this app :) </string>
+    <string name="dialog_title">Donation</string>
+    <string name="buy">Donate!</string>
+    <string name="cancel">Cancel</string>
 
     <string-array name="colors">
         <item>#FAFAFA</item>

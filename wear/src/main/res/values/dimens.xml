@@ -3,7 +3,7 @@
 
     <dimen name="text_size">75dp</dimen>
     <dimen name="am_pm_size">30dp</dimen>
-    <dimen name="date_size">11dp</dimen>
+    <dimen name="date_size">12dp</dimen>
     <dimen name="time_size">12dp</dimen>
 
 </resources>

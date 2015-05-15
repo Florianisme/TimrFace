@@ -3,12 +3,12 @@ package com.timrface;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.support.wearable.companion.WatchFaceCompanion;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,27 +17,27 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.DataApi;
-import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.Wearable;
+import com.timrface.helper.SharedPreferences;
+import com.timrface.helper.TeleportClient;
 import com.timrface.util.IabHelper;
 import com.timrface.util.IabResult;
 import com.timrface.util.Inventory;
 import com.timrface.util.Purchase;
 
-public class WatchFaceConfiguration extends ActionBarActivity
-        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        ResultCallback<DataApi.DataItemResult> {
+import java.util.ArrayList;
 
-    private static final String PATH_WITH_FEATURE = "/watch_face_config/Digital";
+public class WatchFaceConfiguration extends ActionBarActivity {
 
-    private GoogleApiClient mGoogleApiClient;
     private IabHelper mHelper;
+    TeleportClient mTeleportClient;
 
-    private String mPeerId;
+    int oldCheckedId = -1;
+    Drawable oldCheckedDrawable;
+    int oldCheckedBackgroundId = -1;
+    Drawable oldCheckedBackgroundDrawable;
+
+    static ArrayList<String> list = new ArrayList<>();
+
     private String base64EncodedPublicKey;
     private static String ITEM_SKU = "com.timrface.donate";
 
@@ -49,22 +49,26 @@ public class WatchFaceConfiguration extends ActionBarActivity
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.settings);
 
+        if (!SharedPreferences.getBoolean("donation", false, getApplicationContext())) {
+            dialog();
+        }
+
+        mTeleportClient = new TeleportClient(this);
+        mTeleportClient.connect();
+        mTeleportClient.setOnGetMessageTask(new MessageTask());
+        setUpAllColors();
+
         CheckBox cb = (CheckBox) findViewById(R.id.checkBox);
+        cb.setChecked(SharedPreferences.getBoolean("button", true, getApplicationContext()));
         cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
                                           @Override
                                           public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                              sendConfigUpdateMessage("", String.valueOf(isChecked));
+                                              mTeleportClient.sendMessage(String.valueOf(isChecked), String.valueOf(isChecked).getBytes());
+                                              SharedPreferences.saveBoolean("button", isChecked, getApplicationContext());
                                           }
                                       }
         );
-
-        mPeerId = getIntent().getStringExtra(WatchFaceCompanion.EXTRA_PEER_ID);
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Wearable.API)
-                .build();
 
         base64EncodedPublicKey = getResources().getString(R.string.key);
         mHelper = new IabHelper(this, base64EncodedPublicKey);
@@ -77,6 +81,28 @@ public class WatchFaceConfiguration extends ActionBarActivity
             }
         });
 
+    }
+
+    private void dialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(WatchFaceConfiguration.this);
+
+        builder.setMessage(R.string.dialog_message)
+                .setTitle(R.string.dialog_title);
+
+        builder.setPositiveButton(R.string.buy, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                buy();
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
@@ -126,6 +152,7 @@ public class WatchFaceConfiguration extends ActionBarActivity
                 Log.d("Billing", "Bought item");
                 consume();
             }
+            SharedPreferences.saveBoolean("donation", true, getApplicationContext());
 
         }
     };
@@ -163,104 +190,125 @@ public class WatchFaceConfiguration extends ActionBarActivity
             };
 
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    protected void onStop() {
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-        super.onStop();
-    }
-
-    @Override // GoogleApiClient.ConnectionCallbacks
-    public void onConnected(Bundle connectionHint) {
-
-        if (mPeerId != null) {
-            Uri.Builder builder = new Uri.Builder();
-            Uri uri = builder.scheme("wear").path(PATH_WITH_FEATURE).authority(mPeerId).build();
-            Wearable.DataApi.getDataItem(mGoogleApiClient, uri).setResultCallback(this);
-        } else {
-            displayNoConnectedDeviceDialog();
-        }
-    }
-
-    @Override // ResultCallback<DataApi.DataItemResult>
-    public void onResult(DataApi.DataItemResult dataItemResult) {
-        setUpAllColors();
-    }
-
-    @Override // GoogleApiClient.ConnectionCallbacks
-    public void onConnectionSuspended(int cause) {
-    }
-
-    @Override // GoogleApiClient.OnConnectionFailedListener
-    public void onConnectionFailed(ConnectionResult result) {
-    }
-
-    private void displayNoConnectedDeviceDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        String messageText = getResources().getString(R.string.title_no_device_connected);
-        String okText = getResources().getString(R.string.ok_no_device_connected);
-        builder.setMessage(messageText)
-                .setCancelable(false)
-                .setPositiveButton(okText, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
     private void setUpAllColors() {
-        String[] array = getResources().getStringArray(R.array.colors);
-        setUpColorListener(R.id.white, "M", array[0]);
-        setUpColorListener(R.id.dark, "M", array[1]);
-        setUpColorListener(R.id.black, "M", array[2]);
+        String[] colors = getResources().getStringArray(R.array.colors);
+        for (int i = 0; i < colors.length; i++) {
+            list.add(i, colors[i]);
+        }
+        setUpColorListener(R.id.white, 0, colors[0], R.drawable.white);
+        setUpColorListener(R.id.dark, 1, colors[1], R.drawable.grey);
+        setUpColorListener(R.id.black, 2, colors[2], R.drawable.black);
 
-        setUpColorListener(R.id.orange, "B", array[3]);
-        setUpColorListener(R.id.pink, "B", array[4]);
-        setUpColorListener(R.id.purple, "B", array[5]);
-        setUpColorListener(R.id.deep_blue, "B", array[6]);
-        setUpColorListener(R.id.blue, "B", array[7]);
-        setUpColorListener(R.id.light_blue, "B", array[8]);
-        setUpColorListener(R.id.teal, "B", array[9]);
-        setUpColorListener(R.id.green, "B", array[10]);
-        setUpColorListener(R.id.deep_orange, "B", array[11]);
-        setUpColorListener(R.id.red, "B", array[12]);
-        setUpColorListener(R.id.amber, "B", array[13]);
-
+        setUpColorListener(R.id.orange, 3, colors[3], R.drawable.orange);
+        setUpColorListener(R.id.pink, 4, colors[4], R.drawable.pink);
+        setUpColorListener(R.id.purple, 5, colors[5], R.drawable.purple);
+        setUpColorListener(R.id.deep_blue, 6, colors[6], R.drawable.deep_blue);
+        setUpColorListener(R.id.blue, 7, colors[7], R.drawable.blue);
+        setUpColorListener(R.id.light_blue, 8, colors[8], R.drawable.light_blue);
+        setUpColorListener(R.id.teal, 9, colors[9], R.drawable.teal);
+        setUpColorListener(R.id.green, 10, colors[10], R.drawable.green);
+        setUpColorListener(R.id.deep_orange, 11, colors[11], R.drawable.deep_orange);
+        setUpColorListener(R.id.red, 12, colors[12], R.drawable.red);
+        setUpColorListener(R.id.amber, 13, colors[13], R.drawable.amber);
     }
 
 
-    private void setUpColorListener(int spinnerId, final String configKey, final String color) {
-        final Button imgButton = (Button) findViewById(spinnerId);
+    private void setUpColorListener(final int id, final int key, final String color, int original) {
+        final Button imgButton = (Button) findViewById(id);
+        final Drawable drawable = getResources().getDrawable(original);
+        imgButton.setBackground(drawable);
+
+        if (key == SharedPreferences.getInteger("id_background", -1, getApplicationContext())) {
+            Drawable[] layers = new Drawable[2];
+            layers[0] = drawable;
+            layers[1] = getResources().getDrawable(R.drawable.ic_check);
+            LayerDrawable layerDrawable = new LayerDrawable(layers);
+            imgButton.setBackground(layerDrawable);
+                oldCheckedBackgroundId = id;
+                oldCheckedBackgroundDrawable = layers[0];
+
+        }
+
+        if (key == SharedPreferences.getInteger("id", -1, getApplicationContext())) {
+            Drawable[] layers = new Drawable[2];
+            layers[0] = drawable;
+            layers[1] = getResources().getDrawable(R.drawable.ic_check);
+            LayerDrawable layerDrawable = new LayerDrawable(layers);
+            imgButton.setBackground(layerDrawable);
+                oldCheckedId = id;
+                oldCheckedDrawable = layers[0];
+        }
+
         imgButton.setOnClickListener(new View.OnClickListener() {
             //@Override
             public void onClick(View v) {
-                sendConfigUpdateMessage(configKey, color);
+                mTeleportClient.sendMessage(color, color.getBytes());
+                if (key < 3) {
+                    SharedPreferences.saveInteger("id_background", key, getApplicationContext());
+                }
+                else {
+                    SharedPreferences.saveInteger("id", key, getApplicationContext());
+                }
+
+                if (key < 3) {
+                    if (oldCheckedBackgroundId != 1) {
+                        Button button = (Button) findViewById(oldCheckedBackgroundId);
+                        button.setBackground(oldCheckedBackgroundDrawable);
+                    }
+                }
+                else {
+                    if (oldCheckedId != -1) {
+                        Button button = (Button) findViewById(oldCheckedId);
+                        button.setBackground(oldCheckedDrawable);
+                    }
+                }
+
+                Drawable[] layers = new Drawable[2];
+                layers[0] = drawable;
+                layers[1] = getResources().getDrawable(R.drawable.ic_check);
+                LayerDrawable layerDrawable = new LayerDrawable(layers);
+                imgButton.setBackground(layerDrawable);
+                if (key < 3) {
+                    oldCheckedBackgroundId = id;
+                    oldCheckedBackgroundDrawable = layers[0];
+                }
+                else {
+                    oldCheckedId = id;
+                    oldCheckedDrawable = layers[0];
+                }
             }
         });
     }
 
-    private void sendConfigUpdateMessage(String configKey, String color) {
-        if (mPeerId != null) {
-            DataMap config = new DataMap();
-            config.putString(configKey, color);
-            byte[] rawData = config.toByteArray();
-            Wearable.MessageApi.sendMessage(mGoogleApiClient, mPeerId, color, rawData);
+    public class MessageTask extends TeleportClient.OnGetMessageTask {
+
+        @Override
+        protected void onPostExecute(String path) {
+            System.out.println("Path " + path);
+            if (path.equals("#424242") || path.equals("#FAFAFA") || path.equals("#000000")) {
+                SharedPreferences.saveInteger("id_background", list.indexOf(path), getApplicationContext());
+            }
+            else if (path.equals("true") || path.equals("false")) {
+                SharedPreferences.saveBoolean("button", Boolean.valueOf(path), getApplicationContext());
+            }
+            else {
+                SharedPreferences.saveInteger("id", list.indexOf(path), getApplicationContext());
+            }
+            setUpAllColors();
+            mTeleportClient.setOnGetMessageTask(new MessageTask());
         }
+
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mHelper != null) mHelper.dispose();
-        mHelper = null;
+    protected void onStart() {
+        super.onStart();
+        mTeleportClient.connect();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mTeleportClient.disconnect();
+    }
 }
