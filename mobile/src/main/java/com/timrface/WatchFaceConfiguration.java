@@ -31,12 +31,13 @@ public class WatchFaceConfiguration extends ActionBarActivity {
     private IabHelper mHelper;
     TeleportClient mTeleportClient;
 
+    static ArrayList<String> list = new ArrayList<>();
+    String[] colors;
+
     int oldCheckedId = -1;
     Drawable oldCheckedDrawable;
     int oldCheckedBackgroundId = -1;
     Drawable oldCheckedBackgroundDrawable;
-
-    static ArrayList<String> list = new ArrayList<>();
 
     private String base64EncodedPublicKey;
     private static String ITEM_SKU = "com.timrface.donate";
@@ -48,6 +49,12 @@ public class WatchFaceConfiguration extends ActionBarActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.settings);
+
+
+        colors = getResources().getStringArray(R.array.colors);
+        for (int i = 0; i < colors.length; i++) {
+            list.add(i, colors[i]);
+        }
 
         if (!SharedPreferences.getBoolean("donation", false, getApplicationContext())) {
             dialog();
@@ -191,10 +198,6 @@ public class WatchFaceConfiguration extends ActionBarActivity {
 
 
     private void setUpAllColors() {
-        String[] colors = getResources().getStringArray(R.array.colors);
-        for (int i = 0; i < colors.length; i++) {
-            list.add(i, colors[i]);
-        }
         setUpColorListener(R.id.white, 0, colors[0], R.drawable.white);
         setUpColorListener(R.id.dark, 1, colors[1], R.drawable.grey);
         setUpColorListener(R.id.black, 2, colors[2], R.drawable.black);
@@ -224,8 +227,8 @@ public class WatchFaceConfiguration extends ActionBarActivity {
             layers[1] = getResources().getDrawable(R.drawable.ic_check);
             LayerDrawable layerDrawable = new LayerDrawable(layers);
             imgButton.setBackground(layerDrawable);
-                oldCheckedBackgroundId = id;
-                oldCheckedBackgroundDrawable = layers[0];
+            oldCheckedBackgroundId = id;
+            oldCheckedBackgroundDrawable = layers[0];
 
         }
 
@@ -235,23 +238,25 @@ public class WatchFaceConfiguration extends ActionBarActivity {
             layers[1] = getResources().getDrawable(R.drawable.ic_check);
             LayerDrawable layerDrawable = new LayerDrawable(layers);
             imgButton.setBackground(layerDrawable);
-                oldCheckedId = id;
-                oldCheckedDrawable = layers[0];
+            oldCheckedId = id;
+            oldCheckedDrawable = layers[0];
         }
 
         imgButton.setOnClickListener(new View.OnClickListener() {
-            //@Override
             public void onClick(View v) {
                 mTeleportClient.sendMessage(color, color.getBytes());
+
                 if (key < 3) {
                     SharedPreferences.saveInteger("id_background", key, getApplicationContext());
+                    SharedPreferences.saveString("background_color", color, getApplicationContext());
                 }
                 else {
                     SharedPreferences.saveInteger("id", key, getApplicationContext());
+                    SharedPreferences.saveString("color", color, getApplicationContext());
                 }
 
                 if (key < 3) {
-                    if (oldCheckedBackgroundId != 1) {
+                    if (oldCheckedBackgroundId != -1) {
                         Button button = (Button) findViewById(oldCheckedBackgroundId);
                         button.setBackground(oldCheckedBackgroundDrawable);
                     }
@@ -280,21 +285,27 @@ public class WatchFaceConfiguration extends ActionBarActivity {
         });
     }
 
+
     public class MessageTask extends TeleportClient.OnGetMessageTask {
 
         @Override
         protected void onPostExecute(String path) {
-            System.out.println("Path " + path);
-            if (path.equals("#424242") || path.equals("#FAFAFA") || path.equals("#000000")) {
-                SharedPreferences.saveInteger("id_background", list.indexOf(path), getApplicationContext());
+            if (path.equals("sendData")) {
+                mTeleportClient.sendMessage(String.valueOf(SharedPreferences.getBoolean("button", true, getApplicationContext())), path.getBytes());
+                mTeleportClient.sendMessage(SharedPreferences.getString("background_color", "#FF9800", getApplicationContext()), path.getBytes());
+                mTeleportClient.sendMessage(SharedPreferences.getString("color", "#FAFAFA", getApplicationContext()), path.getBytes());
             }
-            else if (path.equals("true") || path.equals("false")) {
-                SharedPreferences.saveBoolean("button", Boolean.valueOf(path), getApplicationContext());
-            }
+
             else {
-                SharedPreferences.saveInteger("id", list.indexOf(path), getApplicationContext());
+                if (path.equals("#424242") || path.equals("#FAFAFA") || path.equals("#000000")) {
+                    SharedPreferences.saveInteger("id_background", list.indexOf(path), getApplicationContext());
+                } else if (path.equals("true") || path.equals("false")) {
+                    SharedPreferences.saveBoolean("button", Boolean.valueOf(path), getApplicationContext());
+                } else {
+                    SharedPreferences.saveInteger("id", list.indexOf(path), getApplicationContext());
+                }
+                setUpAllColors();
             }
-            setUpAllColors();
             mTeleportClient.setOnGetMessageTask(new MessageTask());
         }
 

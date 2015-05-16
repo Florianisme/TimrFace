@@ -53,7 +53,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
     public static int mInteractiveTextColor =
             WatchFaceUtil.KEY_TEXT_COLOR;
 
-    public static long INTERACTIVE_UPDATE_RATE_MS = 110;
+    public static long INTERACTIVE_UPDATE_RATE_MS = 100;
 
     public static void updateUi(String color, String color2, boolean key) {
         teleportClient.connect();
@@ -129,7 +129,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
             }
         };
 
-
         Time mTime;
         Bitmap scale;
         float seconds;
@@ -166,33 +165,13 @@ public class WatchFaceService extends CanvasWatchFaceService {
             teleportClient = new TeleportClient(context);
             teleportClient.connect();
             teleportClient.setOnGetMessageTask(mMessageTask);
-
+            teleportClient.sendMessage("sendData", new String("test").getBytes());
 
             resources = WatchFaceService.this.getResources();
             scale = BitmapFactory.decodeResource(resources, R.drawable.scale);
             scale = scale.createScaledBitmap(scale, 600, 50, true);
 
-            mBackgroundPaint = new Paint();
-            mTilePaint = new Paint();
-            mScalePaint = new Paint();
-            mArrowPaint = new Paint();
-            mBorderPaint = new Paint();
-
-            mScalePaint.setAntiAlias(false);
-
-            mHourPaint = createTextPaint(mInteractiveTextColor, TYPEFACE);
-            mMinutePaint = createTextPaint(mInteractiveBackgroundColor, TYPEFACE);
-            mDatePaint = createTextPaint(mInteractiveTextColor, TYPEFACE);
-            mTimePaint = createTextPaint(mInteractiveTextColor, TYPEFACE);
-            mDatePaint.setTextAlign(Paint.Align.CENTER);
-
-            mBackgroundPaint.setColor(mInteractiveMainColor);
-            mArrowPaint.setColor(mInteractiveMainColor);
-            mTilePaint.setColor(mInteractiveBackgroundColor);
-            mBorderPaint.setColor(mInteractiveMainColor);
-
-            mBackgroundPaint.setShadowLayer(8.0f, 0.0f, 4.0f, resources.getColor(R.color.shadow));
-            mArrowPaint.setShadowLayer(8.0f, 4.0f, 4.0f, resources.getColor(R.color.shadow));
+            createPaints();
 
             is24Hour = df.is24HourFormat(context);
 
@@ -400,7 +379,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             WatchFaceService.this.unregisterReceiver(mTimeZoneReceiver);
         }
 
-        public void updateUi(int color, int color2, boolean key) {
+        private void updateUi(int color, int color2, boolean key) {
             if (key) {
                 INTERACTIVE_UPDATE_RATE_MS = 100;
             } else {
@@ -415,31 +394,36 @@ public class WatchFaceService extends CanvasWatchFaceService {
             }
         }
 
-        public void setInteractiveBackgroundColor(int color) {
-            mInteractiveBackgroundColor = color;
-            mTilePaint.setColor(color);
-            mMinutePaint.setColor(color);
-        }
-
-        public void  setInteractiveMainColor(int color) {
-            mInteractiveMainColor = color;
-            mBackgroundPaint.setColor(color);
-            mArrowPaint.setColor(color);
-            mBorderPaint.setColor(color);
-        }
-
-        public void setInteractiveTextColor(int color) {
-            mInteractiveTextColor = color;
-            mHourPaint.setColor(color);
-            mDatePaint.setColor(color);
-            mTimePaint.setColor(color);
-        }
-
         private void updateTimer() {
             mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
             if (shouldTimerBeRunning()) {
                 mUpdateTimeHandler.sendEmptyMessage(MSG_UPDATE_TIME);
             }
+        }
+
+        private void createPaints() {
+            mBackgroundPaint = new Paint();
+            mTilePaint = new Paint();
+            mScalePaint = new Paint();
+            mArrowPaint = new Paint();
+            mBorderPaint = new Paint();
+
+            mScalePaint.setAntiAlias(false);
+
+            mHourPaint = createTextPaint(mInteractiveTextColor, TYPEFACE);
+            mMinutePaint = createTextPaint(mInteractiveBackgroundColor, TYPEFACE);
+            mDatePaint = createTextPaint(mInteractiveTextColor, TYPEFACE);
+            mTimePaint = createTextPaint(mInteractiveTextColor, TYPEFACE);
+            mDatePaint.setTextAlign(Paint.Align.CENTER);
+
+            mBackgroundPaint.setColor(mInteractiveMainColor);
+            mArrowPaint.setColor(mInteractiveMainColor);
+            mTilePaint.setColor(mInteractiveBackgroundColor);
+            mBorderPaint.setColor(mInteractiveMainColor);
+
+            mBackgroundPaint.setShadowLayer(8.0f, 0.0f, 4.0f, resources.getColor(R.color.shadow));
+            mArrowPaint.setShadowLayer(8.0f, 4.0f, 4.0f, resources.getColor(R.color.shadow));
+
         }
 
         private boolean shouldTimerBeRunning() {
@@ -450,7 +434,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
             @Override
             protected void onPostExecute(String path) {
-                WatchFaceUtil.overwriteKeys(path);
+                WatchFaceUtil.overwriteKeys(path, getApplicationContext());
                 updateUi(WatchFaceUtil.KEY_BACKGROUND_COLOR, WatchFaceUtil.KEY_MAIN_COLOR, WatchFaceUtil.SMOOTH_SECONDS);
                 teleportClient.setOnGetMessageTask(new updateDataTask());
             }
