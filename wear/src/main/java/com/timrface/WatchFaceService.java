@@ -43,6 +43,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
     static Paint mArrowPaint;
     static Paint mTimePaint;
     static Paint mBorderPaint;
+    static Paint mBatteryPaint;
 
     public static int mInteractiveBackgroundColor =
             WatchFaceUtil.KEY_BACKGROUND_COLOR;
@@ -55,16 +56,12 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
     public static long INTERACTIVE_UPDATE_RATE_MS = 100;
 
-    public static void updateUi(String color, String color2, boolean key) {
+    String batteryLevel = "";
+
+    public static void updateUi(String color, String color2) {
         teleportClient.connect();
         teleportClient.sendMessage(color, String.valueOf(color).getBytes());
         teleportClient.sendMessage(color2, String.valueOf(color).getBytes());
-        teleportClient.sendMessage(String.valueOf(key), String.valueOf(color).getBytes());
-        if (key) {
-            INTERACTIVE_UPDATE_RATE_MS = 100;
-        } else {
-            INTERACTIVE_UPDATE_RATE_MS = 1000;
-        }
         setInteractiveBackgroundColor(Color.parseColor(color));
         setInteractiveMainColor(Color.parseColor(color2));
         if (!color2.equals("#FAFAFA")) {
@@ -92,6 +89,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         mHourPaint.setColor(color);
         mDatePaint.setColor(color);
         mTimePaint.setColor(color);
+        mBatteryPaint.setColor(color);
     }
 
     @Override
@@ -109,8 +107,10 @@ public class WatchFaceService extends CanvasWatchFaceService {
                 mTime.setToNow();
             }
         };
-        private final Typeface TYPEFACE =
-                Typeface.createFromAsset(getAssets(), "font.ttf");
+        private final Typeface ROBOTO_LIGHT =
+                Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf");
+        private final Typeface ROBOTO_THIN =
+                Typeface.createFromAsset(getAssets(), "Roboto-Thin.ttf");
 
         final Handler mUpdateTimeHandler = new Handler() {
             @Override
@@ -126,6 +126,14 @@ public class WatchFaceService extends CanvasWatchFaceService {
                         }
                         break;
                 }
+            }
+        };
+
+        private BroadcastReceiver updateBattery = new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context arg0, Intent intent) {
+                int level = intent.getIntExtra("level", 0);
+                batteryLevel = String.valueOf(level) + "%";
             }
         };
 
@@ -145,6 +153,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         private float DATE_Y;
         private float TIME_X;
         private float TIME_Y;
+        private float BATTERY_X;
         private Resources resources;
         int width;
         int height;
@@ -174,6 +183,8 @@ public class WatchFaceService extends CanvasWatchFaceService {
             createPaints();
 
             is24Hour = df.is24HourFormat(context);
+            registerReceiver(this.updateBattery,
+                    new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
             mTime = new Time();
         }
@@ -227,6 +238,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             canvas.drawText(getMinutes(), MINUTE_X, HOUR_MINUTE_Y, mMinutePaint);
             canvas.drawText(getDate(), width - mDatePaint.getStrokeWidth() / 2, DATE_Y, mDatePaint);
             canvas.drawText(getAmPm(), TIME_X, TIME_Y, mTimePaint);
+            canvas.drawText(batteryLevel, BATTERY_X, TIME_Y, mBatteryPaint);
         }
 
         @Override
@@ -249,9 +261,15 @@ public class WatchFaceService extends CanvasWatchFaceService {
                     WatchFaceUtil.AMBIENT_BACKGROUND);
             adjustPaintColorToCurrentMode(mBorderPaint, mInteractiveMainColor,
                     WatchFaceUtil.AMBIENT_BACKGROUND);
+            adjustPaintColorToCurrentMode(mBatteryPaint, mInteractiveTextColor,
+                    WatchFaceUtil.AMBIENT_BACKGROUND);
 
             mHourPaint.setAntiAlias(!ambientMode);
             mMinutePaint.setAntiAlias(!ambientMode);
+
+            mHourPaint.setTypeface(ambientMode ? ROBOTO_THIN : ROBOTO_LIGHT);
+            mMinutePaint.setTypeface(ambientMode ? ROBOTO_THIN : ROBOTO_LIGHT);
+
             mTilePaint.setAntiAlias(!ambientMode);
             mDatePaint.setAntiAlias(!ambientMode);
             mTimePaint.setAntiAlias(!ambientMode);
@@ -284,6 +302,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
                 DATE_Y = 60;
                 TIME_X = 240;
                 TIME_Y = 195;
+                BATTERY_X = 40;
             } else {
                 HOUR_X = 15;
                 HOUR_MINUTE_Y = 160;
@@ -291,12 +310,15 @@ public class WatchFaceService extends CanvasWatchFaceService {
                 DATE_Y = 40;
                 TIME_X = 215;
                 TIME_Y = 177;
+                BATTERY_X = 20;
             }
+            System.out.println(isRound + ":" + TIME_X);
 
             mHourPaint.setTextSize(textSize);
             mMinutePaint.setTextSize(textSize);
             mDatePaint.setTextSize(dateTextSize);
             mTimePaint.setTextSize(timeTextSize);
+            mBatteryPaint.setTextSize(timeTextSize);
         }
 
         private float getSeconds() {
@@ -352,7 +374,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             super.onVisibilityChanged(visible);
 
             if (visible) {
-                registerReceiver();
+                registerTimeReceiver();
 
                 mTime.clear(TimeZone.getDefault().getID());
                 mTime.setToNow();
@@ -362,7 +384,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             updateTimer();
         }
 
-        private void registerReceiver() {
+        private void registerTimeReceiver() {
             if (mRegisteredTimeZoneReceiver) {
                 return;
             }
@@ -379,12 +401,13 @@ public class WatchFaceService extends CanvasWatchFaceService {
             WatchFaceService.this.unregisterReceiver(mTimeZoneReceiver);
         }
 
-        private void updateUi(int color, int color2, boolean key) {
+        private void updateUi(int color, int color2, boolean key, boolean battery) {
             if (key) {
                 INTERACTIVE_UPDATE_RATE_MS = 100;
             } else {
                 INTERACTIVE_UPDATE_RATE_MS = 1000;
             }
+            mBatteryPaint.setTextSize(battery ? resources.getDimension(R.dimen.time_size) : 0);
             setInteractiveBackgroundColor(color);
             setInteractiveMainColor(color2);
             if (color2 != Color.parseColor("#FAFAFA")) {
@@ -410,10 +433,11 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
             mScalePaint.setAntiAlias(false);
 
-            mHourPaint = createTextPaint(mInteractiveTextColor, TYPEFACE);
-            mMinutePaint = createTextPaint(mInteractiveBackgroundColor, TYPEFACE);
-            mDatePaint = createTextPaint(mInteractiveTextColor, TYPEFACE);
-            mTimePaint = createTextPaint(mInteractiveTextColor, TYPEFACE);
+            mHourPaint = createTextPaint(mInteractiveTextColor, ROBOTO_LIGHT);
+            mMinutePaint = createTextPaint(mInteractiveBackgroundColor, ROBOTO_LIGHT);
+            mDatePaint = createTextPaint(mInteractiveTextColor, ROBOTO_LIGHT);
+            mTimePaint = createTextPaint(mInteractiveTextColor, ROBOTO_LIGHT);
+            mBatteryPaint = createTextPaint(mInteractiveTextColor, ROBOTO_LIGHT);
             mDatePaint.setTextAlign(Paint.Align.CENTER);
 
             mBackgroundPaint.setColor(mInteractiveMainColor);
@@ -435,7 +459,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             @Override
             protected void onPostExecute(String path) {
                 WatchFaceUtil.overwriteKeys(path, getApplicationContext());
-                updateUi(WatchFaceUtil.KEY_BACKGROUND_COLOR, WatchFaceUtil.KEY_MAIN_COLOR, WatchFaceUtil.SMOOTH_SECONDS);
+                updateUi(WatchFaceUtil.KEY_BACKGROUND_COLOR, WatchFaceUtil.KEY_MAIN_COLOR, WatchFaceUtil.SMOOTH_SECONDS, WatchFaceUtil.BATTERY_LEVEL);
                 teleportClient.setOnGetMessageTask(new updateDataTask());
             }
         }

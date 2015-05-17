@@ -198,12 +198,20 @@
                 android:textStyle="bold" />
 
             <CheckBox
-                android:id="@+id/checkBox"
+                android:id="@+id/seconds"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/orange"
                 android:checked="true"
-                android:text="@string/checkbox" />
+                android:text="@string/seconds" />
+
+            <CheckBox
+                android:id="@+id/battery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/orange"
+                android:checked="true"
+                android:text="@string/battery" />
 
         </LinearLayout>
 

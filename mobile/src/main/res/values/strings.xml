@@ -5,7 +5,8 @@
     <string name="background">Background Color</string>
     <string name="colors">Main Color</string>
     <string name="view">View</string>
-    <string name="checkbox">smooth seconds</string>
+    <string name="seconds">Smooth Seconds</string>
+    <string name="battery">Show Battery Level</string>
 
     <string name="dialog_message">A donation supports and helps me improving this app :) </string>
     <string name="dialog_title">Donation</string>

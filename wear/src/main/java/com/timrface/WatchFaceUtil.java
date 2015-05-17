@@ -15,6 +15,7 @@ public final class WatchFaceUtil extends TeleportService {
     public static int KEY_MAIN_COLOR = parseColor("#FAFAFA");
     public static int KEY_TEXT_COLOR = parseColor("#424242");
     public static boolean SMOOTH_SECONDS = true;
+    public static boolean BATTERY_LEVEL = true;
 
     public WatchFaceUtil() {
     }
@@ -29,11 +30,19 @@ public final class WatchFaceUtil extends TeleportService {
     }
 
     public static void overwriteKeys(String key, Context context) {
-        if (key.equals("true") || key.equals("false")) {
-            SMOOTH_SECONDS = Boolean.valueOf(key);
-            SharedPreferences.saveBoolean("smooth_seconds", Boolean.valueOf(key), context);
+        if (key.contains("seconds")) {
+            boolean seconds = key.contains("true");
+            SMOOTH_SECONDS = seconds;
+            SharedPreferences.saveBoolean("smooth_seconds", seconds, context);
+        }
 
-        } else if (key.equals("#FAFAFA") || key.equals("#424242") || key.equals("#000000")) {
+        else if (key.contains("battery")) {
+            boolean battery = key.contains("true");
+            BATTERY_LEVEL = battery;
+            SharedPreferences.saveBoolean("battery", battery, context);
+        }
+
+        else if (key.equals("#FAFAFA") || key.equals("#424242") || key.equals("#000000")) {
             KEY_MAIN_COLOR = parseColor(key);
             SharedPreferences.saveInteger("main_color", parseColor(key), context);
 

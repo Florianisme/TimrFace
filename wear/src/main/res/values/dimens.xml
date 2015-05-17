@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <dimen name="text_size_ambient">50dp</dimen>
     <dimen name="text_size">75dp</dimen>
     <dimen name="am_pm_size">30dp</dimen>
     <dimen name="date_size">12dp</dimen>
     <dimen name="time_size">12dp</dimen>
+
+    <dimen name="hour_x">10dp</dimen>
+    <dimen name="minute_x">100dp</dimen>
+    <dimen name="time_y">105dp</dimen>
+    <dimen name="info_y">120dp</dimen>
+
+    <dimen name="hour_x_square">5dp</dimen>
+    <dimen name="minute_x_square">90dp</dimen>
+
+    <dimen name="digital_xy_offset">10dp</dimen>
 
 </resources>

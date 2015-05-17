@@ -63,19 +63,34 @@ public class WatchFaceConfiguration extends ActionBarActivity {
         mTeleportClient = new TeleportClient(this);
         mTeleportClient.connect();
         mTeleportClient.setOnGetMessageTask(new MessageTask());
+        String test = "bla";
+        mTeleportClient.sendMessage("seconds"+String.valueOf(SharedPreferences.getBoolean("button", true, getApplicationContext())), test.getBytes());
+        mTeleportClient.sendMessage(SharedPreferences.getString("background_color", "#FF9800", getApplicationContext()), test.getBytes());
+        mTeleportClient.sendMessage(SharedPreferences.getString("color", "#FAFAFA", getApplicationContext()), test.getBytes());
+        mTeleportClient.sendMessage("battery" + String.valueOf(SharedPreferences.getBoolean("battery", true, getApplicationContext())), test.getBytes());
         setUpAllColors();
 
-        CheckBox cb = (CheckBox) findViewById(R.id.checkBox);
-        cb.setChecked(SharedPreferences.getBoolean("button", true, getApplicationContext()));
-        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        CheckBox seconds = (CheckBox) findViewById(R.id.seconds);
+        seconds.setChecked(SharedPreferences.getBoolean("button", true, getApplicationContext()));
+        seconds.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
-                                          @Override
-                                          public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                              mTeleportClient.sendMessage(String.valueOf(isChecked), String.valueOf(isChecked).getBytes());
-                                              SharedPreferences.saveBoolean("button", isChecked, getApplicationContext());
-                                          }
-                                      }
+                                               @Override
+                                               public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                                   mTeleportClient.sendMessage("seconds"+String.valueOf(isChecked), String.valueOf(isChecked).getBytes());
+                                                   SharedPreferences.saveBoolean("button", isChecked, getApplicationContext());
+                                               }
+                                           }
         );
+
+        CheckBox battery = (CheckBox) findViewById(R.id.battery);
+        battery.setChecked(SharedPreferences.getBoolean("battery", true, getApplicationContext()));
+        battery.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mTeleportClient.sendMessage("battery"+String.valueOf(isChecked), String.valueOf(isChecked).getBytes());
+                SharedPreferences.saveBoolean("battery", isChecked, getApplicationContext());
+            }
+        });
 
         base64EncodedPublicKey = getResources().getString(R.string.key);
         mHelper = new IabHelper(this, base64EncodedPublicKey);
@@ -291,16 +306,15 @@ public class WatchFaceConfiguration extends ActionBarActivity {
         @Override
         protected void onPostExecute(String path) {
             if (path.equals("sendData")) {
-                mTeleportClient.sendMessage(String.valueOf(SharedPreferences.getBoolean("button", true, getApplicationContext())), path.getBytes());
+                mTeleportClient.sendMessage("seconds"+String.valueOf(SharedPreferences.getBoolean("button", true, getApplicationContext())), path.getBytes());
                 mTeleportClient.sendMessage(SharedPreferences.getString("background_color", "#FF9800", getApplicationContext()), path.getBytes());
                 mTeleportClient.sendMessage(SharedPreferences.getString("color", "#FAFAFA", getApplicationContext()), path.getBytes());
+                mTeleportClient.sendMessage("battery"+String.valueOf(SharedPreferences.getBoolean("battery", true, getApplicationContext())), path.getBytes());
             }
 
             else {
                 if (path.equals("#424242") || path.equals("#FAFAFA") || path.equals("#000000")) {
                     SharedPreferences.saveInteger("id_background", list.indexOf(path), getApplicationContext());
-                } else if (path.equals("true") || path.equals("false")) {
-                    SharedPreferences.saveBoolean("button", Boolean.valueOf(path), getApplicationContext());
                 } else {
                     SharedPreferences.saveInteger("id", list.indexOf(path), getApplicationContext());
                 }
