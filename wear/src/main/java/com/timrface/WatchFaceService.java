@@ -77,7 +77,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         mMinutePaint.setColor(color);
     }
 
-    public static void  setInteractiveMainColor(int color) {
+    public static void setInteractiveMainColor(int color) {
         mInteractiveMainColor = color;
         mBackgroundPaint.setColor(color);
         mArrowPaint.setColor(color);
@@ -129,7 +129,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             }
         };
 
-        private BroadcastReceiver updateBattery = new BroadcastReceiver(){
+        private BroadcastReceiver updateBattery = new BroadcastReceiver() {
             @Override
             public void onReceive(Context arg0, Intent intent) {
                 int level = intent.getIntExtra("level", 0);
@@ -147,13 +147,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
         DateFormat df;
         Calendar cal;
         Context context = getApplicationContext();
-        private float HOUR_X;
-        private float HOUR_MINUTE_Y;
-        private float MINUTE_X;
-        private float DATE_Y;
-        private float TIME_X;
-        private float TIME_Y;
-        private float BATTERY_X;
         private Resources resources;
         boolean battery;
         int width;
@@ -216,28 +209,28 @@ public class WatchFaceService extends CanvasWatchFaceService {
             width = bounds.width() / 2;
             height = bounds.height() / 2;
 
-            canvas.drawRect(0, 0, width * 2, height * 2, mBackgroundPaint);
+            canvas.drawRect(0, 0, width * 2, height + height / 5 + height / 11, mBackgroundPaint);
 
             if (!ambientMode) {
-                canvas.drawRect(0, height + 45, width * 2, height * 2, mTilePaint);
-                if (seconds - 447 > -620) {
-                    canvas.drawBitmap(scale, seconds - 447, height + 60, mScalePaint);
-                } else {
-                    canvas.drawBitmap(scale, seconds + 753, height + 60, mScalePaint);
-                }
-                canvas.drawBitmap(scale, seconds + 153, height + 60, mScalePaint);
+                canvas.drawRect(0, height + height / 5 + height / 11, width * 2, height * 2, mTilePaint);
+
+                canvas.drawBitmap(scale, seconds + (width / 2 + width / 2 - width / 16) * -3, height + height / 4 + height / 10, mScalePaint);
+                canvas.drawBitmap(scale, seconds + (width / 2 + width / 2 - width / 16 + width / 150) * 5, height + height / 4 + height / 10, mScalePaint);
+                canvas.drawBitmap(scale, seconds + width / 2 + width / 2 - width / 20, height + height / 4 + height / 10, mScalePaint);
 
                 canvas.rotate(45, width, height);
-                canvas.drawRect(width + 15, height + 15, width + 45, height + 45, mArrowPaint);
+                canvas.drawRect(width + 15, height + 15, width + 45, height + height / 5 + height / 11, mArrowPaint);
                 canvas.rotate(-45, width, height);
-                canvas.drawRect(width - 30, height + 15, width + 30, height + 45, mBorderPaint);
+                canvas.drawRect(width - 30, height + 15, width + 30, height + height / 5 + height / 11, mBorderPaint);
             }
 
-            canvas.drawText(getHours(), HOUR_X, HOUR_MINUTE_Y, mHourPaint);
-            canvas.drawText(getMinutes(), MINUTE_X, HOUR_MINUTE_Y, mMinutePaint);
-            canvas.drawText(getDate(), width - mDatePaint.getStrokeWidth() / 2, DATE_Y, mDatePaint);
-            canvas.drawText(getAmPm(), TIME_X, TIME_Y, mTimePaint);
-            if (battery) {canvas.drawText(batteryLevel, BATTERY_X, TIME_Y, mBatteryPaint);}
+            canvas.drawText(getHours(), width / 2 - width / 3, height + height / 15, mHourPaint);
+            canvas.drawText(getMinutes(), width / 2 + width / 2, height + height / 15, mMinutePaint);
+            canvas.drawText(getDate(), width - mDatePaint.getStrokeWidth() / 2, height / 3 + height / 15, mDatePaint);
+            canvas.drawText(getAmPm(), width * 2 - width / 2, height + height / 5, mTimePaint);
+            if (battery) {
+                canvas.drawText(batteryLevel, width / 2 - width / 3, height + height / 5, mBatteryPaint);
+            }
         }
 
         @Override
@@ -292,26 +285,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
             Resources resources = WatchFaceService.this.getResources();
             float infoTextSize = resources.getDimension(R.dimen.info_size);
             float timeTextSize = resources.getDimension(R.dimen.text_size);
-
-            boolean isRound = insets.isRound();
-            if (isRound) {
-                HOUR_X = resources.getDimension(R.dimen.hour_x) + resources.getDimension(R.dimen.digital_xy_offset);
-                HOUR_MINUTE_Y = resources.getDimension(R.dimen.time_y) + resources.getDimension(R.dimen.digital_xy_offset);
-                MINUTE_X = resources.getDimension(R.dimen.minute_x) + resources.getDimension(R.dimen.digital_xy_offset);
-                DATE_Y = 60;
-                TIME_X = resources.getDimension(R.dimen.time_x) + resources.getDimension(R.dimen.digital_xy_offset);
-                TIME_Y = resources.getDimension(R.dimen.info_y) + resources.getDimension(R.dimen.digital_xy_offset);
-                BATTERY_X = 20 + resources.getDimension(R.dimen.digital_xy_offset);
-            }
-            else {
-                HOUR_X = resources.getDimension(R.dimen.hour_x_square);
-                HOUR_MINUTE_Y = resources.getDimension(R.dimen.time_y);
-                MINUTE_X = resources.getDimension(R.dimen.minute_x_square);
-                DATE_Y = 60;
-                TIME_X = resources.getDimension(R.dimen.time_x);
-                TIME_Y = resources.getDimension(R.dimen.info_y);
-                BATTERY_X = 20;
-            }
 
             mHourPaint.setTextSize(timeTextSize);
             mMinutePaint.setTextSize(timeTextSize);
