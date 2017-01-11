@@ -2,19 +2,20 @@ apply plugin: 'com.android.application'
 
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion '22.0.1'
+    compileSdkVersion 24
+    buildToolsVersion '24.0.1'
 
     defaultConfig {
         applicationId "com.timrface"
-        minSdkVersion 21
-        targetSdkVersion 21
-        versionCode 11
-        versionName "1.2.4"
+        minSdkVersion 18
+        targetSdkVersion 24
+        versionCode 19
+        versionName "2.6"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -23,7 +24,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.google.android.gms:play-services-wearable:6.5.+'
-    compile 'com.android.support:support-v13:21.0.+'
-    compile 'com.google.android.support:wearable:1.1.+'
+    compile 'com.google.android.gms:play-services-wearable:10.0.1'
+    compile 'com.google.android.support:wearable:1.4.0'
 }

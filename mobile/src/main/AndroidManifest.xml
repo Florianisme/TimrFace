@@ -14,10 +14,10 @@
 
         <activity
             android:name=".WatchFaceConfiguration"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.android.timrface.CONFIG_DIGITAL" />
-
                 <category android:name="com.google.android.wearable.watchface.category.COMPANION_CONFIGURATION" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

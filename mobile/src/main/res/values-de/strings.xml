@@ -12,5 +12,6 @@
     <string name="dialog_title">Spende</string>
     <string name="buy">Spenden!</string>
     <string name="cancel">Abbrechen</string>
+    <string name="zero_digit">Uhrzeit als zwei Ziffern</string>
 
 </resources>

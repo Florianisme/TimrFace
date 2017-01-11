@@ -83,8 +83,8 @@ public class WatchFaceConfiguration extends Activity implements
     }
 
     private void updateConfigDataItem(final String backgroundColor) {
-        WatchFaceUtil.overwriteKeys(backgroundColor, getApplicationContext());
-        WatchFaceService.updateUi(String.format("#%06X", (0xFFFFFF & WatchFaceUtil.KEY_BACKGROUND_COLOR)), String.format("#%06X", (0xFFFFFF & WatchFaceUtil.KEY_MAIN_COLOR)));
+        WatchFaceService.KEY_BACKGROUND_COLOR = Color.parseColor(backgroundColor);
+        WatchFaceService.updateUi(backgroundColor);
     }
 
     /**

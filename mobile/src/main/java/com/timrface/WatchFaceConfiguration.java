@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -17,8 +19,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
+import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
+import com.timrface.helper.CanvasView;
 import com.timrface.helper.SharedPreferences;
-import com.timrface.helper.TeleportClient;
 import com.timrface.util.IabHelper;
 import com.timrface.util.IabResult;
 import com.timrface.util.Inventory;
@@ -26,21 +34,64 @@ import com.timrface.util.Purchase;
 
 import java.util.ArrayList;
 
-public class WatchFaceConfiguration extends ActionBarActivity {
-
-    private IabHelper mHelper;
-    TeleportClient mTeleportClient;
+public class WatchFaceConfiguration extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     static ArrayList<String> list = new ArrayList<>();
+    private static String ITEM_SKU = "com.timrface.donate";
+    final String TAG = "WatchFaceConfiguration";
     String[] colors;
-
     int oldCheckedId = -1;
     Drawable oldCheckedDrawable;
     int oldCheckedBackgroundId = -1;
     Drawable oldCheckedBackgroundDrawable;
+    CanvasView canvasView;
+    ColorPicker colorPicker;
+    Handler mUpdateTimeHandler;
+    IabHelper.OnConsumeFinishedListener mConsumeFinishedListener =
+            new IabHelper.OnConsumeFinishedListener() {
+                public void onConsumeFinished(Purchase purchase,
+                                              IabResult result) {
 
+                    if (result.isSuccess()) {
+                        Log.d("Billing", "Billing succed! Icon can be bought again");
+                    } else {
+                        Log.d("Billing", "Billing failed");
+                    }
+                }
+            };
+    private IabHelper mHelper;
+    IabHelper.QueryInventoryFinishedListener mReceivedInventoryListener
+            = new IabHelper.QueryInventoryFinishedListener() {
+        public void onQueryInventoryFinished(IabResult result,
+                                             Inventory inventory) {
+
+
+            if (result.isFailure()) {
+                Log.d("Billing", "Billing failed");
+            } else {
+                mHelper.consumeAsync(inventory.getPurchase(ITEM_SKU),
+                        mConsumeFinishedListener);
+            }
+        }
+    };
+    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener
+            = new IabHelper.OnIabPurchaseFinishedListener() {
+        public void onIabPurchaseFinished(IabResult result,
+                                          Purchase purchase) {
+            if (result.isFailure()) {
+                Log.d("Billing", "Billing failed");
+                return;
+            } else if (purchase.getSku().equals(ITEM_SKU)) {
+                Log.d("Billing", "Bought item");
+                consume();
+            }
+            SharedPreferences.saveBoolean("donation", true, getApplicationContext());
+
+        }
+    };
+    private GoogleApiClient googleApiClient;
     private String base64EncodedPublicKey;
-    private static String ITEM_SKU = "com.timrface.donate";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +101,24 @@ public class WatchFaceConfiguration extends ActionBarActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.settings);
 
+        canvasView = (CanvasView) findViewById(R.id.canvas_layout);
+        mUpdateTimeHandler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                switch (message.what) {
+                    case 0:
+                        canvasView.invalidate();
+                        long timeMs = System.currentTimeMillis();
+                        long delayMs =
+                                canvasView.INTERACTIVE_UPDATE_RATE_MS - (timeMs % canvasView.INTERACTIVE_UPDATE_RATE_MS);
+                        mUpdateTimeHandler.sendEmptyMessageDelayed(0, delayMs);
+                        break;
+                }
+            }
+        };
+        updateTimer();
+
+        colorPicker = new ColorPicker(WatchFaceConfiguration.this);
 
         colors = getResources().getStringArray(R.array.colors);
         for (int i = 0; i < colors.length; i++) {
@@ -60,14 +129,18 @@ public class WatchFaceConfiguration extends ActionBarActivity {
             dialog();
         }
 
-        mTeleportClient = new TeleportClient(this);
-        mTeleportClient.connect();
-        mTeleportClient.setOnGetMessageTask(new MessageTask());
-        String test = "bla";
-        mTeleportClient.sendMessage("seconds"+String.valueOf(SharedPreferences.getBoolean("button", true, getApplicationContext())), test.getBytes());
-        mTeleportClient.sendMessage(SharedPreferences.getString("background_color", "#FF9800", getApplicationContext()), test.getBytes());
-        mTeleportClient.sendMessage(SharedPreferences.getString("color", "#FAFAFA", getApplicationContext()), test.getBytes());
-        mTeleportClient.sendMessage("battery" + String.valueOf(SharedPreferences.getBoolean("battery", true, getApplicationContext())), test.getBytes());
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Wearable.API)
+                .build();
+
+        canvasView.updateConfiguration("SMOOTH_SECONDS", SharedPreferences.getBoolean("button", true, getApplicationContext()));
+        canvasView.updateConfiguration("BACKGROUND_COLOR", SharedPreferences.getString("background_color", "#FF9800", getApplicationContext()));
+        canvasView.updateConfiguration("COLOR", SharedPreferences.getString("color", "#FAFAFA", getApplicationContext()));
+        canvasView.updateConfiguration("BATTERY_INDICATOR", SharedPreferences.getBoolean("battery", true, getApplicationContext()));
+        canvasView.updateConfiguration("ZERO_DIGIT", SharedPreferences.getBoolean("zero_digit", true, getApplicationContext()));
+
         setUpAllColors();
 
         CheckBox seconds = (CheckBox) findViewById(R.id.seconds);
@@ -76,8 +149,12 @@ public class WatchFaceConfiguration extends ActionBarActivity {
 
                                                @Override
                                                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                                   mTeleportClient.sendMessage("seconds"+String.valueOf(isChecked), String.valueOf(isChecked).getBytes());
+                                                   PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
+                                                   putDataMapRequest.getDataMap().putBoolean("SMOOTH_SECONDS", isChecked);
+                                                   PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
+                                                   Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
                                                    SharedPreferences.saveBoolean("button", isChecked, getApplicationContext());
+                                                   canvasView.updateConfiguration("SMOOTH_SECONDS", isChecked);
                                                }
                                            }
         );
@@ -87,8 +164,26 @@ public class WatchFaceConfiguration extends ActionBarActivity {
         battery.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mTeleportClient.sendMessage("battery"+String.valueOf(isChecked), String.valueOf(isChecked).getBytes());
+                PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
+                putDataMapRequest.getDataMap().putBoolean("BATTERY_INDICATOR", isChecked);
+                PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
+                Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
                 SharedPreferences.saveBoolean("battery", isChecked, getApplicationContext());
+                canvasView.updateConfiguration("BATTERY_INDICATOR", isChecked);
+            }
+        });
+
+        CheckBox zeroDigit = (CheckBox) findViewById(R.id.zero_digit);
+        zeroDigit.setChecked(SharedPreferences.getBoolean("zero_digit", true, getApplicationContext()));
+        zeroDigit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
+                putDataMapRequest.getDataMap().putBoolean("ZERO_DIGIT", isChecked);
+                PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
+                Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
+                SharedPreferences.saveBoolean("zero_digit", isChecked, getApplicationContext());
+                canvasView.updateConfiguration("ZERO_DIGIT", isChecked);
             }
         });
 
@@ -103,6 +198,11 @@ public class WatchFaceConfiguration extends ActionBarActivity {
             }
         });
 
+    }
+
+    private void updateTimer() {
+        mUpdateTimeHandler.removeMessages(0);
+        mUpdateTimeHandler.sendEmptyMessage(0);
     }
 
     private void dialog() {
@@ -161,56 +261,9 @@ public class WatchFaceConfiguration extends ActionBarActivity {
         }
     }
 
-    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener
-            = new IabHelper.OnIabPurchaseFinishedListener() {
-        public void onIabPurchaseFinished(IabResult result,
-                                          Purchase purchase)
-        {
-            if (result.isFailure()) {
-                Log.d("Billing", "Billing failed");
-                return;
-            }
-            else if (purchase.getSku().equals(ITEM_SKU)) {
-                Log.d("Billing", "Bought item");
-                consume();
-            }
-            SharedPreferences.saveBoolean("donation", true, getApplicationContext());
-
-        }
-    };
-
     public void consume() {
         mHelper.queryInventoryAsync(mReceivedInventoryListener);
     }
-
-    IabHelper.QueryInventoryFinishedListener mReceivedInventoryListener
-            = new IabHelper.QueryInventoryFinishedListener() {
-        public void onQueryInventoryFinished(IabResult result,
-                                             Inventory inventory) {
-
-
-            if (result.isFailure()) {
-                Log.d("Billing", "Billing failed");
-            } else {
-                mHelper.consumeAsync(inventory.getPurchase(ITEM_SKU),
-                        mConsumeFinishedListener);
-            }
-        }
-    };
-
-    IabHelper.OnConsumeFinishedListener mConsumeFinishedListener =
-            new IabHelper.OnConsumeFinishedListener() {
-                public void onConsumeFinished(Purchase purchase,
-                                              IabResult result) {
-
-                    if (result.isSuccess()) {
-                        Log.d("Billing", "Billing succed! Icon can be bought again");
-                    } else {
-                        Log.d("Billing", "Billing failed");
-                    }
-                }
-            };
-
 
     private void setUpAllColors() {
         setUpColorListener(R.id.white, 0, colors[0], R.drawable.white);
@@ -228,6 +281,7 @@ public class WatchFaceConfiguration extends ActionBarActivity {
         setUpColorListener(R.id.deep_orange, 11, colors[11], R.drawable.deep_orange);
         setUpColorListener(R.id.red, 12, colors[12], R.drawable.red);
         setUpColorListener(R.id.amber, 13, colors[13], R.drawable.amber);
+        setUpColorListener(R.id.wheel, 14, colors[14], R.drawable.wheel);
     }
 
 
@@ -259,7 +313,27 @@ public class WatchFaceConfiguration extends ActionBarActivity {
 
         imgButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                mTeleportClient.sendMessage(color, color.getBytes());
+                if (key == 14) {
+                    colorPicker.show();
+                    Button okColor = (Button) colorPicker.findViewById(R.id.okColorButton);
+                    okColor.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
+                            putDataMapRequest.getDataMap().putInt("COLOR_MANUAL", colorPicker.getColor());
+                            PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
+                            Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
+                            colorPicker.dismiss();
+                            canvasView.updateConfiguration("COLOR_MANUAL", colorPicker.getColor());
+                        }
+                    });
+                } else {
+                    PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
+                    putDataMapRequest.getDataMap().putString("COLOR", color);
+                    PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
+                    Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
+                    canvasView.updateConfiguration("COLOR", color);
+                }
 
                 if (key < 3) {
                     SharedPreferences.saveInteger("id_background", key, getApplicationContext());
@@ -300,40 +374,44 @@ public class WatchFaceConfiguration extends ActionBarActivity {
         });
     }
 
-
-    public class MessageTask extends TeleportClient.OnGetMessageTask {
-
-        @Override
-        protected void onPostExecute(String path) {
-            if (path.equals("sendData")) {
-                mTeleportClient.sendMessage("seconds"+String.valueOf(SharedPreferences.getBoolean("button", true, getApplicationContext())), path.getBytes());
-                mTeleportClient.sendMessage(SharedPreferences.getString("background_color", "#FF9800", getApplicationContext()), path.getBytes());
-                mTeleportClient.sendMessage(SharedPreferences.getString("color", "#FAFAFA", getApplicationContext()), path.getBytes());
-                mTeleportClient.sendMessage("battery"+String.valueOf(SharedPreferences.getBoolean("battery", true, getApplicationContext())), path.getBytes());
-            }
-
-            else {
-                if (path.equals("#424242") || path.equals("#FAFAFA") || path.equals("#000000")) {
-                    SharedPreferences.saveInteger("id_background", list.indexOf(path), getApplicationContext());
-                } else {
-                    SharedPreferences.saveInteger("id", list.indexOf(path), getApplicationContext());
-                }
-                setUpAllColors();
-            }
-            mTeleportClient.setOnGetMessageTask(new MessageTask());
-        }
-
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
-        mTeleportClient.connect();
+        googleApiClient.connect();
+    }
+
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d(TAG, "onConnected");
+
+        PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
+
+        putDataMapRequest.getDataMap().putBoolean("SMOOTH_SECONDS", SharedPreferences.getBoolean("button", true, getApplicationContext()));
+        putDataMapRequest.getDataMap().putString("BACKGROUND_COLOR", SharedPreferences.getString("background_color", "#FF9800", getApplicationContext()));
+        putDataMapRequest.getDataMap().putString("COLOR", SharedPreferences.getString("color", "#FAFAFA", getApplicationContext()));
+        putDataMapRequest.getDataMap().putBoolean("BATTERY_INDICATOR", SharedPreferences.getBoolean("battery", true, getApplicationContext()));
+        putDataMapRequest.getDataMap().putBoolean("ZERO_DIGIT", SharedPreferences.getBoolean("zero_digit", true, getApplicationContext()));
+
+        PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
+        Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.e(TAG, "onConnectionSuspended");
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.e(TAG, "onConnectionFailed");
     }
 
     @Override
     protected void onStop() {
+        if (googleApiClient != null && googleApiClient.isConnected()) {
+            googleApiClient.disconnect();
+        }
         super.onStop();
-        mTeleportClient.disconnect();
     }
 }

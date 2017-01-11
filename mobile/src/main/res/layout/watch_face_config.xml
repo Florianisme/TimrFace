@@ -10,11 +10,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary"
-        android:elevation="5dp"
+        android:elevation="4dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/Toolbar" />
 
-    <LinearLayout
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#212121" />
+
+        <com.timrface.helper.CanvasView
+            android:id="@+id/canvas_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="65dp"
+            android:layout_marginRight="65dp" />
+    </FrameLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="15dp"
@@ -179,6 +205,14 @@
                 android:layout_height="50dp"
                 android:layout_marginRight="13dp"
                 android:background="@drawable/amber" />
+
+            <Button
+                android:id="@+id/wheel"
+                style="?android:borderlessButtonStyle"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="13dp"
+                android:background="@drawable/wheel" />
         </LinearLayout>
 
         <LinearLayout
@@ -213,7 +247,19 @@
                 android:checked="true"
                 android:text="@string/battery" />
 
+
+            <CheckBox
+                android:id="@+id/zero_digit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/orange"
+                android:checked="true"
+                android:text="@string/zero_digit" />
+
         </LinearLayout>
 
     </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
 </LinearLayout>

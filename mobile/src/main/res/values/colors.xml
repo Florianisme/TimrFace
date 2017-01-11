@@ -20,4 +20,7 @@
     <color name="red">#F44336</color>
     <color name="amber">#FFC107</color>
 
+
+    <color name="shadow">#20000000</color>
+
 </resources>
