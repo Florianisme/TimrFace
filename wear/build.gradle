@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.timrface"
-        minSdkVersion 18
+        minSdkVersion 21
         targetSdkVersion 24
         versionCode 19
         versionName "2.6"

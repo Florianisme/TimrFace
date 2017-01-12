@@ -51,7 +51,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
     public static boolean SMOOTH_SECONDS = true;
     public static boolean BATTERY_LEVEL = true;
     public static boolean ZERO_DIGIT = true;
-    public static long INTERACTIVE_UPDATE_RATE_MS = 50;
+    public static long INTERACTIVE_UPDATE_RATE_MS = 16;
     static Paint mBackgroundPaint;
     static Paint mTilePaint;
     static Paint mScalePaint;
@@ -63,6 +63,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
     static Paint mBatteryPaint;
     static Paint mShadowPaint;
     static boolean shouldReceive = true;
+    boolean ambientMode = false;
     String batteryLevel = "";
 
     public static void updateUi(String color) {
@@ -133,7 +134,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
         float seconds;
         boolean mRegisteredTimeZoneReceiver = false;
         boolean is24Hour = false;
-        boolean ambientMode = false;
         SimpleDateFormat hourFormat;
         SimpleDateFormat amPmFormat;
         SimpleDateFormat dateFormat;
@@ -264,7 +264,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             if (!ambientMode)
                 canvas.drawBitmap(shadow, width - 25, (height + height / 5 + height / 14) + 4, mShadowPaint);
             canvas.drawRect(0, 0, width * 2, height + height / 5 + height / 11, mBackgroundPaint);
-
+            Log.d("Scale", "Pos: " + (seconds + width - 676.6f));
             if (!ambientMode) {
                 canvas.drawBitmap(scale, seconds + width - 676.6f, height + height / 4 + height / 8, mScalePaint);
                 canvas.drawBitmap(indicator, width - 25, height + height / 5 + height / 14, mArrowPaint);
@@ -284,21 +284,21 @@ public class WatchFaceService extends CanvasWatchFaceService {
             super.onAmbientModeChanged(inAmbientMode);
             ambientMode = inAmbientMode;
             adjustPaintColorToCurrentMode(mMinutePaint, KEY_BACKGROUND_COLOR,
-                    AMBIENT_TEXT);
+                    AMBIENT_TEXT, ambientMode);
 
             adjustPaintColorToCurrentMode(mHourPaint, KEY_TEXT_COLOR,
-                    AMBIENT_TEXT);
+                    AMBIENT_TEXT, ambientMode);
             adjustPaintColorToCurrentMode(mDatePaint, KEY_TEXT_COLOR,
-                    AMBIENT_TEXT);
+                    AMBIENT_TEXT, ambientMode);
             adjustPaintColorToCurrentMode(mTimePaint, KEY_TEXT_COLOR,
-                    AMBIENT_TEXT);
+                    AMBIENT_TEXT, ambientMode);
 
             adjustPaintColorToCurrentMode(mBackgroundPaint, KEY_MAIN_COLOR,
-                    AMBIENT_BACKGROUND);
+                    AMBIENT_BACKGROUND, ambientMode);
             adjustPaintColorToCurrentMode(mBatteryPaint, KEY_TEXT_COLOR,
-                    AMBIENT_BACKGROUND);
+                    AMBIENT_BACKGROUND, ambientMode);
             adjustPaintColorToCurrentMode(mTilePaint, KEY_BACKGROUND_COLOR,
-                    AMBIENT_BACKGROUND);
+                    AMBIENT_BACKGROUND, ambientMode);
 
             mHourPaint.setTypeface(ambientMode ? ROBOTO_THIN : ROBOTO_LIGHT);
             mMinutePaint.setTypeface(ambientMode ? ROBOTO_THIN : ROBOTO_LIGHT);
@@ -308,8 +308,8 @@ public class WatchFaceService extends CanvasWatchFaceService {
         }
 
         private void adjustPaintColorToCurrentMode(Paint paint, int interactiveColor,
-                                                   int ambientColor) {
-            paint.setColor(isInAmbientMode() ? ambientColor : interactiveColor);
+                                                   int ambientColor, boolean isInAmbientMode) {
+            paint.setColor(isInAmbientMode ? ambientColor : interactiveColor);
         }
 
         @Override
