@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.support.wearable.view.BoxInsetLayout;
 import android.support.wearable.view.CircledImageView;
 import android.support.wearable.view.WearableListView;
@@ -15,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class WatchFaceConfiguration extends Activity implements
         WearableListView.ClickListener, WearableListView.OnScrollListener {
