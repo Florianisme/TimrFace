@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '24.0.1'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
 
     defaultConfig {
         applicationId "com.timrface"
         minSdkVersion 18
-        targetSdkVersion 24
+        targetSdkVersion 29
         versionCode 19
         versionName "2.6"
         vectorDrawables.useSupportLibrary = true
@@ -21,10 +21,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     wearApp project(':wear')
-    compile 'com.android.support:appcompat-v7:24.2.0'
-    compile 'com.google.android.support:wearable:1.4.0'
-    compile 'com.google.android.gms:play-services-wearable:10.0.1'
-    compile 'com.pes.materialcolorpicker:library:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.support:wearable:2.5.0'
+    provided 'com.google.android.wearable:wearable:2.5.0'
+    implementation 'com.google.android.gms:play-services-wearable:17.0.0'
+    implementation 'com.pes.materialcolorpicker:library:1.0.2'
 }
