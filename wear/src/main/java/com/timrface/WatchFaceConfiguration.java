@@ -83,8 +83,9 @@ public class WatchFaceConfiguration extends Activity implements
     }
 
     private void updateConfigDataItem(final String backgroundColor) {
-        WatchFaceService.KEY_BACKGROUND_COLOR = Color.parseColor(backgroundColor);
-        WatchFaceService.updateUi(backgroundColor);
+        /*WatchFaceService.KEY_INTERACTIVE_COLOR = Color.parseColor(backgroundColor);
+        WatchFaceService.updateUi(backgroundColor);*/
+        // TODO update background color via intent oä
     }
 
     /**
