@@ -19,6 +19,7 @@ import com.google.android.gms.wearable.*;
 import com.timrface.layout.LayoutProvider;
 
 import java.util.Calendar;
+import java.util.TimeZone;
 
 public class WatchFaceService extends CanvasWatchFaceService {
 
@@ -46,8 +47,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
                         invalidate();
                         if (shouldTimerBeRunning()) {
                             long timeMs = System.currentTimeMillis();
-                            long delayMs =
-                                    16 - (timeMs % 16);
+                            long delayMs = 16 - (timeMs % 16);
                             mUpdateTimeHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIME, delayMs);
                         }
                         break;
@@ -56,7 +56,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         };
         private final String TAG = "WatchFaceService";
         boolean mRegisteredTimeZoneReceiver = false;
-        Calendar cal;
+        Calendar cal = Calendar.getInstance(TimeZone.getDefault());
         /* final BroadcastReceiver mTimeZoneReceiver = new BroadcastReceiver() {
              @Override
              public void onReceive(Context context, Intent intent) {

@@ -25,8 +25,8 @@ public class TimeDigits extends Layout {
         mHourPaint = createTextPaint(configuration.getTextColor(), robotoLight);
         mMinutePaint = createTextPaint(configuration.getTextColor(), robotoLight);
 
-
         hourFormat = new SimpleDateFormat();
+        hourFormat.applyLocalizedPattern(configuration.isAstronomicalClockFormat() ? "H" : "h");
     }
 
     @Override
@@ -43,7 +43,6 @@ public class TimeDigits extends Layout {
 
     @Override
     public void onConfigurationUpdated(Configuration configuration) {
-        hourFormat.applyLocalizedPattern(configuration.isAstronomicalClockFormat() ? "H" : "h");
         mHourPaint.setColor(configuration.getTextColor());
         mMinutePaint.setColor(configuration.getInteractiveColor());
     }

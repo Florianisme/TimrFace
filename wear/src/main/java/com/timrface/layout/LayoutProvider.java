@@ -2,10 +2,7 @@ package com.timrface.layout;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Typeface;
+import android.graphics.*;
 import com.timrface.Configuration;
 import com.timrface.R;
 import com.timrface.layout.components.*;
@@ -18,6 +15,7 @@ public class LayoutProvider {
 
     private final List<Layout> layoutList = new ArrayList<>();
     private Configuration configuration;
+    private boolean inAmbientMode;
 
     public LayoutProvider init(Configuration configuration, Context context) {
         Typeface robotoLight = Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");
@@ -25,13 +23,13 @@ public class LayoutProvider {
 
         this.configuration = configuration;
         layoutList.add(new BackgroundLayout(configuration));
-        layoutList.add(new TimeDigits(configuration, robotoLight, robotoThin));
         layoutList.add(new ChinLayout(configuration));
+        layoutList.add(buildShadowPaint(configuration, context));
+        layoutList.add(buildTickLayout(configuration, context));
+        layoutList.add(new TimeDigits(configuration, robotoLight, robotoThin));
         layoutList.add(new DateLayout(configuration, robotoLight));
         layoutList.add(buildBatteryLayout(context, robotoLight));
         layoutList.add(new AmPmLayout(configuration, robotoLight));
-        layoutList.add(buildTickLayout(configuration, context));
-        layoutList.add(buildShadowPaint(configuration, context));
 
         return this;
     }
@@ -65,13 +63,23 @@ public class LayoutProvider {
     }
 
     public void onAmbientModeChanged(final boolean inAmbientMode) {
+        this.inAmbientMode = inAmbientMode;
         for (Layout layout : layoutList) {
             layout.updateAmbientMode(inAmbientMode);
         }
     }
 
     public void update(Canvas canvas, float width, float height, Calendar calendar) {
-
+        if (inAmbientMode) {
+            canvas.drawColor(Color.BLACK);
+        }
+        for (Layout layout : layoutList) {
+            if (inAmbientMode && !layout.drawWhenInAmbientMode()) {
+                continue;
+            } else {
+                layout.update(canvas, width, height, calendar);
+            }
+        }
     }
 
     public void applyWindowInsets(Resources resources) {
