@@ -8,7 +8,6 @@ import com.timrface.layout.Constants;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 public class TimeDigits extends Layout {
 
@@ -45,6 +44,7 @@ public class TimeDigits extends Layout {
     public void onConfigurationUpdated(Configuration configuration) {
         mHourPaint.setColor(configuration.getTextColor());
         mMinutePaint.setColor(configuration.getInteractiveColor());
+        hourFormat.applyLocalizedPattern(configuration.isAstronomicalClockFormat() ? "H" : "h");
     }
 
     @Override
@@ -68,12 +68,12 @@ public class TimeDigits extends Layout {
     }
 
     private String getHours(Calendar calendar) {
-        return formatTwoDigits(Integer.parseInt(hourFormat.format(calendar.getTime())));
+        return formatTwoDigits(configuration.isAstronomicalClockFormat() ? calendar.get(Calendar.HOUR_OF_DAY) : calendar.get(Calendar.HOUR));
     }
 
     private String formatTwoDigits(int number) {
         if (configuration.isShowZeroDigit()) {
-            return String.format(Locale.getDefault(), "%02d", number);
+            return number < 10 ? "0" + number : "" + number;
         }
         return String.valueOf(number);
     }

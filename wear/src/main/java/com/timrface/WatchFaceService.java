@@ -126,7 +126,8 @@ public class WatchFaceService extends CanvasWatchFaceService {
                     .setArrowResourceId(R.drawable.indicator)
                     .setInteractiveColor(Color.parseColor("#FF9800"))
                     .setTextColor(Color.parseColor("#424242"))
-                    .setShowZeroDigit(true);
+                    .setShowZeroDigit(true)
+                    .setAstronomicalClockFormat(true);
         }
 
         @Override
