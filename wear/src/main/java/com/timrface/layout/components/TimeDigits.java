@@ -23,7 +23,7 @@ public class TimeDigits extends Layout {
         this.robotoLight = robotoLight;
         this.robotoThin = robotoThin;
         mHourPaint = createTextPaint(configuration.getTextColor(), robotoLight);
-        mMinutePaint = createTextPaint(configuration.getTextColor(), robotoLight);
+        mMinutePaint = createTextPaint(configuration.getInteractiveColor(), robotoLight);
 
         hourFormat = new SimpleDateFormat();
         hourFormat.applyLocalizedPattern(configuration.isAstronomicalClockFormat() ? "H" : "h");

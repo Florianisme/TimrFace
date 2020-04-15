@@ -24,14 +24,22 @@ public class LayoutProvider {
         this.configuration = configuration;
         layoutList.add(new BackgroundLayout(configuration));
         layoutList.add(new ChinLayout(configuration));
-        layoutList.add(buildShadowPaint(configuration, context));
         layoutList.add(buildTickLayout(configuration, context));
+        layoutList.add(buildShadowPaint(configuration, context));
+        layoutList.add(buildArrowLayout(configuration, context));
         layoutList.add(new TimeDigits(configuration, robotoLight, robotoThin));
         layoutList.add(new DateLayout(configuration, robotoLight));
         layoutList.add(buildBatteryLayout(context, robotoLight));
         layoutList.add(new AmPmLayout(configuration, robotoLight));
 
         return this;
+    }
+
+    private Layout buildArrowLayout(Configuration configuration, Context context) {
+        Bitmap indicatorBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.indicator);
+        indicatorBitmap = Bitmap.createScaledBitmap(indicatorBitmap, 50, 25, true);
+
+        return new ArrowLayout(configuration, indicatorBitmap, context);
     }
 
     private Layout buildShadowPaint(Configuration configuration, Context context) {
@@ -46,9 +54,7 @@ public class LayoutProvider {
         Bitmap scaleBitmap = BitmapFactory.decodeResource(resources, R.drawable.scale);
         scaleBitmap = Bitmap.createScaledBitmap(scaleBitmap, 2000, 55, true);
 
-        Bitmap indicatorBitmap = BitmapFactory.decodeResource(resources, R.drawable.indicator);
-        indicatorBitmap = Bitmap.createScaledBitmap(indicatorBitmap, 50, 25, true);
-        return new TickLayout(configuration, scaleBitmap, indicatorBitmap, context);
+        return new TickLayout(configuration, scaleBitmap);
     }
 
     private Layout buildBatteryLayout(Context context, Typeface robotoLight) {
