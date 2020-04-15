@@ -89,11 +89,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
             super.onCreate(holder);
 
             setWatchFaceStyle(new WatchFaceStyle.Builder(WatchFaceService.this)
-                    .setCardPeekMode(WatchFaceStyle.PEEK_MODE_SHORT)
-                    .setAmbientPeekMode(WatchFaceStyle.AMBIENT_PEEK_MODE_VISIBLE)
-                    .setBackgroundVisibility(WatchFaceStyle.BACKGROUND_VISIBILITY_INTERRUPTIVE)
-                    .setShowSystemUiTime(false)
-                    .setHotwordIndicatorGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM)
                     .setStatusBarGravity(Gravity.END | Gravity.TOP)
                     .setViewProtectionMode(WatchFaceStyle.PROTECT_STATUS_BAR)
                     .build());
