@@ -154,6 +154,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onAmbientModeChanged(boolean inAmbientMode) {
             super.onAmbientModeChanged(inAmbientMode);
+            ambientMode = inAmbientMode;
             layoutProvider.onAmbientModeChanged(inAmbientMode);
 
             invalidate();
