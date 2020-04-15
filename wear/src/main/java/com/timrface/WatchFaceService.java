@@ -19,8 +19,11 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.*;
 import com.timrface.layout.LayoutProvider;
 
+import java.lang.ref.WeakReference;
 import java.util.Calendar;
 import java.util.TimeZone;
+
+import static com.timrface.WatchFaceService.Engine.MSG_UPDATE_TIME;
 
 public class WatchFaceService extends CanvasWatchFaceService {
 
@@ -35,41 +38,39 @@ public class WatchFaceService extends CanvasWatchFaceService {
         return new Engine();
     }
 
+    private static final class UpdateIntervalHandler extends Handler {
 
-    public class Engine extends CanvasWatchFaceService.Engine implements
-            GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        private final WeakReference<Engine> mWeakReference;
 
-        static final int MSG_UPDATE_TIME = 0;
-        final Handler mUpdateTimeHandler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                switch (message.what) {
-                    case MSG_UPDATE_TIME:
-                        invalidate();
-                        if (shouldTimerBeRunning()) {
-                            long timeMs = System.currentTimeMillis();
-                            long delayMs = 16 - (timeMs % 16);
-                            mUpdateTimeHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIME, delayMs);
-                        }
-                        break;
+        public UpdateIntervalHandler(WatchFaceService.Engine reference) {
+            mWeakReference = new WeakReference<>(reference);
+        }
+
+        @Override
+        public void handleMessage(Message message) {
+            Engine engine = mWeakReference.get();
+            if (engine != null) {
+                if (message.what == MSG_UPDATE_TIME) {
+                    engine.invalidate();
+                    if (engine.shouldTimerBeRunning()) {
+                        long timeMs = System.currentTimeMillis();
+                        long delayMs = 16 - (timeMs % 16);
+                        sendEmptyMessageDelayed(MSG_UPDATE_TIME, delayMs);
+                    }
                 }
             }
-        };
+        }
+    }
+
+    public class Engine extends CanvasWatchFaceService.Engine implements
+            GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, DataClient.OnDataChangedListener {
+
+        static final int MSG_UPDATE_TIME = 0;
+        final Handler mUpdateTimeHandler = new UpdateIntervalHandler(this);
+
         private final String TAG = "WatchFaceService";
         Calendar cal = Calendar.getInstance(TimeZone.getDefault());
         private GoogleApiClient googleApiClient;
-        private final DataClient.OnDataChangedListener onDataChangedListener = new DataClient.OnDataChangedListener() {
-            @Override
-            public void onDataChanged(@NonNull DataEventBuffer dataEventBuffer) {
-                for (DataEvent event : dataEventBuffer) {
-                    if (event.getType() == DataEvent.TYPE_CHANGED) {
-                        DataItem item = event.getDataItem();
-                        processConfigurationFor(item);
-                    }
-                }
-                dataEventBuffer.release();
-            }
-        };
 
         private final ResultCallback<DataItemBuffer> onConnectedResultCallback = new ResultCallback<DataItemBuffer>() {
             @Override
@@ -99,7 +100,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
                     .addOnConnectionFailedListener(this)
                     .build();
 
-            Wearable.getDataClient(getApplicationContext()).addListener(onDataChangedListener);
+            Wearable.getDataClient(getApplicationContext()).addListener(this);
 
             configuration = buildDefaultConfiguration();
             layoutProvider = new LayoutProvider().init(configuration, getApplicationContext());
@@ -225,7 +226,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onConnected(Bundle bundle) {
             Log.d(TAG, "connected GoogleAPI");
-            Wearable.DataApi.addListener(googleApiClient, onDataChangedListener);
+            Wearable.DataApi.addListener(googleApiClient, this);
             Wearable.DataApi.getDataItems(googleApiClient).setResultCallback(onConnectedResultCallback);
         }
 
@@ -242,14 +243,14 @@ public class WatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onDestroy() {
             mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
-            Wearable.getDataClient(getApplicationContext()).removeListener(onDataChangedListener);
+            Wearable.getDataClient(getApplicationContext()).removeListener(this);
             releaseGoogleApiClient();
             super.onDestroy();
         }
 
         private void releaseGoogleApiClient() {
             if (googleApiClient != null && googleApiClient.isConnected()) {
-                Wearable.DataApi.removeListener(googleApiClient, onDataChangedListener);
+                Wearable.DataApi.removeListener(googleApiClient, this);
                 googleApiClient.disconnect();
             }
         }
@@ -258,5 +259,15 @@ public class WatchFaceService extends CanvasWatchFaceService {
             return isVisible() && !isInAmbientMode();
         }
 
+        @Override
+        public void onDataChanged(@NonNull DataEventBuffer dataEventBuffer) {
+            for (DataEvent event : dataEventBuffer) {
+                if (event.getType() == DataEvent.TYPE_CHANGED) {
+                    DataItem item = event.getDataItem();
+                    processConfigurationFor(item);
+                }
+            }
+            dataEventBuffer.release();
+        }
     }
 }
