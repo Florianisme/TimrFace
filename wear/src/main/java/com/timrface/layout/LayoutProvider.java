@@ -22,8 +22,8 @@ public class LayoutProvider {
         Typeface robotoThin = Typeface.createFromAsset(context.getAssets(), "Roboto-Thin.ttf");
 
         this.configuration = configuration;
-        layoutList.add(new BackgroundLayout(configuration));
         layoutList.add(new ChinLayout(configuration));
+        layoutList.add(new BackgroundLayout(configuration));
         layoutList.add(buildTickLayout(configuration, context));
         layoutList.add(buildShadowPaint(configuration, context));
         layoutList.add(buildArrowLayout(configuration, context));
