@@ -38,7 +38,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
     public class Engine extends CanvasWatchFaceService.Engine implements
             GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-        
+
         static final int MSG_UPDATE_TIME = 0;
         final Handler mUpdateTimeHandler = new Handler() {
             @Override
@@ -56,17 +56,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             }
         };
         private final String TAG = "WatchFaceService";
-        boolean mRegisteredTimeZoneReceiver = false;
         Calendar cal = Calendar.getInstance(TimeZone.getDefault());
-        /* final BroadcastReceiver mTimeZoneReceiver = new BroadcastReceiver() {
-             @Override
-             public void onReceive(Context context, Intent intent) {
-                 mCalendar.clear();
-                 mCalendar.setTimeZone(TimeZone.getDefault());
-                 initFormats();
-                 invalidate();
-             }
-         };*/
         private GoogleApiClient googleApiClient;
         private final DataClient.OnDataChangedListener onDataChangedListener = new DataClient.OnDataChangedListener() {
             @Override
@@ -114,6 +104,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
                     .addOnConnectionFailedListener(this)
                     .build();
 
+            Wearable.getDataClient(getApplicationContext()).addListener(onDataChangedListener);
 
             configuration = buildDefaultConfiguration();
             layoutProvider = new LayoutProvider().init(configuration, getApplicationContext());
@@ -256,6 +247,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onDestroy() {
             mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
+            Wearable.getDataClient(getApplicationContext()).removeListener(onDataChangedListener);
             releaseGoogleApiClient();
             super.onDestroy();
         }

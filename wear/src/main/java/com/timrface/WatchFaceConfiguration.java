@@ -15,6 +15,9 @@ import android.view.WindowInsets;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.Wearable;
 
 public class WatchFaceConfiguration extends Activity implements
         WearableListView.ClickListener, WearableListView.OnScrollListener {
@@ -83,9 +86,10 @@ public class WatchFaceConfiguration extends Activity implements
     }
 
     private void updateConfigDataItem(final String backgroundColor) {
-        /*WatchFaceService.KEY_INTERACTIVE_COLOR = Color.parseColor(backgroundColor);
-        WatchFaceService.updateUi(backgroundColor);*/
-        // TODO update background color via intent oä
+        PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
+        DataMap dataMap = putDataMapRequest.getDataMap();
+        dataMap.putString("COLOR", backgroundColor);
+        Wearable.getDataClient(this).putDataItem(putDataMapRequest.asPutDataRequest());
     }
 
     /**
