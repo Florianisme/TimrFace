@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.WindowInsets;
+import androidx.annotation.NonNull;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -67,19 +68,19 @@ public class WatchFaceService extends CanvasWatchFaceService {
              }
          };*/
         private GoogleApiClient googleApiClient;
-        private final DataApi.DataListener onDataChangedListener = new DataApi.DataListener() {
+        private final DataClient.OnDataChangedListener onDataChangedListener = new DataClient.OnDataChangedListener() {
             @Override
-            public void onDataChanged(DataEventBuffer dataEvents) {
-                for (DataEvent event : dataEvents) {
+            public void onDataChanged(@NonNull DataEventBuffer dataEventBuffer) {
+                for (DataEvent event : dataEventBuffer) {
                     if (event.getType() == DataEvent.TYPE_CHANGED) {
                         DataItem item = event.getDataItem();
                         processConfigurationFor(item);
                     }
                 }
-
-                dataEvents.release();
+                dataEventBuffer.release();
             }
         };
+
         private final ResultCallback<DataItemBuffer> onConnectedResultCallback = new ResultCallback<DataItemBuffer>() {
             @Override
             public void onResult(DataItemBuffer dataItems) {
@@ -181,18 +182,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             updateTimer();
         }
 
-        private void updateConfiguration(int interactiveColor, int backgroundColor, int arrowResourceId,
-                                         boolean smoothScrolling, boolean showBattery, boolean showZeroDigit) {
-            boolean isBackgroundColorWhite = backgroundColor != Color.parseColor("#FAFAFA");
-            configuration = new Configuration()
-                    .setShowBatteryLevel(showBattery)
-                    .setSmoothScrolling(smoothScrolling)
-                    .setBackgroundColor(backgroundColor)
-                    .setArrowResourceId(arrowResourceId)
-                    .setInteractiveColor(interactiveColor)
-                    .setTextColor(isBackgroundColorWhite ? Color.parseColor("#424242") : Color.parseColor("#FAFAFA"))
-                    .setShowZeroDigit(showZeroDigit);
-
+        private void updateConfiguration() {
             layoutProvider.onConfigurationChange(configuration);
             invalidate();
         }
@@ -206,31 +196,32 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
 
         private void processConfigurationFor(DataItem item) {
-            boolean smoothSeconds = true;
-            boolean showBatteryLevel = true;
-            boolean showZeroDigit = true;
-
-            int interactiveColor = Color.parseColor("#FF9800");
-            int backgroundColor = Color.parseColor("#FAFAFA");
-            int arrowResourceId = R.drawable.indicator;
-
             if ("/watch_face_config".equals(item.getUri().getPath())) {
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                if (dataMap.containsKey("SMOOTH_SECONDS"))
-                    smoothSeconds = dataMap.getBoolean("SMOOTH_SECONDS");
-                if (dataMap.containsKey("BACKGROUND_COLOR"))
-                    backgroundColor = Color.parseColor(dataMap.getString("BACKGROUND_COLOR"));
-                if (dataMap.containsKey("BACKGROUND_COLOR"))
-                    arrowResourceId = getArrowDrawableResourceIdByBackgroundColor(dataMap.getString("BACKGROUND_COLOR"));
-                if (dataMap.containsKey("COLOR"))
-                    interactiveColor = Color.parseColor(dataMap.getString("COLOR"));
-                if (dataMap.containsKey("COLOR_MANUAL"))
-                    interactiveColor = dataMap.getInt("COLOR_MANUAL");
-                if (dataMap.containsKey("BATTERY_INDICATOR"))
-                    showBatteryLevel = dataMap.getBoolean("BATTERY_INDICATOR", true);
-                if (dataMap.containsKey("ZERO_DIGIT"))
-                    showZeroDigit = dataMap.getBoolean("ZERO_DIGIT", true);
-                updateConfiguration(interactiveColor, backgroundColor, arrowResourceId, smoothSeconds, showBatteryLevel, showZeroDigit);
+                if (dataMap.containsKey("SMOOTH_SECONDS")) {
+                    configuration.setSmoothScrolling(dataMap.getBoolean("SMOOTH_SECONDS"));
+                }
+                if (dataMap.containsKey("BACKGROUND_COLOR")) {
+                    int backgroundColor = Color.parseColor(dataMap.getString("BACKGROUND_COLOR"));
+                    boolean isBackgroundColorWhite = backgroundColor != Color.parseColor("#FAFAFA");
+
+                    configuration.setBackgroundColor(backgroundColor);
+                    configuration.setTextColor(isBackgroundColorWhite ? Color.parseColor("#424242") : Color.parseColor("#FAFAFA"));
+                    configuration.setArrowResourceId(getArrowDrawableResourceIdByBackgroundColor(dataMap.getString("BACKGROUND_COLOR")));
+                }
+                if (dataMap.containsKey("COLOR")) {
+                    configuration.setInteractiveColor(Color.parseColor(dataMap.getString("COLOR")));
+                }
+                if (dataMap.containsKey("COLOR_MANUAL")) {
+                    configuration.setInteractiveColor(dataMap.getInt("COLOR_MANUAL"));
+                }
+                if (dataMap.containsKey("BATTERY_INDICATOR")) {
+                    configuration.setShowBatteryLevel(dataMap.getBoolean("BATTERY_INDICATOR", true));
+                }
+                if (dataMap.containsKey("ZERO_DIGIT")) {
+                    configuration.setShowZeroDigit(dataMap.getBoolean("ZERO_DIGIT", true));
+                }
+                updateConfiguration();
             }
         }
 
