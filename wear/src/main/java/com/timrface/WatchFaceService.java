@@ -1,7 +1,6 @@
 package com.timrface;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,7 +14,6 @@ import android.view.WindowInsets;
 import androidx.annotation.NonNull;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.*;
 import com.timrface.watchfacelayout.Configuration;
 import com.timrface.watchfacelayout.ConfigurationBuilder;
@@ -31,7 +29,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
     private LayoutProvider layoutProvider;
 
-    static boolean shouldReceive = true;
     boolean ambientMode = false;
     private Configuration configuration;
 
@@ -72,20 +69,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
         private final String TAG = "WatchFaceService";
         Calendar cal = Calendar.getInstance(TimeZone.getDefault());
-        private GoogleApiClient googleApiClient;
-
-        private final ResultCallback<DataItemBuffer> onConnectedResultCallback = new ResultCallback<DataItemBuffer>() {
-            @Override
-            public void onResult(DataItemBuffer dataItems) {
-                if (shouldReceive) {
-                    for (DataItem item : dataItems) {
-                        processConfigurationFor(item);
-                    }
-                }
-                dataItems.release();
-                shouldReceive = true;
-            }
-        };
 
         @Override
         public void onCreate(SurfaceHolder holder) {
@@ -96,16 +79,19 @@ public class WatchFaceService extends CanvasWatchFaceService {
                     .setViewProtectionMode(WatchFaceStyle.PROTECT_STATUS_BAR)
                     .build());
 
-            googleApiClient = new GoogleApiClient.Builder(WatchFaceService.this)
-                    .addApi(Wearable.API)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .build();
-
-            Wearable.getDataClient(getApplicationContext()).addListener(this);
+            Wearable.getDataClient(WatchFaceService.this).addListener(this);
 
             configuration = ConfigurationBuilder.getDefaultConfiguration();
             layoutProvider = new LayoutProvider().init(configuration, getApplicationContext());
+
+            NodeClient nodeClient = Wearable.getNodeClient(WatchFaceService.this);
+            DataClient dataClient = Wearable.getDataClient(WatchFaceService.this);
+            new StoredConfigurationFetcher().updateConfig(nodeClient, dataClient, configuration, new ConfigUpdateFinished() {
+                @Override
+                public void onUpdateFinished() {
+                    layoutProvider.onConfigurationChange(configuration);
+                }
+            });
         }
 
         @Override
@@ -149,13 +135,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
         public void onVisibilityChanged(boolean visible) {
             super.onVisibilityChanged(visible);
 
-            if (visible) {
-                //registerTimeReceiver();
-                googleApiClient.connect();
-            } else {
-                releaseGoogleApiClient();
-                //unregisterReceiver();
-            }
             updateTimer();
         }
 
@@ -171,53 +150,10 @@ public class WatchFaceService extends CanvasWatchFaceService {
             }
         }
 
-
-        private void processConfigurationFor(DataItem item) {
-            if ("/watch_face_config".equals(item.getUri().getPath())) {
-                DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                if (dataMap.containsKey("SMOOTH_SECONDS")) {
-                    configuration.setSmoothScrolling(dataMap.getBoolean("SMOOTH_SECONDS"));
-                }
-                if (dataMap.containsKey("BACKGROUND_COLOR")) {
-                    int backgroundColor = Color.parseColor(dataMap.getString("BACKGROUND_COLOR"));
-                    boolean isBackgroundColorWhite = backgroundColor == Color.parseColor("#FAFAFA");
-
-                    configuration.setBackgroundColor(backgroundColor);
-                    configuration.setTextColor(isBackgroundColorWhite ? Color.parseColor("#424242") : Color.parseColor("#FAFAFA"));
-                    configuration.setArrowResourceId(getArrowDrawableResourceIdByBackgroundColor(dataMap.getString("BACKGROUND_COLOR")));
-                }
-                if (dataMap.containsKey("COLOR")) {
-                    configuration.setInteractiveColor(Color.parseColor(dataMap.getString("COLOR")));
-                }
-                if (dataMap.containsKey("COLOR_MANUAL")) {
-                    configuration.setInteractiveColor(dataMap.getInt("COLOR_MANUAL"));
-                }
-                if (dataMap.containsKey("BATTERY_INDICATOR")) {
-                    configuration.setShowBatteryLevel(dataMap.getBoolean("BATTERY_INDICATOR", true));
-                }
-                if (dataMap.containsKey("ZERO_DIGIT")) {
-                    configuration.setShowZeroDigit(dataMap.getBoolean("ZERO_DIGIT", true));
-                }
-                updateConfiguration();
-            }
-        }
-
-        private int getArrowDrawableResourceIdByBackgroundColor(String color) {
-            switch (color) {
-                case "#424242":
-                    return R.drawable.indicator_grey;
-                case "#000000":
-                    return R.drawable.indicator_black;
-                default:
-                    return R.drawable.indicator;
-            }
-        }
-
         @Override
         public void onConnected(Bundle bundle) {
             Log.d(TAG, "connected GoogleAPI");
-            Wearable.DataApi.addListener(googleApiClient, this);
-            Wearable.DataApi.getDataItems(googleApiClient).setResultCallback(onConnectedResultCallback);
+            Wearable.getDataClient(WatchFaceService.this).addListener(this);
         }
 
         @Override
@@ -234,15 +170,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         public void onDestroy() {
             mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
             Wearable.getDataClient(getApplicationContext()).removeListener(this);
-            releaseGoogleApiClient();
             super.onDestroy();
-        }
-
-        private void releaseGoogleApiClient() {
-            if (googleApiClient != null && googleApiClient.isConnected()) {
-                Wearable.DataApi.removeListener(googleApiClient, this);
-                googleApiClient.disconnect();
-            }
         }
 
         private boolean shouldTimerBeRunning() {
@@ -254,7 +182,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             for (DataEvent event : dataEventBuffer) {
                 if (event.getType() == DataEvent.TYPE_CHANGED) {
                     DataItem item = event.getDataItem();
-                    processConfigurationFor(item);
+                    ConfigUpdater.updateConfig(configuration, item);
                 }
             }
             dataEventBuffer.release();
