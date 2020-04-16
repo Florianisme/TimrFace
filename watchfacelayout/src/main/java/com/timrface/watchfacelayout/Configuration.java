@@ -1,4 +1,6 @@
-package com.timrface;
+package com.timrface.watchfacelayout;
+
+import android.graphics.Color;
 
 public class Configuration {
 
@@ -30,12 +32,22 @@ public class Configuration {
         return this;
     }
 
+    public Configuration setInteractiveColor(String interactiveColor) {
+        this.interactiveColor = Color.parseColor(interactiveColor);
+        return this;
+    }
+
     public int getBackgroundColor() {
         return backgroundColor;
     }
 
     public Configuration setBackgroundColor(int backgroundColor) {
         this.backgroundColor = backgroundColor;
+        return this;
+    }
+
+    public Configuration setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = Color.parseColor(backgroundColor);
         return this;
     }
 
@@ -63,6 +75,11 @@ public class Configuration {
 
     public Configuration setTextColor(int textColor) {
         this.textColor = textColor;
+        return this;
+    }
+
+    public Configuration setTextColor(String textColor) {
+        this.textColor = Color.parseColor(textColor);
         return this;
     }
 

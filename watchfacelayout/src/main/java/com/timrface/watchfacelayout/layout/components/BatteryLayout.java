@@ -1,4 +1,4 @@
-package com.timrface.layout.components;
+package com.timrface.watchfacelayout.layout.components;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,8 +7,8 @@ import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import com.timrface.Configuration;
-import com.timrface.layout.Constants;
+import com.timrface.watchfacelayout.Configuration;
+import com.timrface.watchfacelayout.layout.Constants;
 
 import java.util.Calendar;
 

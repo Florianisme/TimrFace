@@ -17,7 +17,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.*;
-import com.timrface.layout.LayoutProvider;
+import com.timrface.watchfacelayout.Configuration;
+import com.timrface.watchfacelayout.ConfigurationBuilder;
+import com.timrface.watchfacelayout.layout.LayoutProvider;
 
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
@@ -102,20 +104,8 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
             Wearable.getDataClient(getApplicationContext()).addListener(this);
 
-            configuration = buildDefaultConfiguration();
+            configuration = ConfigurationBuilder.getDefaultConfiguration();
             layoutProvider = new LayoutProvider().init(configuration, getApplicationContext());
-        }
-
-        private Configuration buildDefaultConfiguration() {
-            return new Configuration()
-                    .setShowBatteryLevel(true)
-                    .setSmoothScrolling(true)
-                    .setBackgroundColor(Color.parseColor("#FAFAFA"))
-                    .setArrowResourceId(R.drawable.indicator)
-                    .setInteractiveColor(Color.parseColor("#FF9800"))
-                    .setTextColor(Color.parseColor("#424242"))
-                    .setShowZeroDigit(true)
-                    .setAstronomicalClockFormat(true);
         }
 
         @Override
@@ -190,7 +180,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
                 }
                 if (dataMap.containsKey("BACKGROUND_COLOR")) {
                     int backgroundColor = Color.parseColor(dataMap.getString("BACKGROUND_COLOR"));
-                    boolean isBackgroundColorWhite = backgroundColor != Color.parseColor("#FAFAFA");
+                    boolean isBackgroundColorWhite = backgroundColor == Color.parseColor("#FAFAFA");
 
                     configuration.setBackgroundColor(backgroundColor);
                     configuration.setTextColor(isBackgroundColorWhite ? Color.parseColor("#424242") : Color.parseColor("#FAFAFA"));

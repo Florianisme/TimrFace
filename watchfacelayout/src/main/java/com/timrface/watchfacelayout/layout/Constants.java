@@ -1,4 +1,4 @@
-package com.timrface.layout;
+package com.timrface.watchfacelayout.layout;
 
 import android.graphics.Color;
 

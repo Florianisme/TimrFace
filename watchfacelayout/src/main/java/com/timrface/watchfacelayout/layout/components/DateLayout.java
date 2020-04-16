@@ -1,11 +1,11 @@
-package com.timrface.layout.components;
+package com.timrface.watchfacelayout.layout.components;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.text.format.DateFormat;
-import com.timrface.Configuration;
-import com.timrface.layout.Constants;
+import com.timrface.watchfacelayout.Configuration;
+import com.timrface.watchfacelayout.layout.Constants;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

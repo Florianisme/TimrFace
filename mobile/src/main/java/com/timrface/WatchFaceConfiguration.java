@@ -3,14 +3,12 @@ package com.timrface;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +16,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuItemCompat;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.PutDataMapRequest;
@@ -31,6 +31,7 @@ import com.timrface.util.IabHelper;
 import com.timrface.util.IabResult;
 import com.timrface.util.Inventory;
 import com.timrface.util.Purchase;
+import com.timrface.watchfacelayout.Configuration;
 
 import java.util.ArrayList;
 
@@ -48,6 +49,7 @@ public class WatchFaceConfiguration extends AppCompatActivity implements GoogleA
     CanvasView canvasView;
     ColorPicker colorPicker;
     Handler mUpdateTimeHandler;
+    private Configuration configuration = new Configuration();
     IabHelper.OnConsumeFinishedListener mConsumeFinishedListener =
             new IabHelper.OnConsumeFinishedListener() {
                 public void onConsumeFinished(Purchase purchase,
@@ -135,11 +137,16 @@ public class WatchFaceConfiguration extends AppCompatActivity implements GoogleA
                 .addApi(Wearable.API)
                 .build();
 
-        canvasView.updateConfiguration("SMOOTH_SECONDS", SharedPreferences.getBoolean("button", true, getApplicationContext()));
-        canvasView.updateConfiguration("BACKGROUND_COLOR", SharedPreferences.getString("background_color", "#FF9800", getApplicationContext()));
-        canvasView.updateConfiguration("COLOR", SharedPreferences.getString("color", "#FAFAFA", getApplicationContext()));
-        canvasView.updateConfiguration("BATTERY_INDICATOR", SharedPreferences.getBoolean("battery", true, getApplicationContext()));
-        canvasView.updateConfiguration("ZERO_DIGIT", SharedPreferences.getBoolean("zero_digit", true, getApplicationContext()));
+        configuration.setSmoothScrolling(SharedPreferences.getBoolean("button", true, getApplicationContext()));
+        String backgroundColor = SharedPreferences.getString("background_color", "#FAFAFA", getApplicationContext());
+        boolean isBackgroundColorWhite = !backgroundColor.equals("#FAFAFA");
+        configuration.setBackgroundColor(backgroundColor);
+        configuration.setTextColor(isBackgroundColorWhite ? Color.parseColor("#424242") : Color.parseColor("#FAFAFA"));
+        configuration.setArrowResourceId(getArrowDrawableResourceIdByBackgroundColor(backgroundColor));
+        configuration.setInteractiveColor(SharedPreferences.getString("color", "#FF9800", getApplicationContext()));
+        configuration.setShowBatteryLevel(SharedPreferences.getBoolean("battery", true, getApplicationContext()));
+        configuration.setShowZeroDigit(SharedPreferences.getBoolean("zero_digit", true, getApplicationContext()));
+        canvasView.updateConfig(configuration);
 
         setUpAllColors();
 
@@ -147,15 +154,16 @@ public class WatchFaceConfiguration extends AppCompatActivity implements GoogleA
         seconds.setChecked(SharedPreferences.getBoolean("button", true, getApplicationContext()));
         seconds.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
-                                               @Override
-                                               public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                                   PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
-                                                   putDataMapRequest.getDataMap().putBoolean("SMOOTH_SECONDS", isChecked);
-                                                   PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
-                                                   Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
-                                                   SharedPreferences.saveBoolean("button", isChecked, getApplicationContext());
-                                                   canvasView.updateConfiguration("SMOOTH_SECONDS", isChecked);
-                                               }
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
+                putDataMapRequest.getDataMap().putBoolean("SMOOTH_SECONDS", isChecked);
+                PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
+                Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
+                SharedPreferences.saveBoolean("button", isChecked, getApplicationContext());
+                configuration.setSmoothScrolling(isChecked);
+                canvasView.updateConfig(configuration);
+            }
                                            }
         );
 
@@ -169,7 +177,8 @@ public class WatchFaceConfiguration extends AppCompatActivity implements GoogleA
                 PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
                 Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
                 SharedPreferences.saveBoolean("battery", isChecked, getApplicationContext());
-                canvasView.updateConfiguration("BATTERY_INDICATOR", isChecked);
+                configuration.setShowBatteryLevel(isChecked);
+                canvasView.updateConfig(configuration);
             }
         });
 
@@ -183,7 +192,8 @@ public class WatchFaceConfiguration extends AppCompatActivity implements GoogleA
                 PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
                 Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
                 SharedPreferences.saveBoolean("zero_digit", isChecked, getApplicationContext());
-                canvasView.updateConfiguration("ZERO_DIGIT", isChecked);
+                configuration.setShowZeroDigit(isChecked);
+                canvasView.updateConfig(configuration);
             }
         });
 
@@ -203,6 +213,17 @@ public class WatchFaceConfiguration extends AppCompatActivity implements GoogleA
     private void updateTimer() {
         mUpdateTimeHandler.removeMessages(0);
         mUpdateTimeHandler.sendEmptyMessage(0);
+    }
+
+    private int getArrowDrawableResourceIdByBackgroundColor(String color) {
+        switch (color) {
+            case "#424242":
+                return R.drawable.indicator_grey;
+            case "#000000":
+                return R.drawable.indicator_black;
+            default:
+                return R.drawable.indicator;
+        }
     }
 
     private void dialog() {
@@ -313,7 +334,21 @@ public class WatchFaceConfiguration extends AppCompatActivity implements GoogleA
 
         imgButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (key == 14) {
+                if (key < 3) {
+                    Log.d(TAG, "Color: " + color);
+                    PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
+                    putDataMapRequest.getDataMap().putString("BACKGROUND_COLOR", color);
+                    PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
+                    Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
+                    configuration.setBackgroundColor(color);
+                    boolean isBackgroundColorWhite = Color.parseColor("#FAFAFA") == Color.parseColor(color);
+                    String textColor = isBackgroundColorWhite ? "#424242" : "#FAFAFA";
+                    configuration.setTextColor(textColor);
+                    configuration.setArrowResourceId(getArrowDrawableResourceIdByBackgroundColor(color));
+                    canvasView.updateConfig(configuration);
+                    SharedPreferences.saveInteger("id_background", key, getApplicationContext());
+                    SharedPreferences.saveString("background_color", color, getApplicationContext());
+                } else if (key == 14) {
                     colorPicker.show();
                     Button okColor = (Button) colorPicker.findViewById(R.id.okColorButton);
                     okColor.setOnClickListener(new View.OnClickListener() {
@@ -324,7 +359,10 @@ public class WatchFaceConfiguration extends AppCompatActivity implements GoogleA
                             PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
                             Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
                             colorPicker.dismiss();
-                            canvasView.updateConfiguration("COLOR_MANUAL", colorPicker.getColor());
+                            configuration.setInteractiveColor(colorPicker.getColor());
+                            canvasView.updateConfig(configuration);
+                            SharedPreferences.saveInteger("id", key, getApplicationContext());
+                            SharedPreferences.saveString("color", color, getApplicationContext());
                         }
                     });
                 } else {
@@ -332,14 +370,8 @@ public class WatchFaceConfiguration extends AppCompatActivity implements GoogleA
                     putDataMapRequest.getDataMap().putString("COLOR", color);
                     PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
                     Wearable.DataApi.putDataItem(googleApiClient, putDataReq);
-                    canvasView.updateConfiguration("COLOR", color);
-                }
-
-                if (key < 3) {
-                    SharedPreferences.saveInteger("id_background", key, getApplicationContext());
-                    SharedPreferences.saveString("background_color", color, getApplicationContext());
-                }
-                else {
+                    configuration.setInteractiveColor(color);
+                    canvasView.updateConfig(configuration);
                     SharedPreferences.saveInteger("id", key, getApplicationContext());
                     SharedPreferences.saveString("color", color, getApplicationContext());
                 }

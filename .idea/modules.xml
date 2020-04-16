@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/TimrFace.iml" filepath="$PROJECT_DIR$/TimrFace.iml" group="TimrFace" />
       <module fileurl="file://$PROJECT_DIR$/mobile/mobile.iml" filepath="$PROJECT_DIR$/mobile/mobile.iml" group="TimrFace/mobile" />
+      <module fileurl="file://$PROJECT_DIR$/watchfacelayout/watchfacelayout.iml" filepath="$PROJECT_DIR$/watchfacelayout/watchfacelayout.iml" group="TimrFace/watchfacelayout" />
       <module fileurl="file://$PROJECT_DIR$/wear/wear.iml" filepath="$PROJECT_DIR$/wear/wear.iml" group="TimrFace/wear" />
     </modules>
   </component>
