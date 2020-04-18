@@ -43,8 +43,10 @@ public class TimeDigits extends Layout {
 
     @Override
     public void onConfigurationUpdated(Configuration configuration) {
-        mHourPaint.setColor(configuration.getTextColor());
-        mMinutePaint.setColor(configuration.getInteractiveColor());
+        if (!isInAmbientMode()) {
+            mHourPaint.setColor(configuration.getTextColor());
+            mMinutePaint.setColor(configuration.getInteractiveColor());
+        }
         hourFormat.applyLocalizedPattern(configuration.isAstronomicalClockFormat() ? "H" : "h");
     }
 

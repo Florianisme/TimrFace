@@ -35,7 +35,9 @@ public class AmPmLayout extends Layout {
 
     @Override
     void onConfigurationUpdated(Configuration configuration) {
-        mAmPmLayout.setColor(configuration.getTextColor());
+        if (!isInAmbientMode()) {
+            mAmPmLayout.setColor(configuration.getTextColor());
+        }
     }
 
     @Override

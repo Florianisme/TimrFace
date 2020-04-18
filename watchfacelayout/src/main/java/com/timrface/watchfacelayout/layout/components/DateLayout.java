@@ -32,7 +32,9 @@ public class DateLayout extends Layout {
 
     @Override
     void onConfigurationUpdated(Configuration configuration) {
-        mDatePaint.setColor(configuration.getTextColor());
+        if (!isInAmbientMode()) {
+            mDatePaint.setColor(configuration.getTextColor());
+        }
     }
 
     @Override

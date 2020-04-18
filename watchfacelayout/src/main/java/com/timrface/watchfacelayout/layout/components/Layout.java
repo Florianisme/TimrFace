@@ -53,4 +53,8 @@ public abstract class Layout {
             paint.setAntiAlias(!isInAmbientMode);
         }
     }
+
+    protected boolean isInAmbientMode() {
+        return ambientMode;
+    }
 }

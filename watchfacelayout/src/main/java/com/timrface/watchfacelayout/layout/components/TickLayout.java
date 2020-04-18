@@ -16,7 +16,7 @@ public class TickLayout extends Layout {
     private final Paint mTextTickPaint;
     private final int[] textsForIndixes = new int[]{50, 55, 0, 5, 10, 15, 20, 30, 35, 40, 45, 50, 55, 0, 5, 10};
     private final float distanceBetweenTicks = 16f;
-    private final int visibleExtraTicksOnScreen = 10;
+    private final int visibleExtraTicksOnScreen = 12;
 
     public TickLayout(Configuration configuration, Typeface robotoLight) {
         super(configuration);

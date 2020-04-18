@@ -42,7 +42,9 @@ public class BatteryLayout extends Layout {
 
     @Override
     void onConfigurationUpdated(Configuration configuration) {
-        mBatteryPaint.setColor(configuration.getTextColor());
+        if (!isInAmbientMode()) {
+            mBatteryPaint.setColor(configuration.getTextColor());
+        }
     }
 
     @Override
