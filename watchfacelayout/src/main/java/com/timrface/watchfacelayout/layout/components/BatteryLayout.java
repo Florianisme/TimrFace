@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import com.timrface.watchfacelayout.Configuration;
 import com.timrface.watchfacelayout.layout.Constants;
+import com.timrface.watchfacelayout.layout.WindowInsets;
 
 import java.util.Calendar;
 
@@ -50,8 +51,8 @@ public class BatteryLayout extends Layout {
     }
 
     @Override
-    public void applyWindowInsets(float timeTextSize, float infoTextSize) {
-        mBatteryPaint.setTextSize(infoTextSize);
+    public void applyWindowInsets(WindowInsets windowInsets) {
+        mBatteryPaint.setTextSize(windowInsets.getInfoTextSize());
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import com.timrface.watchfacelayout.Configuration;
+import com.timrface.watchfacelayout.layout.WindowInsets;
 
 import java.util.Calendar;
 
@@ -34,7 +35,7 @@ public class BackgroundLayout extends Layout {
     }
 
     @Override
-    public void applyWindowInsets(float timeTextSize, float infoTextSize) {
+    public void applyWindowInsets(WindowInsets windowInsets) {
 
     }
 

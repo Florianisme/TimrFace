@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import com.timrface.watchfacelayout.Configuration;
 import com.timrface.watchfacelayout.layout.Constants;
+import com.timrface.watchfacelayout.layout.WindowInsets;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -53,9 +54,9 @@ public class TimeDigits extends Layout {
     }
 
     @Override
-    public void applyWindowInsets(float timeTextSize, float infoTextSize) {
-        mHourPaint.setTextSize(timeTextSize);
-        mMinutePaint.setTextSize(timeTextSize);
+    public void applyWindowInsets(WindowInsets windowInsets) {
+        mHourPaint.setTextSize(windowInsets.getTimeTextSize());
+        mMinutePaint.setTextSize(windowInsets.getTimeTextSize());
     }
 
     @Override

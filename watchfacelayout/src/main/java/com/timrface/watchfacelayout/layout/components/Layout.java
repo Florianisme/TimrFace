@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import com.timrface.watchfacelayout.Configuration;
+import com.timrface.watchfacelayout.layout.WindowInsets;
 
 import java.util.Calendar;
 
@@ -22,7 +23,7 @@ public abstract class Layout {
 
     public abstract boolean drawWhenInAmbientMode();
 
-    public abstract void applyWindowInsets(float timeTextSize, float infoTextSize);
+    public abstract void applyWindowInsets(WindowInsets windowInsets);
 
     public void updateConfiguration(Configuration configuration) {
         this.configuration = configuration;
@@ -41,11 +42,15 @@ public abstract class Layout {
         paint.setColor(color);
         paint.setTypeface(typeface);
         paint.setAntiAlias(true);
+        paint.setLinearText(true);
         return paint;
     }
 
     protected void adjustPaintColorToCurrentMode(Paint paint, int interactiveColor,
                                                  int ambientColor, boolean isInAmbientMode) {
         paint.setColor(isInAmbientMode ? ambientColor : interactiveColor);
+        if (paint.isLinearText()) {
+            paint.setAntiAlias(!isInAmbientMode);
+        }
     }
 }

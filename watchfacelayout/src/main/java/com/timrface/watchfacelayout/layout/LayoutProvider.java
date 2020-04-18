@@ -20,11 +20,12 @@ public class LayoutProvider {
     public LayoutProvider init(Configuration configuration, Context context) {
         Typeface robotoLight = Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");
         Typeface robotoThin = Typeface.createFromAsset(context.getAssets(), "Roboto-Thin.ttf");
+        Typeface robotoMedium = Typeface.createFromAsset(context.getAssets(), "Roboto-Medium.ttf");
 
         this.configuration = configuration;
         layoutList.add(new ChinLayout(configuration));
         layoutList.add(new BackgroundLayout(configuration));
-        layoutList.add(buildTickLayout(configuration, context));
+        layoutList.add(new TickLayout(configuration, robotoMedium));
         layoutList.add(buildShadowPaint(configuration, context));
         layoutList.add(buildArrowLayout(configuration, context));
         layoutList.add(new TimeDigits(configuration, robotoLight, robotoThin));
@@ -46,15 +47,6 @@ public class LayoutProvider {
         Bitmap shadowBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.indicator_shadow);
         shadowBitmap = Bitmap.createScaledBitmap(shadowBitmap, 50, 25, true);
         return new ShadowLayout(configuration, shadowBitmap);
-    }
-
-    private Layout buildTickLayout(Configuration configuration, Context context) {
-        Resources resources = context.getResources();
-
-        Bitmap scaleBitmap = BitmapFactory.decodeResource(resources, R.drawable.scale);
-        scaleBitmap = Bitmap.createScaledBitmap(scaleBitmap, 2000, 55, true);
-
-        return new TickLayout(configuration, scaleBitmap);
     }
 
     private Layout buildBatteryLayout(Context context, Typeface robotoLight) {
@@ -89,11 +81,14 @@ public class LayoutProvider {
     }
 
     public void applyWindowInsets(Resources resources) {
-        float infoTextSize = resources.getDimension(R.dimen.info_size);
+        final float infoTextSize = resources.getDimension(R.dimen.info_size);
         final float timeTextSize = resources.getDimension(R.dimen.text_size);
+        final float tickTextSize = resources.getDimension(R.dimen.tick_size);
+
+        WindowInsets windowInsets = new WindowInsets(timeTextSize, infoTextSize, tickTextSize);
 
         for (Layout layout : layoutList) {
-            layout.applyWindowInsets(timeTextSize, infoTextSize);
+            layout.applyWindowInsets(windowInsets);
         }
     }
 }

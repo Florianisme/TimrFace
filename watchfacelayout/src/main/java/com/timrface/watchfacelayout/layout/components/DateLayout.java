@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.text.format.DateFormat;
 import com.timrface.watchfacelayout.Configuration;
 import com.timrface.watchfacelayout.layout.Constants;
+import com.timrface.watchfacelayout.layout.WindowInsets;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -40,8 +41,8 @@ public class DateLayout extends Layout {
     }
 
     @Override
-    public void applyWindowInsets(float timeTextSize, float infoTextSize) {
-        mDatePaint.setTextSize(infoTextSize);
+    public void applyWindowInsets(WindowInsets windowInsets) {
+        mDatePaint.setTextSize(windowInsets.getInfoTextSize());
     }
 
     @Override

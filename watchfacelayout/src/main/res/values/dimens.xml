@@ -3,5 +3,6 @@
 
     <dimen name="text_size">75dp</dimen>
     <dimen name="info_size">12dp</dimen>
+    <dimen name="tick_size">10dp</dimen>
 
 </resources>
