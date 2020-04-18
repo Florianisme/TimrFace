@@ -14,7 +14,9 @@ public class TickLayout extends Layout {
     private final Paint mTickPaint;
     private final Paint mThickTickPaint;
     private final Paint mTextTickPaint;
-    private final int[] textsForIndixes = new int[]{50, 55, 0, 5, 10, 15, 20, 30, 35, 40, 45, 50, 55, 0, 5, 10, 15};
+    private final int[] textsForIndixes = new int[]{50, 55, 0, 5, 10, 15, 20, 30, 35, 40, 45, 50, 55, 0, 5, 10};
+    private final float distanceBetweenTicks = 16f;
+    private final int visibleExtraTicksOnScreen = 10;
 
     public TickLayout(Configuration configuration, Typeface robotoLight) {
         super(configuration);
@@ -32,13 +34,12 @@ public class TickLayout extends Layout {
     @Override
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
         float seconds = getSeconds(calendar);
-        float distance = 14f;
-        float yStart = centerY + centerY / 4 + centerY / 8;
-        for (int i = -12; i < 72; i++) {
-            if (i + 12 < seconds || i - 12 > seconds) {
+        float yStart = centerY + centerY / 2;
+        for (int i = -visibleExtraTicksOnScreen; i < 60 + visibleExtraTicksOnScreen; i++) {
+            if (i + visibleExtraTicksOnScreen < seconds || i - visibleExtraTicksOnScreen > seconds) {
                 continue;
             }
-            float xPosition = centerX + (distance * i) - (seconds * distance);
+            float xPosition = centerX + (distanceBetweenTicks * i) - (seconds * distanceBetweenTicks);
             if (i % 5 == 0) {
                 String textForIndex = getTextForIndex(i);
                 float textWidth = mTextTickPaint.measureText(textForIndex);
@@ -51,7 +52,7 @@ public class TickLayout extends Layout {
     }
 
     private String getTextForIndex(int i) {
-        int index = (i + 12) / 5;
+        int index = (i + visibleExtraTicksOnScreen) / 5;
         return String.valueOf(textsForIndixes[index]);
     }
 

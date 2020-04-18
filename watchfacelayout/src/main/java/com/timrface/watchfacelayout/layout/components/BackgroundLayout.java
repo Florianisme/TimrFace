@@ -21,7 +21,7 @@ public class BackgroundLayout extends Layout {
 
     @Override
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
-        canvas.drawRect(0, 0, centerX * 2, centerY + centerY / 5 + centerY / 11, mBackgroundPaint);
+        canvas.drawRect(0, 0, centerX * 2, centerY + centerY / 2.5f, mBackgroundPaint);
     }
 
     @Override

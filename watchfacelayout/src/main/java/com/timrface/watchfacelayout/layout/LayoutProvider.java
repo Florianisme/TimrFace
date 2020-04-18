@@ -30,7 +30,7 @@ public class LayoutProvider {
         layoutList.add(buildArrowLayout(configuration, context));
         layoutList.add(new TimeDigits(configuration, robotoLight, robotoThin));
         layoutList.add(new DateLayout(configuration, robotoLight));
-        layoutList.add(buildBatteryLayout(context, robotoLight));
+        layoutList.add(buildBatteryLayout(context, robotoMedium));
         layoutList.add(new AmPmLayout(configuration, robotoLight));
 
         return this;

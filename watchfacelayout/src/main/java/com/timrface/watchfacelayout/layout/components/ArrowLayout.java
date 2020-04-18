@@ -25,7 +25,7 @@ public class ArrowLayout extends Layout {
 
     @Override
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
-        canvas.drawBitmap(indicator, centerX - 25, centerY + centerY / 5 + centerY / 14, mArrowPaint);
+        canvas.drawBitmap(indicator, centerX - 25, centerY + centerY / 2.5f, mArrowPaint);
 
     }
 

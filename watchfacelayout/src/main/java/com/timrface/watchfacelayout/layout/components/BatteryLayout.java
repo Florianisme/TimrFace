@@ -36,7 +36,7 @@ public class BatteryLayout extends Layout {
     @Override
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
         if (configuration.isShowBatteryLevel()) {
-            canvas.drawText(batteryLevel, centerX / 2 - centerX / 3, centerY + centerY / 4, mBatteryPaint);
+            canvas.drawText(batteryLevel, centerX / 2 - centerX / 3, centerY + centerY / 3, mBatteryPaint);
         }
     }
 

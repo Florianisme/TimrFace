@@ -19,7 +19,7 @@ public class ChinLayout extends Layout {
 
     @Override
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
-        canvas.drawRect(0, centerY + centerY / 5 + centerY / 11, centerX * 2, centerY * 2, mChinPaint);
+        canvas.drawRect(0, centerY + centerY / 2.5f, centerX * 2, centerY * 2, mChinPaint);
     }
 
     @Override

@@ -21,7 +21,7 @@ public class ShadowLayout extends Layout {
 
     @Override
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
-        canvas.drawBitmap(shadowBitmap, centerX - 25, (centerY + centerY / 5 + centerY / 14) + 4, mShadowPaint);
+        canvas.drawBitmap(shadowBitmap, centerX - 25, centerY + centerY / 2.5f, mShadowPaint);
     }
 
     @Override
