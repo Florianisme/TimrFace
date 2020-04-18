@@ -185,6 +185,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
                     ConfigUpdater.updateConfig(configuration, item);
                 }
             }
+            updateConfiguration();
             dataEventBuffer.release();
         }
     }
