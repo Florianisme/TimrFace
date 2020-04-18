@@ -25,7 +25,7 @@ public class LayoutProvider {
         this.configuration = configuration;
         layoutList.add(new ChinLayout(configuration));
         layoutList.add(new BackgroundLayout(configuration));
-        layoutList.add(new TickLayout(configuration, robotoMedium));
+        layoutList.add(new TickLayout(configuration, robotoLight));
         layoutList.add(buildShadowPaint(configuration, context));
         layoutList.add(buildArrowLayout(configuration, context));
         layoutList.add(new TimeDigits(configuration, robotoLight, robotoThin));

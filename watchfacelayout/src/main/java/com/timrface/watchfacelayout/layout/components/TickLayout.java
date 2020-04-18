@@ -14,7 +14,7 @@ public class TickLayout extends Layout {
     private final Paint mTickPaint;
     private final Paint mThickTickPaint;
     private final Paint mTextTickPaint;
-    private final int[] textsForIndixes = new int[]{50, 55, 0, 5, 10, 15, 20, 30, 35, 40, 45, 50, 55, 0, 5, 10};
+    private final int[] textsForIndixes = new int[]{50, 55, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 0, 5, 10, 15};
     private final float distanceBetweenTicks = 16f;
     private final int visibleExtraTicksOnScreen = 12;
 
@@ -44,7 +44,7 @@ public class TickLayout extends Layout {
                 String textForIndex = getTextForIndex(i);
                 float textWidth = mTextTickPaint.measureText(textForIndex);
                 canvas.drawLine(xPosition, yStart, xPosition, yStart + 36f, mThickTickPaint);
-                canvas.drawText(textForIndex, xPosition - (textWidth / 2), yStart + 54f, mTextTickPaint);
+                canvas.drawText(textForIndex, xPosition - (textWidth / 2), yStart + 58f, mTextTickPaint);
             } else {
                 canvas.drawLine(xPosition, yStart, xPosition, yStart + 24f, mTickPaint);
             }
