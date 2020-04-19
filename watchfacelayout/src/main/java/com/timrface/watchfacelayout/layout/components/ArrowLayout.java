@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import com.timrface.watchfacelayout.Configuration;
+import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.layout.WindowInsets;
 
 import java.util.Calendar;

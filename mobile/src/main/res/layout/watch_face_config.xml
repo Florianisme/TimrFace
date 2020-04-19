@@ -24,11 +24,11 @@
             android:background="#212121" />
 
         <com.timrface.helper.CanvasView
-            android:id="@+id/canvas_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="65dp"
-            android:layout_marginRight="65dp" />
+                android:id="@+id/canvas_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="85dp"
+                android:layout_marginRight="85dp"/>
     </FrameLayout>
 
     <ScrollView

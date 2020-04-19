@@ -1,15 +1,14 @@
-package com.timrface;
+package com.timrface.watchfacelayout.config;
 
 import android.net.Uri;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.wearable.*;
-import com.timrface.watchfacelayout.Configuration;
 
 import java.util.List;
 
 public class StoredConfigurationFetcher {
 
-    public void updateConfig(NodeClient nodeClient, DataClient dataClient, Configuration configuration, ConfigUpdateFinished configUpdateFinished) {
+    public void updateConfig(NodeClient nodeClient, final DataClient dataClient, final Configuration configuration, final ConfigUpdateFinished configUpdateFinished) {
         nodeClient.getConnectedNodes().addOnSuccessListener(new OnSuccessListener<List<Node>>() {
             @Override
             public void onSuccess(List<Node> nodes) {
@@ -25,7 +24,7 @@ public class StoredConfigurationFetcher {
         });
     }
 
-    private void getDataByNodeId(String nodeId, DataClient dataClient, Configuration configuration, ConfigUpdateFinished configUpdateFinished) {
+    private void getDataByNodeId(String nodeId, DataClient dataClient, final Configuration configuration, final ConfigUpdateFinished configUpdateFinished) {
         String basePath = "/watch_face_config";
         Uri uri = new Uri.Builder()
                 .scheme(PutDataRequest.WEAR_URI_SCHEME)
@@ -39,7 +38,7 @@ public class StoredConfigurationFetcher {
                     ConfigUpdater.updateConfig(configuration, item);
                 }
                 dataItems.release();
-                configUpdateFinished.onUpdateFinished();
+                configUpdateFinished.onUpdateFinished(configuration);
             }
         });
     }

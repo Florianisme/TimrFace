@@ -7,8 +7,8 @@ import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
-import com.timrface.watchfacelayout.Configuration;
-import com.timrface.watchfacelayout.ConfigurationBuilder;
+import com.timrface.watchfacelayout.config.Configuration;
+import com.timrface.watchfacelayout.config.ConfigurationBuilder;
 import com.timrface.watchfacelayout.layout.LayoutProvider;
 
 import java.util.Calendar;

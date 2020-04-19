@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.Wearable;
+import com.timrface.watchfacelayout.config.ConfigurationConstant;
 
 public class WatchFaceConfiguration extends Activity implements
         WearableListView.ClickListener, WearableListView.OnScrollListener {
@@ -86,9 +87,9 @@ public class WatchFaceConfiguration extends Activity implements
     }
 
     private void updateConfigDataItem(final String backgroundColor) {
-        PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
+        PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(ConfigurationConstant.CONFIG_PATH.toString());
         DataMap dataMap = putDataMapRequest.getDataMap();
-        dataMap.putString("COLOR", backgroundColor);
+        dataMap.putString(ConfigurationConstant.INTERACTIVE_COLOR.toString(), backgroundColor);
         Wearable.getDataClient(this).putDataItem(putDataMapRequest.asPutDataRequest());
     }
 

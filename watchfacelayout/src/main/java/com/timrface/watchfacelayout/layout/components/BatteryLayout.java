@@ -7,7 +7,7 @@ import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import com.timrface.watchfacelayout.Configuration;
+import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.layout.Constants;
 import com.timrface.watchfacelayout.layout.WindowInsets;
 

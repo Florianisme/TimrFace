@@ -1,6 +1,7 @@
-package com.timrface.watchfacelayout;
+package com.timrface.watchfacelayout.config;
 
 import android.graphics.Color;
+import com.timrface.watchfacelayout.R;
 
 public class ConfigurationBuilder {
 

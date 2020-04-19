@@ -15,8 +15,7 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.*;
-import com.timrface.watchfacelayout.Configuration;
-import com.timrface.watchfacelayout.ConfigurationBuilder;
+import com.timrface.watchfacelayout.config.*;
 import com.timrface.watchfacelayout.layout.LayoutProvider;
 
 import java.lang.ref.WeakReference;
@@ -37,6 +36,9 @@ public class WatchFaceService extends CanvasWatchFaceService {
         return new Engine();
     }
 
+    /*
+        Update Handler for refreshing the canvas
+     */
     private static final class UpdateIntervalHandler extends Handler {
 
         private final WeakReference<Engine> mWeakReference;
@@ -64,6 +66,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
     public class Engine extends CanvasWatchFaceService.Engine implements
             GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, DataClient.OnDataChangedListener {
 
+
         static final int MSG_UPDATE_TIME = 0;
         final Handler mUpdateTimeHandler = new UpdateIntervalHandler(this);
 
@@ -88,7 +91,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             DataClient dataClient = Wearable.getDataClient(WatchFaceService.this);
             new StoredConfigurationFetcher().updateConfig(nodeClient, dataClient, configuration, new ConfigUpdateFinished() {
                 @Override
-                public void onUpdateFinished() {
+                public void onUpdateFinished(Configuration configuration) {
                     layoutProvider.onConfigurationChange(configuration);
                 }
             });

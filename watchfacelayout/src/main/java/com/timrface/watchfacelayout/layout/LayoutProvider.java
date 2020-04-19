@@ -3,8 +3,8 @@ package com.timrface.watchfacelayout.layout;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.*;
-import com.timrface.watchfacelayout.Configuration;
 import com.timrface.watchfacelayout.R;
+import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.layout.components.*;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class LayoutProvider {
         this.configuration = configuration;
         layoutList.add(new ChinLayout(configuration));
         layoutList.add(new BackgroundLayout(configuration));
-        layoutList.add(new TickLayout(configuration, robotoLight));
+        layoutList.add(new TickLayout(configuration, robotoMedium));
         layoutList.add(buildShadowPaint(configuration, context));
         layoutList.add(buildArrowLayout(configuration, context));
         layoutList.add(new TimeDigits(configuration, robotoLight, robotoThin));

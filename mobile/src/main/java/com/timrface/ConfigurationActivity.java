@@ -19,9 +19,7 @@ import android.widget.CompoundButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
-import com.google.android.gms.wearable.PutDataMapRequest;
-import com.google.android.gms.wearable.PutDataRequest;
-import com.google.android.gms.wearable.Wearable;
+import com.google.android.gms.wearable.*;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.timrface.helper.CanvasView;
 import com.timrface.helper.SharedPreferences;
@@ -29,11 +27,11 @@ import com.timrface.util.IabHelper;
 import com.timrface.util.IabResult;
 import com.timrface.util.Inventory;
 import com.timrface.util.Purchase;
-import com.timrface.watchfacelayout.Configuration;
+import com.timrface.watchfacelayout.config.*;
 
 import java.util.ArrayList;
 
-public class WatchFaceConfiguration extends AppCompatActivity {
+public class ConfigurationActivity extends AppCompatActivity {
 
     static ArrayList<String> list = new ArrayList<>();
     private static String ITEM_SKU = "com.timrface.donate";
@@ -43,10 +41,14 @@ public class WatchFaceConfiguration extends AppCompatActivity {
     Drawable oldCheckedDrawable;
     int oldCheckedBackgroundId = -1;
     Drawable oldCheckedBackgroundDrawable;
-    CanvasView canvasView;
     ColorPicker colorPicker;
     Handler mUpdateTimeHandler;
-    private Configuration configuration = new Configuration();
+    private final Configuration configuration = ConfigurationBuilder.getDefaultConfiguration();
+
+    CanvasView canvasView;
+    CheckBox smoothSecondsCheckBox;
+    CheckBox showBatteryLevelCheckBox;
+    CheckBox showZeroDigitCheckBox;
     IabHelper.OnConsumeFinishedListener mConsumeFinishedListener =
             new IabHelper.OnConsumeFinishedListener() {
                 public void onConsumeFinished(Purchase purchase,
@@ -59,7 +61,35 @@ public class WatchFaceConfiguration extends AppCompatActivity {
                     }
                 }
             };
+
+    private void updateTimer() {
+        mUpdateTimeHandler.removeMessages(0);
+        mUpdateTimeHandler.sendEmptyMessage(0);
+    }
+
+    private int getArrowDrawableResourceIdByBackgroundColor(String color) {
+        switch (color) {
+            case "#424242":
+                return R.drawable.indicator_grey;
+            case "#000000":
+                return R.drawable.indicator_black;
+            default:
+                return R.drawable.indicator;
+        }
+    }
+
     private IabHelper mHelper;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        final MenuItem menuItem = menu.add(0, 0, 0, "Donate").setIcon(
+                R.drawable.coin);
+        MenuItemCompat.setShowAsAction(menuItem,
+                MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
+        return true;
+    }
+
     IabHelper.QueryInventoryFinishedListener mReceivedInventoryListener
             = new IabHelper.QueryInventoryFinishedListener() {
         public void onQueryInventoryFinished(IabResult result,
@@ -89,183 +119,10 @@ public class WatchFaceConfiguration extends AppCompatActivity {
 
         }
     };
-    private String base64EncodedPublicKey;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.watch_face_config);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle(R.string.settings);
-
-        canvasView = (CanvasView) findViewById(R.id.canvas_layout);
-        mUpdateTimeHandler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                switch (message.what) {
-                    case 0:
-                        canvasView.invalidate();
-                        long timeMs = System.currentTimeMillis();
-                        long delayMs =
-                                canvasView.INTERACTIVE_UPDATE_RATE_MS - (timeMs % canvasView.INTERACTIVE_UPDATE_RATE_MS);
-                        mUpdateTimeHandler.sendEmptyMessageDelayed(0, delayMs);
-                        break;
-                }
-            }
-        };
-        updateTimer();
-
-        colorPicker = new ColorPicker(WatchFaceConfiguration.this);
-
-        colors = getResources().getStringArray(R.array.colors);
-        for (int i = 0; i < colors.length; i++) {
-            list.add(i, colors[i]);
-        }
-
-        if (!SharedPreferences.getBoolean("donation", false, getApplicationContext())) {
-            dialog();
-        }
-
-        configuration.setSmoothScrolling(SharedPreferences.getBoolean("button", true, getApplicationContext()));
-        String backgroundColor = SharedPreferences.getString("background_color", "#FAFAFA", getApplicationContext());
-        boolean isBackgroundColorWhite = Color.parseColor("#FAFAFA") == Color.parseColor(backgroundColor);
-        configuration.setBackgroundColor(backgroundColor);
-        configuration.setTextColor(isBackgroundColorWhite ? Color.parseColor("#424242") : Color.parseColor("#FAFAFA"));
-        configuration.setArrowResourceId(getArrowDrawableResourceIdByBackgroundColor(backgroundColor));
-        configuration.setInteractiveColor(SharedPreferences.getString("color", "#FF9800", getApplicationContext()));
-        configuration.setShowBatteryLevel(SharedPreferences.getBoolean("battery", true, getApplicationContext()));
-        configuration.setShowZeroDigit(SharedPreferences.getBoolean("zero_digit", true, getApplicationContext()));
-        canvasView.updateConfig(configuration);
-
-        setUpAllColors();
-
-        CheckBox seconds = (CheckBox) findViewById(R.id.seconds);
-        seconds.setChecked(SharedPreferences.getBoolean("button", true, getApplicationContext()));
-        seconds.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
-                putDataMapRequest.getDataMap().putBoolean("SMOOTH_SECONDS", isChecked);
-                PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
-                Wearable.getDataClient(WatchFaceConfiguration.this).putDataItem(putDataReq);
-                SharedPreferences.saveBoolean("button", isChecked, getApplicationContext());
-                configuration.setSmoothScrolling(isChecked);
-                canvasView.updateConfig(configuration);
-            }
-                                           }
-        );
-
-        CheckBox battery = (CheckBox) findViewById(R.id.battery);
-        battery.setChecked(SharedPreferences.getBoolean("battery", true, getApplicationContext()));
-        battery.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
-                putDataMapRequest.getDataMap().putBoolean("BATTERY_INDICATOR", isChecked);
-                PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
-                Wearable.getDataClient(WatchFaceConfiguration.this).putDataItem(putDataReq);
-                SharedPreferences.saveBoolean("battery", isChecked, getApplicationContext());
-                configuration.setShowBatteryLevel(isChecked);
-                canvasView.updateConfig(configuration);
-            }
-        });
-
-        CheckBox zeroDigit = (CheckBox) findViewById(R.id.zero_digit);
-        zeroDigit.setChecked(SharedPreferences.getBoolean("zero_digit", true, getApplicationContext()));
-        zeroDigit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
-                putDataMapRequest.getDataMap().putBoolean("ZERO_DIGIT", isChecked);
-                PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
-                Wearable.getDataClient(WatchFaceConfiguration.this).putDataItem(putDataReq);
-                SharedPreferences.saveBoolean("zero_digit", isChecked, getApplicationContext());
-                configuration.setShowZeroDigit(isChecked);
-                canvasView.updateConfig(configuration);
-            }
-        });
-
-        base64EncodedPublicKey = getResources().getString(R.string.key);
-        mHelper = new IabHelper(this, base64EncodedPublicKey);
-
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
-                if (!result.isSuccess()) {
-                    Log.d("Billing", "Problem setting up In-app Billing: " + result);
-                }
-            }
-        });
-
-    }
-
-    private void updateTimer() {
-        mUpdateTimeHandler.removeMessages(0);
-        mUpdateTimeHandler.sendEmptyMessage(0);
-    }
-
-    private int getArrowDrawableResourceIdByBackgroundColor(String color) {
-        switch (color) {
-            case "#424242":
-                return R.drawable.indicator_grey;
-            case "#000000":
-                return R.drawable.indicator_black;
-            default:
-                return R.drawable.indicator;
-        }
-    }
-
-    private void dialog() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(WatchFaceConfiguration.this);
-
-        builder.setMessage(R.string.dialog_message)
-                .setTitle(R.string.dialog_title);
-
-        builder.setPositiveButton(R.string.buy, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                buy();
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        final MenuItem menuItem = menu.add(0, 0, 0, "Donate").setIcon(
-                R.drawable.coin);
-        MenuItemCompat.setShowAsAction(menuItem,
-                MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch(item.getItemId()){
-            case 0:
-                buy();
-                break;
-        }
-        return true;
-    }
-
-    private void buy() {
-        mHelper.launchPurchaseFlow(this, ITEM_SKU, 10001,
-                mPurchaseFinishedListener, "token");
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent data)
-    {
+                                    Intent data) {
         if (!mHelper.handleActivityResult(requestCode,
                 resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
@@ -295,6 +152,135 @@ public class WatchFaceConfiguration extends AppCompatActivity {
         setUpColorListener(R.id.wheel, 14, colors[14], R.drawable.wheel);
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.watch_face_config);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(R.string.settings);
+
+        canvasView = (CanvasView) findViewById(R.id.canvas_layout);
+        smoothSecondsCheckBox = findViewById(R.id.seconds);
+        showBatteryLevelCheckBox = findViewById(R.id.battery);
+        showZeroDigitCheckBox = findViewById(R.id.zero_digit);
+
+        mUpdateTimeHandler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                switch (message.what) {
+                    case 0:
+                        canvasView.invalidate();
+                        long timeMs = System.currentTimeMillis();
+                        long delayMs =
+                                canvasView.INTERACTIVE_UPDATE_RATE_MS - (timeMs % canvasView.INTERACTIVE_UPDATE_RATE_MS);
+                        mUpdateTimeHandler.sendEmptyMessageDelayed(0, delayMs);
+                        break;
+                }
+            }
+        };
+        updateTimer();
+
+        colorPicker = new ColorPicker(ConfigurationActivity.this);
+
+        colors = getResources().getStringArray(R.array.colors);
+        for (int i = 0; i < colors.length; i++) {
+            list.add(i, colors[i]);
+        }
+
+        if (!SharedPreferences.getBoolean("donation", false, getApplicationContext())) {
+            dialog();
+        }
+
+        NodeClient nodeClient = Wearable.getNodeClient(this);
+        DataClient dataClient = Wearable.getDataClient(this);
+        new StoredConfigurationFetcher().updateConfig(nodeClient, dataClient, configuration, new ConfigUpdateFinished() {
+            @Override
+            public void onUpdateFinished(Configuration configuration) {
+                canvasView.updateConfig(configuration);
+                smoothSecondsCheckBox.setChecked(configuration.isSmoothScrolling());
+                showBatteryLevelCheckBox.setChecked(configuration.isShowBatteryLevel());
+                showZeroDigitCheckBox.setChecked(configuration.isShowZeroDigit());
+            }
+        });
+
+        setUpAllColors();
+
+        smoothSecondsCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                                                             @Override
+                                                             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                                                 sendDataItem(ConfigurationConstant.SMOOTH_SECONDS, isChecked);
+                                                                 configuration.setSmoothScrolling(isChecked);
+                                                                 canvasView.updateConfig(configuration);
+                                                             }
+                                                         }
+        );
+
+        showBatteryLevelCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                sendDataItem(ConfigurationConstant.BATTERY_INDICATOR, isChecked);
+                configuration.setShowBatteryLevel(isChecked);
+                canvasView.updateConfig(configuration);
+            }
+        });
+
+        showZeroDigitCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                sendDataItem(ConfigurationConstant.ZERO_DIGIT, isChecked);
+                configuration.setShowZeroDigit(isChecked);
+                canvasView.updateConfig(configuration);
+            }
+        });
+
+        String base64EncodedPublicKey = getResources().getString(R.string.key);
+        mHelper = new IabHelper(this, base64EncodedPublicKey);
+
+        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            public void onIabSetupFinished(IabResult result) {
+                if (!result.isSuccess()) {
+                    Log.d("Billing", "Problem setting up In-app Billing: " + result);
+                }
+            }
+        });
+
+    }
+
+    private void dialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ConfigurationActivity.this);
+
+        builder.setMessage(R.string.dialog_message)
+                .setTitle(R.string.dialog_title);
+
+        builder.setPositiveButton(R.string.buy, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                launchPurchaseFlow();
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == 0) {
+            launchPurchaseFlow();
+        }
+        return true;
+    }
+
+    private void launchPurchaseFlow() {
+        mHelper.launchPurchaseFlow(this, ITEM_SKU, 10001,
+                mPurchaseFinishedListener, "token");
+    }
 
     private void setUpColorListener(final int id, final int key, final String color, int original) {
         final Button imgButton = (Button) findViewById(id);
@@ -325,11 +311,7 @@ public class WatchFaceConfiguration extends AppCompatActivity {
         imgButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (key < 3) {
-                    Log.d(TAG, "Color: " + color);
-                    PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
-                    putDataMapRequest.getDataMap().putString("BACKGROUND_COLOR", color);
-                    PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
-                    Wearable.getDataClient(WatchFaceConfiguration.this).putDataItem(putDataReq);
+                    sendDataItem(ConfigurationConstant.BACKGROUND_COLOR, color);
                     configuration.setBackgroundColor(color);
                     boolean isBackgroundColorWhite = Color.parseColor("#FAFAFA") == Color.parseColor(color);
                     String textColor = isBackgroundColorWhite ? "#424242" : "#FAFAFA";
@@ -337,33 +319,24 @@ public class WatchFaceConfiguration extends AppCompatActivity {
                     configuration.setArrowResourceId(getArrowDrawableResourceIdByBackgroundColor(color));
                     canvasView.updateConfig(configuration);
                     SharedPreferences.saveInteger("id_background", key, getApplicationContext());
-                    SharedPreferences.saveString("background_color", color, getApplicationContext());
                 } else if (key == 14) {
                     colorPicker.show();
                     Button okColor = (Button) colorPicker.findViewById(R.id.okColorButton);
                     okColor.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
-                            putDataMapRequest.getDataMap().putInt("COLOR_MANUAL", colorPicker.getColor());
-                            PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
-                            Wearable.getDataClient(WatchFaceConfiguration.this).putDataItem(putDataReq);
+                            sendDataItem(ConfigurationConstant.INTERACTIVE_COLOR, color);
                             colorPicker.dismiss();
                             configuration.setInteractiveColor(colorPicker.getColor());
                             canvasView.updateConfig(configuration);
                             SharedPreferences.saveInteger("id", key, getApplicationContext());
-                            SharedPreferences.saveString("color", color, getApplicationContext());
                         }
                     });
                 } else {
-                    PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
-                    putDataMapRequest.getDataMap().putString("COLOR", color);
-                    PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
-                    Wearable.getDataClient(WatchFaceConfiguration.this).putDataItem(putDataReq);
+                    sendDataItem(ConfigurationConstant.INTERACTIVE_COLOR, color);
                     configuration.setInteractiveColor(color);
                     canvasView.updateConfig(configuration);
                     SharedPreferences.saveInteger("id", key, getApplicationContext());
-                    SharedPreferences.saveString("color", color, getApplicationContext());
                 }
 
                 if (key < 3) {
@@ -387,8 +360,7 @@ public class WatchFaceConfiguration extends AppCompatActivity {
                 if (key < 3) {
                     oldCheckedBackgroundId = id;
                     oldCheckedBackgroundDrawable = layers[0];
-                }
-                else {
+                } else {
                     oldCheckedId = id;
                     oldCheckedDrawable = layers[0];
                 }
@@ -396,22 +368,17 @@ public class WatchFaceConfiguration extends AppCompatActivity {
         });
     }
 
-/*
-    @Override
-    public void onMessageReceived(@NonNull MessageEvent messageEvent) {
-        Log.d(TAG, "MESSAGE RECEIVED");
-        if (messageEvent.getPath().equals("REQUEST_DATA")) {
+    private void sendDataItem(ConfigurationConstant configurationConstant, String value) {
+        PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(ConfigurationConstant.CONFIG_PATH.toString());
+        putDataMapRequest.getDataMap().putString(configurationConstant.toString(), value);
+        PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest().setUrgent();
+        Wearable.getDataClient(ConfigurationActivity.this).putDataItem(putDataReq);
+    }
 
-            PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/watch_face_config");
-
-            putDataMapRequest.getDataMap().putBoolean("SMOOTH_SECONDS", SharedPreferences.getBoolean("button", true, getApplicationContext()));
-            putDataMapRequest.getDataMap().putString("BACKGROUND_COLOR", SharedPreferences.getString("background_color", "#FAFAFA", getApplicationContext()));
-            putDataMapRequest.getDataMap().putString("COLOR", SharedPreferences.getString("color", "#FF9800", getApplicationContext()));
-            putDataMapRequest.getDataMap().putBoolean("BATTERY_INDICATOR", SharedPreferences.getBoolean("battery", true, getApplicationContext()));
-            putDataMapRequest.getDataMap().putBoolean("ZERO_DIGIT", SharedPreferences.getBoolean("zero_digit", true, getApplicationContext()));
-
-            PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
-            Wearable.getDataClient(WatchFaceConfiguration.this).putDataItem(putDataReq);
-        }
-    }*/
+    private void sendDataItem(ConfigurationConstant configurationConstant, boolean value) {
+        PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(ConfigurationConstant.CONFIG_PATH.toString());
+        putDataMapRequest.getDataMap().putBoolean(configurationConstant.toString(), value);
+        PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
+        Wearable.getDataClient(ConfigurationActivity.this).putDataItem(putDataReq);
+    }
 }
