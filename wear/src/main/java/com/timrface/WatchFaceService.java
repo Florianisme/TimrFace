@@ -36,9 +36,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
         return new Engine();
     }
 
-    /*
-        Update Handler for refreshing the canvas
-     */
     private static final class UpdateIntervalHandler extends Handler {
 
         private final WeakReference<Engine> mWeakReference;
@@ -48,7 +45,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         }
 
         @Override
-        public void handleMessage(Message message) {
+        public void handleMessage(@NonNull Message message) {
             Engine engine = mWeakReference.get();
             if (engine != null) {
                 if (message.what == MSG_UPDATE_TIME) {
