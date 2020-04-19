@@ -16,11 +16,15 @@ import java.util.Calendar;
 public class BatteryLayout extends Layout {
 
     private final Paint mBatteryPaint;
+    private final Typeface robotoMedium;
+    private final Typeface robotoLight;
     private String batteryLevel;
 
-    public BatteryLayout(Configuration configuration, Context context, Typeface robotoLight) {
+    public BatteryLayout(Configuration configuration, Context context, Typeface robotoMedium, Typeface robotoLight) {
         super(configuration);
-        mBatteryPaint = createTextPaint(configuration.getTextColor(), robotoLight);
+        this.robotoMedium = robotoMedium;
+        this.robotoLight = robotoLight;
+        mBatteryPaint = createTextPaint(configuration.getTextColor(), robotoMedium);
 
         BroadcastReceiver updateBattery = new BroadcastReceiver() {
             @Override
@@ -60,5 +64,6 @@ public class BatteryLayout extends Layout {
     @Override
     void onAmbientModeChanged(boolean inAmbientMode) {
         adjustPaintColorToCurrentMode(mBatteryPaint, configuration.getTextColor(), Constants.AMBIENT_TEXT_COLOR, inAmbientMode);
+        mBatteryPaint.setTypeface(inAmbientMode ? robotoLight : robotoMedium);
     }
 }

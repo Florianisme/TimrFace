@@ -30,7 +30,7 @@ public class LayoutProvider {
         layoutList.add(buildArrowLayout(configuration, context));
         layoutList.add(new TimeDigits(configuration, robotoLight, robotoThin));
         layoutList.add(new DateLayout(configuration, robotoLight));
-        layoutList.add(buildBatteryLayout(context, robotoMedium));
+        layoutList.add(new BatteryLayout(configuration, context, robotoMedium, robotoLight));
         layoutList.add(new AmPmLayout(configuration, robotoLight));
 
         return this;
@@ -47,10 +47,6 @@ public class LayoutProvider {
         Bitmap shadowBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.indicator_shadow);
         shadowBitmap = Bitmap.createScaledBitmap(shadowBitmap, 50, 25, true);
         return new ShadowLayout(configuration, shadowBitmap);
-    }
-
-    private Layout buildBatteryLayout(Context context, Typeface robotoLight) {
-        return new BatteryLayout(configuration, context, robotoLight);
     }
 
     public void onConfigurationChange(final Configuration configuration) {
