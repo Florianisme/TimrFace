@@ -67,6 +67,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
         static final int MSG_UPDATE_TIME = 0;
         final Handler mUpdateTimeHandler = new UpdateIntervalHandler(this);
+        private final TimeFormatChangedReceiver timeFormatChangedReceiver = new TimeFormatChangedReceiver();
 
         Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 
@@ -88,7 +89,8 @@ public class WatchFaceService extends CanvasWatchFaceService {
             dataClient.addListener(this);
 
             configuration = ConfigurationBuilder.getDefaultConfiguration();
-            layoutProvider = new LayoutProvider().init(configuration, getApplicationContext());
+            layoutProvider = new LayoutProvider().init(configuration, WatchFaceService.this);
+            timeFormatChangedReceiver.register(WatchFaceService.this, configuration, layoutProvider, cal);
 
             new StoredConfigurationFetcher().updateConfig(nodeClient, dataClient, configuration,
                     configuration -> layoutProvider.onConfigurationChange(configuration));
@@ -158,6 +160,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         public void onDestroy() {
             mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
             dataClient.removeListener(this);
+            timeFormatChangedReceiver.unregister(WatchFaceService.this);
             super.onDestroy();
         }
 
