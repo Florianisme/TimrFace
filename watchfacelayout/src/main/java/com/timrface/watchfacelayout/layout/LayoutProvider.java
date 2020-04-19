@@ -14,7 +14,6 @@ import java.util.List;
 public class LayoutProvider {
 
     private final List<Layout> layoutList = new ArrayList<>();
-    private Configuration configuration;
     private boolean inAmbientMode;
 
     public LayoutProvider init(Configuration configuration, Context context) {
@@ -22,7 +21,6 @@ public class LayoutProvider {
         Typeface robotoThin = Typeface.createFromAsset(context.getAssets(), "Roboto-Thin.ttf");
         Typeface robotoMedium = Typeface.createFromAsset(context.getAssets(), "Roboto-Medium.ttf");
 
-        this.configuration = configuration;
         layoutList.add(new ChinLayout(configuration));
         layoutList.add(new BackgroundLayout(configuration));
         layoutList.add(new TickLayout(configuration, robotoMedium));
@@ -50,7 +48,6 @@ public class LayoutProvider {
     }
 
     public void onConfigurationChange(final Configuration configuration) {
-        this.configuration = configuration;
         for (Layout layout : layoutList) {
             layout.updateConfiguration(configuration);
         }
@@ -63,15 +60,13 @@ public class LayoutProvider {
         }
     }
 
-    public void update(Canvas canvas, float width, float height, Calendar calendar) {
+    public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
         if (inAmbientMode) {
             canvas.drawColor(Color.BLACK);
         }
         for (Layout layout : layoutList) {
-            if (inAmbientMode && !layout.drawWhenInAmbientMode()) {
-                continue;
-            } else {
-                layout.update(canvas, width, height, calendar);
+            if (!inAmbientMode || layout.drawWhenInAmbientMode()) {
+                layout.update(canvas, centerX, centerY, calendar);
             }
         }
     }
