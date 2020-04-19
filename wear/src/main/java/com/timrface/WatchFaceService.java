@@ -7,15 +7,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.WindowInsets;
 import androidx.annotation.NonNull;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.*;
-import com.timrface.watchfacelayout.config.*;
+import com.timrface.watchfacelayout.config.ConfigUpdater;
+import com.timrface.watchfacelayout.config.Configuration;
+import com.timrface.watchfacelayout.config.ConfigurationBuilder;
+import com.timrface.watchfacelayout.config.StoredConfigurationFetcher;
 import com.timrface.watchfacelayout.layout.LayoutProvider;
 
 import java.lang.ref.WeakReference;
@@ -63,15 +63,15 @@ public class WatchFaceService extends CanvasWatchFaceService {
         }
     }
 
-    public class Engine extends CanvasWatchFaceService.Engine implements
-            GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, DataClient.OnDataChangedListener {
-
+    public class Engine extends CanvasWatchFaceService.Engine implements DataClient.OnDataChangedListener {
 
         static final int MSG_UPDATE_TIME = 0;
         final Handler mUpdateTimeHandler = new UpdateIntervalHandler(this);
 
-        private final String TAG = "WatchFaceService";
         Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+
+        private DataClient dataClient;
+        private NodeClient nodeClient;
 
         @Override
         public void onCreate(SurfaceHolder holder) {
@@ -82,19 +82,16 @@ public class WatchFaceService extends CanvasWatchFaceService {
                     .setViewProtectionMode(WatchFaceStyle.PROTECT_STATUS_BAR)
                     .build());
 
-            Wearable.getDataClient(WatchFaceService.this).addListener(this);
+            dataClient = Wearable.getDataClient(WatchFaceService.this);
+            nodeClient = Wearable.getNodeClient(WatchFaceService.this);
+
+            dataClient.addListener(this);
 
             configuration = ConfigurationBuilder.getDefaultConfiguration();
             layoutProvider = new LayoutProvider().init(configuration, getApplicationContext());
 
-            NodeClient nodeClient = Wearable.getNodeClient(WatchFaceService.this);
-            DataClient dataClient = Wearable.getDataClient(WatchFaceService.this);
-            new StoredConfigurationFetcher().updateConfig(nodeClient, dataClient, configuration, new ConfigUpdateFinished() {
-                @Override
-                public void onUpdateFinished(Configuration configuration) {
-                    layoutProvider.onConfigurationChange(configuration);
-                }
-            });
+            new StoredConfigurationFetcher().updateConfig(nodeClient, dataClient, configuration,
+                    configuration -> layoutProvider.onConfigurationChange(configuration));
         }
 
         @Override
@@ -126,6 +123,10 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
             invalidate();
             updateTimer();
+            if (!inAmbientMode) {
+                new StoredConfigurationFetcher().updateConfig(nodeClient, dataClient, configuration,
+                        configuration -> layoutProvider.onConfigurationChange(configuration));
+            }
         }
 
         @Override
@@ -154,25 +155,9 @@ public class WatchFaceService extends CanvasWatchFaceService {
         }
 
         @Override
-        public void onConnected(Bundle bundle) {
-            Log.d(TAG, "connected GoogleAPI");
-            Wearable.getDataClient(WatchFaceService.this).addListener(this);
-        }
-
-        @Override
-        public void onConnectionSuspended(int i) {
-            Log.e(TAG, "suspended GoogleAPI");
-        }
-
-        @Override
-        public void onConnectionFailed(ConnectionResult connectionResult) {
-            Log.e(TAG, "connectionFailed GoogleAPI: " + connectionResult.getErrorMessage());
-        }
-
-        @Override
         public void onDestroy() {
             mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
-            Wearable.getDataClient(getApplicationContext()).removeListener(this);
+            dataClient.removeListener(this);
             super.onDestroy();
         }
 

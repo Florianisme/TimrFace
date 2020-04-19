@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -35,12 +34,7 @@ public class ConfigurationActivity extends AppCompatActivity {
 
     static ArrayList<String> list = new ArrayList<>();
     private static String ITEM_SKU = "com.timrface.donate";
-    final String TAG = "WatchFaceConfiguration";
     String[] colors;
-    int oldCheckedId = -1;
-    Drawable oldCheckedDrawable;
-    int oldCheckedBackgroundId = -1;
-    Drawable oldCheckedBackgroundDrawable;
     ColorPicker colorPicker;
     Handler mUpdateTimeHandler;
     private final Configuration configuration = ConfigurationBuilder.getDefaultConfiguration();
@@ -207,7 +201,6 @@ public class ConfigurationActivity extends AppCompatActivity {
         setUpAllColors();
 
         smoothSecondsCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
                                                              @Override
                                                              public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                                                                  sendDataItem(ConfigurationConstant.SMOOTH_SECONDS, isChecked);
@@ -287,27 +280,6 @@ public class ConfigurationActivity extends AppCompatActivity {
         final Drawable drawable = getResources().getDrawable(original);
         imgButton.setBackground(drawable);
 
-        if (key == SharedPreferences.getInteger("id_background", -1, getApplicationContext())) {
-            Drawable[] layers = new Drawable[2];
-            layers[0] = drawable;
-            layers[1] = getResources().getDrawable(R.drawable.ic_check);
-            LayerDrawable layerDrawable = new LayerDrawable(layers);
-            imgButton.setBackground(layerDrawable);
-            oldCheckedBackgroundId = id;
-            oldCheckedBackgroundDrawable = layers[0];
-
-        }
-
-        if (key == SharedPreferences.getInteger("id", -1, getApplicationContext())) {
-            Drawable[] layers = new Drawable[2];
-            layers[0] = drawable;
-            layers[1] = getResources().getDrawable(R.drawable.ic_check);
-            LayerDrawable layerDrawable = new LayerDrawable(layers);
-            imgButton.setBackground(layerDrawable);
-            oldCheckedId = id;
-            oldCheckedDrawable = layers[0];
-        }
-
         imgButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (key < 3) {
@@ -318,7 +290,6 @@ public class ConfigurationActivity extends AppCompatActivity {
                     configuration.setTextColor(textColor);
                     configuration.setArrowResourceId(getArrowDrawableResourceIdByBackgroundColor(color));
                     canvasView.updateConfig(configuration);
-                    SharedPreferences.saveInteger("id_background", key, getApplicationContext());
                 } else if (key == 14) {
                     colorPicker.show();
                     Button okColor = (Button) colorPicker.findViewById(R.id.okColorButton);
@@ -329,40 +300,12 @@ public class ConfigurationActivity extends AppCompatActivity {
                             colorPicker.dismiss();
                             configuration.setInteractiveColor(colorPicker.getColor());
                             canvasView.updateConfig(configuration);
-                            SharedPreferences.saveInteger("id", key, getApplicationContext());
                         }
                     });
                 } else {
                     sendDataItem(ConfigurationConstant.INTERACTIVE_COLOR, color);
                     configuration.setInteractiveColor(color);
                     canvasView.updateConfig(configuration);
-                    SharedPreferences.saveInteger("id", key, getApplicationContext());
-                }
-
-                if (key < 3) {
-                    if (oldCheckedBackgroundId != -1) {
-                        Button button = (Button) findViewById(oldCheckedBackgroundId);
-                        button.setBackground(oldCheckedBackgroundDrawable);
-                    }
-                }
-                else {
-                    if (oldCheckedId != -1) {
-                        Button button = (Button) findViewById(oldCheckedId);
-                        button.setBackground(oldCheckedDrawable);
-                    }
-                }
-
-                Drawable[] layers = new Drawable[2];
-                layers[0] = drawable;
-                layers[1] = getResources().getDrawable(R.drawable.ic_check);
-                LayerDrawable layerDrawable = new LayerDrawable(layers);
-                imgButton.setBackground(layerDrawable);
-                if (key < 3) {
-                    oldCheckedBackgroundId = id;
-                    oldCheckedBackgroundDrawable = layers[0];
-                } else {
-                    oldCheckedId = id;
-                    oldCheckedDrawable = layers[0];
                 }
             }
         });

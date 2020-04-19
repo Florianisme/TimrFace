@@ -15,20 +15,20 @@
             app:theme="@style/Toolbar"/>
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="200dp">
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp">
 
         <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#212121" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
 
         <com.timrface.helper.CanvasView
                 android:id="@+id/canvas_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="85dp"
-                android:layout_marginRight="85dp"/>
+                android:layout_marginLeft="105dp"
+                android:layout_marginRight="105dp"/>
     </FrameLayout>
 
     <ScrollView
