@@ -25,7 +25,7 @@ public class AmPmLayout extends Layout {
     @Override
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
         if (!configuration.isAstronomicalClockFormat()) {
-            canvas.drawText(getAmPm(calendar), centerX * 2 - centerX / 2, centerY + centerY / 3, mAmPmLayout);
+            canvas.drawText(getAmPm(calendar), centerX * 2 - centerX / 2f, centerY + centerY / 3.5f, mAmPmLayout);
         }
     }
 
