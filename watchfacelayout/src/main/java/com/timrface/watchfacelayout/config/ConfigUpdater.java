@@ -16,15 +16,15 @@ public class ConfigUpdater {
                 configuration.setSmoothScrolling(dataMap.getBoolean(ConfigurationConstant.SMOOTH_SECONDS.toString()));
             }
             if (dataMap.containsKey(ConfigurationConstant.BACKGROUND_COLOR.toString())) {
-                int backgroundColor = Color.parseColor(dataMap.getString(ConfigurationConstant.BACKGROUND_COLOR.toString()));
+                int backgroundColor = Color.parseColor(getStringFromDataMap(dataMap, ConfigurationConstant.BACKGROUND_COLOR, "#FAFAFA"));
                 boolean isBackgroundColorWhite = backgroundColor == Color.parseColor("#FAFAFA");
 
                 configuration.setBackgroundColor(backgroundColor);
                 configuration.setTextColor(isBackgroundColorWhite ? Color.parseColor("#424242") : Color.parseColor("#FAFAFA"));
-                configuration.setArrowResourceId(getArrowDrawableResourceIdByBackgroundColor(dataMap.getString(ConfigurationConstant.SMOOTH_SECONDS.toString())));
+                configuration.setArrowResourceId(getArrowDrawableResourceIdByBackgroundColor(getStringFromDataMap(dataMap, ConfigurationConstant.BACKGROUND_COLOR, "#FAFAFA")));
             }
             if (dataMap.containsKey(ConfigurationConstant.INTERACTIVE_COLOR.toString())) {
-                configuration.setInteractiveColor(Color.parseColor(dataMap.getString(ConfigurationConstant.INTERACTIVE_COLOR.toString())));
+                configuration.setInteractiveColor(Color.parseColor(getStringFromDataMap(dataMap, ConfigurationConstant.INTERACTIVE_COLOR, "#FF9800")));
             }
             if (dataMap.containsKey(ConfigurationConstant.BATTERY_INDICATOR.toString())) {
                 configuration.setShowBatteryLevel(dataMap.getBoolean(ConfigurationConstant.BATTERY_INDICATOR.toString(), true));
@@ -33,6 +33,11 @@ public class ConfigUpdater {
                 configuration.setShowZeroDigit(dataMap.getBoolean(ConfigurationConstant.ZERO_DIGIT.toString(), true));
             }
         }
+    }
+
+    private static String getStringFromDataMap(DataMap dataMap, ConfigurationConstant configurationConstant, String defaultValue) {
+        String value = dataMap.getString(configurationConstant.toString());
+        return value == null ? defaultValue : value;
     }
 
 
