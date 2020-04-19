@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import com.timrface.watchfacelayout.config.Configuration;
-import com.timrface.watchfacelayout.layout.Constants;
+import com.timrface.watchfacelayout.layout.ColorConstants;
 import com.timrface.watchfacelayout.layout.WindowInsets;
 
 import java.text.SimpleDateFormat;
@@ -52,6 +52,6 @@ public class AmPmLayout extends Layout {
 
     @Override
     void onAmbientModeChanged(boolean inAmbientMode) {
-        adjustPaintColorToCurrentMode(mAmPmLayout, configuration.getTextColor(), Constants.AMBIENT_TEXT_COLOR, inAmbientMode);
+        adjustPaintColorToCurrentMode(mAmPmLayout, configuration.getTextColor(), ColorConstants.AMBIENT_TEXT_COLOR, inAmbientMode);
     }
 }

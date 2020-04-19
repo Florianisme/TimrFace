@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import com.timrface.watchfacelayout.config.Configuration;
-import com.timrface.watchfacelayout.layout.Constants;
+import com.timrface.watchfacelayout.layout.ColorConstants;
 import com.timrface.watchfacelayout.layout.WindowInsets;
 
 import java.text.SimpleDateFormat;
@@ -63,8 +63,8 @@ public class TimeDigits extends Layout {
 
     @Override
     public void onAmbientModeChanged(boolean ambientEnabled) {
-        adjustPaintColorToCurrentMode(mHourPaint, configuration.getTextColor(), Constants.AMBIENT_TEXT_COLOR, ambientEnabled);
-        adjustPaintColorToCurrentMode(mMinutePaint, configuration.getInteractiveColor(), Constants.AMBIENT_TEXT_COLOR, ambientEnabled);
+        adjustPaintColorToCurrentMode(mHourPaint, configuration.getTextColor(), ColorConstants.AMBIENT_TEXT_COLOR, ambientEnabled);
+        adjustPaintColorToCurrentMode(mMinutePaint, configuration.getInteractiveColor(), ColorConstants.AMBIENT_TEXT_COLOR, ambientEnabled);
 
         mHourPaint.setTypeface(ambientEnabled ? robotoThin : robotoLight);
         mMinutePaint.setTypeface(ambientEnabled ? robotoThin : robotoLight);

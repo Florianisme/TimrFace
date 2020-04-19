@@ -5,7 +5,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.text.format.DateFormat;
 import com.timrface.watchfacelayout.config.Configuration;
-import com.timrface.watchfacelayout.layout.Constants;
+import com.timrface.watchfacelayout.layout.ColorConstants;
 import com.timrface.watchfacelayout.layout.WindowInsets;
 
 import java.text.SimpleDateFormat;
@@ -49,7 +49,7 @@ public class DateLayout extends Layout {
 
     @Override
     void onAmbientModeChanged(boolean inAmbientMode) {
-        adjustPaintColorToCurrentMode(mDatePaint, configuration.getTextColor(), Constants.AMBIENT_TEXT_COLOR, inAmbientMode);
+        adjustPaintColorToCurrentMode(mDatePaint, configuration.getTextColor(), ColorConstants.AMBIENT_TEXT_COLOR, inAmbientMode);
     }
 
     private String getDate(Calendar calendar) {

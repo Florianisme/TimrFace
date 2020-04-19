@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import com.timrface.watchfacelayout.config.Configuration;
-import com.timrface.watchfacelayout.layout.Constants;
+import com.timrface.watchfacelayout.layout.ColorConstants;
 import com.timrface.watchfacelayout.layout.WindowInsets;
 
 import java.util.Calendar;
@@ -21,14 +21,14 @@ public class TickLayout extends Layout {
     public TickLayout(Configuration configuration, Typeface robotoLight) {
         super(configuration);
         mTickPaint = new Paint();
-        mTickPaint.setColor(Constants.TICK_COLOR);
+        mTickPaint.setColor(ColorConstants.TICK_COLOR);
         mTickPaint.setStyle(Paint.Style.STROKE);
         mTickPaint.setStrokeWidth(2f);
 
         mThickTickPaint = new Paint(mTickPaint);
         mThickTickPaint.setStrokeWidth(4f);
 
-        mTextTickPaint = createTextPaint(Constants.TICK_COLOR, robotoLight);
+        mTextTickPaint = createTextPaint(ColorConstants.TICK_COLOR, robotoLight);
     }
 
     @Override

@@ -8,7 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import com.timrface.watchfacelayout.config.Configuration;
-import com.timrface.watchfacelayout.layout.Constants;
+import com.timrface.watchfacelayout.layout.ColorConstants;
 import com.timrface.watchfacelayout.layout.WindowInsets;
 
 import java.util.Calendar;
@@ -63,7 +63,7 @@ public class BatteryLayout extends Layout {
 
     @Override
     void onAmbientModeChanged(boolean inAmbientMode) {
-        adjustPaintColorToCurrentMode(mBatteryPaint, configuration.getTextColor(), Constants.AMBIENT_TEXT_COLOR, inAmbientMode);
+        adjustPaintColorToCurrentMode(mBatteryPaint, configuration.getTextColor(), ColorConstants.AMBIENT_TEXT_COLOR, inAmbientMode);
         mBatteryPaint.setTypeface(inAmbientMode ? robotoLight : robotoMedium);
     }
 }
