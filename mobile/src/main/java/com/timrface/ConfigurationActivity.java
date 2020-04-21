@@ -37,7 +37,7 @@ public class ConfigurationActivity extends AppCompatActivity {
     String[] colors;
     ColorPicker colorPicker;
     Handler mUpdateTimeHandler;
-    private final Configuration configuration = ConfigurationBuilder.getDefaultConfiguration();
+    private Configuration configuration;
 
     CanvasView canvasView;
     CheckBox smoothSecondsCheckBox;
@@ -158,6 +158,8 @@ public class ConfigurationActivity extends AppCompatActivity {
         smoothSecondsCheckBox = findViewById(R.id.seconds);
         showBatteryLevelCheckBox = findViewById(R.id.battery);
         showZeroDigitCheckBox = findViewById(R.id.zero_digit);
+
+        configuration = ConfigurationBuilder.getDefaultConfiguration(this);
 
         mUpdateTimeHandler = new Handler() {
             @Override

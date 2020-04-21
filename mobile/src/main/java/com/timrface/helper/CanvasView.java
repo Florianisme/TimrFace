@@ -35,7 +35,7 @@ public class CanvasView extends View {
                 new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
         calendar = Calendar.getInstance();
-        layoutProvider = new LayoutProvider().init(ConfigurationBuilder.getDefaultConfiguration(), getContext());
+        layoutProvider = new LayoutProvider().init(ConfigurationBuilder.getDefaultConfiguration(getContext()), getContext());
         layoutProvider.applyWindowInsets(getResources());
     }
 
