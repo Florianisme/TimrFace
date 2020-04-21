@@ -85,7 +85,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
             dataClient.addListener(this);
 
-            configuration = ConfigurationBuilder.getDefaultConfiguration();
+            configuration = ConfigurationBuilder.getDefaultConfiguration(WatchFaceService.this);
             layoutProvider = new LayoutProvider().init(configuration, WatchFaceService.this);
             timeFormatChangedReceiver.register(WatchFaceService.this, configuration, layoutProvider, cal);
 
