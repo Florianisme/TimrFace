@@ -33,8 +33,8 @@ public class UnreadNotificationsLayout extends Complication {
         this.robotoMedium = robotoMedium;
         this.robotoLight = robotoLight;
 
-        unreadDrawable.setTint(configuration.getTextColor());
-        unreadDrawableOutline.setTint(ColorConstants.AMBIENT_TEXT_COLOR);
+        this.unreadDrawable.setTint(configuration.getTextColor());
+        this.unreadDrawableOutline.setTint(ColorConstants.AMBIENT_TEXT_COLOR);
     }
 
     @Override
@@ -66,14 +66,15 @@ public class UnreadNotificationsLayout extends Complication {
 
     @Override
     void onConfigurationUpdated(Configuration configuration) {
-        mCountPaint.setColor(configuration.getTextColor());
-        unreadDrawable.setTint(configuration.getTextColor());
-        unreadDrawableOutline.setTint(configuration.getTextColor());
+        if (!isInAmbientMode()) {
+            mCountPaint.setColor(configuration.getTextColor());
+            unreadDrawable.setTint(configuration.getTextColor());
+        }
     }
 
     @Override
     public boolean drawWhenInAmbientMode() {
-        return true;
+        return configuration.isShowUnreadNotificationsCounter();
     }
 
     @Override

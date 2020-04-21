@@ -32,6 +32,9 @@ public class ConfigUpdater {
             if (dataMap.containsKey(ConfigurationConstant.ZERO_DIGIT.toString())) {
                 configuration.setShowZeroDigit(dataMap.getBoolean(ConfigurationConstant.ZERO_DIGIT.toString(), true));
             }
+            if (dataMap.containsKey(ConfigurationConstant.UNREAD_NOTIFICATIONS.toString())) {
+                configuration.setShowUnreadNotificationsCounter(dataMap.getBoolean(ConfigurationConstant.UNREAD_NOTIFICATIONS.toString(), true));
+            }
         }
     }
 

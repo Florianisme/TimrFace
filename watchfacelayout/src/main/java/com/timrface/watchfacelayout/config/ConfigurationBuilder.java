@@ -16,7 +16,8 @@ public class ConfigurationBuilder {
                 .setInteractiveColor(Color.parseColor("#FF9800"))
                 .setTextColor(Color.parseColor("#424242"))
                 .setShowZeroDigit(true)
-                .setAstronomicalClockFormat(DateFormat.is24HourFormat(context));
+                .setAstronomicalClockFormat(DateFormat.is24HourFormat(context))
+                .setShowUnreadNotificationsCounter(true);
     }
 
 }

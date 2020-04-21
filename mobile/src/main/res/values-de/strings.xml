@@ -5,7 +5,7 @@
     <string name="background">Hintergrundfarbe</string>
     <string name="colors">Hauptfarbe</string>
     <string name="view">Anzeige</string>
-    <string name="seconds">Animierte Sekunden</string>
+    <string name="seconds">Sekunden animieren</string>
     <string name="battery">Akkustand anzeigen</string>
 
     <string name="dialog_message">Durch eine Spende können Sie mich bei meiner Arbeit unterstützen und mir helfen, diese App zu verbessern :)</string>
@@ -13,5 +13,6 @@
     <string name="buy">Spenden!</string>
     <string name="cancel">Abbrechen</string>
     <string name="zero_digit">Uhrzeit als zwei Ziffern</string>
+    <string name="unreadNotifications">Benachrichtigungszähler anzeigen</string>
 
 </resources>

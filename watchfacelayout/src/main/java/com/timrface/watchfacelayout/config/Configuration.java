@@ -8,6 +8,7 @@ public class Configuration {
     private boolean astronomicalClockFormat;
     private boolean showBatteryLevel;
     private boolean showZeroDigit;
+    private boolean showUnreadNotificationsCounter;
 
     private int interactiveColor;
     private int backgroundColor;
@@ -98,6 +99,15 @@ public class Configuration {
 
     public Configuration setArrowResourceId(int arrowResourceId) {
         this.arrowResourceId = arrowResourceId;
+        return this;
+    }
+
+    public boolean isShowUnreadNotificationsCounter() {
+        return showUnreadNotificationsCounter;
+    }
+
+    public Configuration setShowUnreadNotificationsCounter(boolean showUnreadNotificationsCounter) {
+        this.showUnreadNotificationsCounter = showUnreadNotificationsCounter;
         return this;
     }
 }

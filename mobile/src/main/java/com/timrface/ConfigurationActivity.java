@@ -43,6 +43,8 @@ public class ConfigurationActivity extends AppCompatActivity {
     CheckBox smoothSecondsCheckBox;
     CheckBox showBatteryLevelCheckBox;
     CheckBox showZeroDigitCheckBox;
+    CheckBox showUnreadNotificationsCounter;
+
     IabHelper.OnConsumeFinishedListener mConsumeFinishedListener =
             new IabHelper.OnConsumeFinishedListener() {
                 public void onConsumeFinished(Purchase purchase,
@@ -158,6 +160,7 @@ public class ConfigurationActivity extends AppCompatActivity {
         smoothSecondsCheckBox = findViewById(R.id.seconds);
         showBatteryLevelCheckBox = findViewById(R.id.battery);
         showZeroDigitCheckBox = findViewById(R.id.zero_digit);
+        showUnreadNotificationsCounter = findViewById(R.id.unreadNotifications);
 
         configuration = ConfigurationBuilder.getDefaultConfiguration(this);
 
@@ -197,6 +200,7 @@ public class ConfigurationActivity extends AppCompatActivity {
                 smoothSecondsCheckBox.setChecked(configuration.isSmoothScrolling());
                 showBatteryLevelCheckBox.setChecked(configuration.isShowBatteryLevel());
                 showZeroDigitCheckBox.setChecked(configuration.isShowZeroDigit());
+                showUnreadNotificationsCounter.setChecked(configuration.isShowUnreadNotificationsCounter());
             }
         });
 
@@ -226,6 +230,15 @@ public class ConfigurationActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 sendDataItem(ConfigurationConstant.ZERO_DIGIT, isChecked);
                 configuration.setShowZeroDigit(isChecked);
+                canvasView.updateConfig(configuration);
+            }
+        });
+
+        showUnreadNotificationsCounter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                sendDataItem(ConfigurationConstant.UNREAD_NOTIFICATIONS, isChecked);
+                configuration.setShowUnreadNotificationsCounter(isChecked);
                 canvasView.updateConfig(configuration);
             }
         });

@@ -232,29 +232,36 @@
                 android:textStyle="bold" />
 
             <CheckBox
-                android:id="@+id/seconds"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/orange"
-                android:checked="true"
-                android:text="@string/seconds" />
+                    android:id="@+id/seconds"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/orange"
+                    android:checked="true"
+                    android:text="@string/seconds"/>
 
             <CheckBox
-                android:id="@+id/battery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/orange"
-                android:checked="true"
-                android:text="@string/battery" />
-
+                    android:id="@+id/battery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/orange"
+                    android:checked="true"
+                    android:text="@string/battery"/>
 
             <CheckBox
-                android:id="@+id/zero_digit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/orange"
-                android:checked="true"
-                android:text="@string/zero_digit" />
+                    android:id="@+id/unreadNotifications"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/orange"
+                    android:checked="true"
+                    android:text="@string/unreadNotifications"/>
+
+            <CheckBox
+                    android:id="@+id/zero_digit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/orange"
+                    android:checked="true"
+                    android:text="@string/zero_digit"/>
 
         </LinearLayout>
 

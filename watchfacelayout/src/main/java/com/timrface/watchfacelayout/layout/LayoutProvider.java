@@ -62,6 +62,9 @@ public class LayoutProvider {
         for (Layout layout : layoutList) {
             layout.updateConfiguration(configuration);
         }
+        for (Complication complication : complicationList) {
+            complication.updateConfiguration(configuration);
+        }
     }
 
     public void onAmbientModeChanged(final boolean inAmbientMode) {
