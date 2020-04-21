@@ -5,6 +5,9 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.wearable.complications.ComplicationData;
+import android.support.wearable.complications.ProviderUpdateRequester;
+import android.support.wearable.complications.SystemProviders;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
 import android.view.Gravity;
@@ -91,12 +94,28 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
             new StoredConfigurationFetcher().updateConfig(nodeClient, dataClient, configuration,
                     configuration -> layoutProvider.onConfigurationChange(configuration));
+
+            setActiveComplications(0);
+            setDefaultSystemComplicationProvider(0, SystemProviders.UNREAD_NOTIFICATION_COUNT, ComplicationData.TYPE_SHORT_TEXT);
+            new ProviderUpdateRequester(WatchFaceService.this, SystemProviders.unreadCountProvider()).requestUpdateAll();
         }
 
         @Override
         public void onTimeTick() {
             super.onTimeTick();
             invalidate();
+        }
+
+        @Override
+        public void onComplicationDataUpdate(int watchFaceComplicationId, ComplicationData data) {
+            layoutProvider.updateComplicationData(data, WatchFaceService.this);
+            invalidate();
+        }
+
+        @Override
+        public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            super.onSurfaceChanged(holder, format, width, height);
+            layoutProvider.onSurfaceChanged(width, height);
         }
 
         @Override

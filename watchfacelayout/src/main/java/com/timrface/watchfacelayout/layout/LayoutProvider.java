@@ -3,6 +3,8 @@ package com.timrface.watchfacelayout.layout;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.*;
+import android.support.wearable.complications.ComplicationData;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import com.timrface.watchfacelayout.R;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.layout.components.*;
@@ -14,6 +16,7 @@ import java.util.List;
 public class LayoutProvider {
 
     private final List<Layout> layoutList = new ArrayList<>();
+    private final List<Complication> complicationList = new ArrayList<>();
     private boolean inAmbientMode;
 
     public LayoutProvider init(Configuration configuration, Context context) {
@@ -31,7 +34,15 @@ public class LayoutProvider {
         layoutList.add(new BatteryLayout(configuration, context, robotoMedium, robotoLight));
         layoutList.add(new AmPmLayout(configuration, robotoLight));
 
+        complicationList.add(buildUnreadNotificationComplication(configuration, context, robotoLight, robotoMedium));
+
         return this;
+    }
+
+    private UnreadNotificationsLayout buildUnreadNotificationComplication(Configuration configuration, Context context, Typeface robotoLight, Typeface robotoMedium) {
+        VectorDrawableCompat notifications = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_notifications, context.getTheme());
+        VectorDrawableCompat notificationsOutline = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_notifications_outline, context.getTheme());
+        return new UnreadNotificationsLayout(configuration, notifications, notificationsOutline, robotoMedium, robotoLight);
     }
 
     private Layout buildArrowLayout(Configuration configuration, Context context) {
@@ -58,6 +69,11 @@ public class LayoutProvider {
         for (Layout layout : layoutList) {
             layout.updateAmbientMode(inAmbientMode);
         }
+        for (Complication complication : complicationList) {
+            if (!inAmbientMode || complication.drawWhenInAmbientMode()) {
+                complication.updateAmbientMode(inAmbientMode);
+            }
+        }
     }
 
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
@@ -67,6 +83,11 @@ public class LayoutProvider {
         for (Layout layout : layoutList) {
             if (!inAmbientMode || layout.drawWhenInAmbientMode()) {
                 layout.update(canvas, centerX, centerY, calendar);
+            }
+        }
+        for (Complication complication : complicationList) {
+            if (!inAmbientMode || complication.drawWhenInAmbientMode()) {
+                complication.update(canvas, centerX, centerY, calendar);
             }
         }
     }
@@ -80,6 +101,21 @@ public class LayoutProvider {
 
         for (Layout layout : layoutList) {
             layout.applyWindowInsets(windowInsets);
+        }
+        for (Complication complication : complicationList) {
+            complication.applyWindowInsets(windowInsets);
+        }
+    }
+
+    public void updateComplicationData(ComplicationData complicationData, Context context) {
+        for (Complication complication : complicationList) {
+            complication.onComplicationDataUpdate(complicationData, context);
+        }
+    }
+
+    public void onSurfaceChanged(int width, int height) {
+        for (Complication complication : complicationList) {
+            complication.onSurfaceChanged(width, height);
         }
     }
 }
