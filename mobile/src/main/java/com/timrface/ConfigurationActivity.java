@@ -296,7 +296,8 @@ public class ConfigurationActivity extends AppCompatActivity {
                     okColor.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            sendDataItem(ConfigurationConstant.INTERACTIVE_COLOR, color);
+                            String hexColor = String.format("#%06X", (0xFFFFFF & colorPicker.getColor()));
+                            sendDataItem(ConfigurationConstant.INTERACTIVE_COLOR, hexColor);
                             colorPicker.dismiss();
                             configuration.setInteractiveColor(colorPicker.getColor());
                             canvasView.updateConfig(configuration);
