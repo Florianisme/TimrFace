@@ -87,7 +87,7 @@ public class WatchFaceConfiguration extends Activity implements
     }
 
     private void updateConfigDataItem(final String backgroundColor) {
-        PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(ConfigurationConstant.CONFIG_PATH.toString());
+        PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(ConfigurationConstant.CONFIG_PATH.toString() + ConfigurationConstant.INTERACTIVE_COLOR.toString());
         DataMap dataMap = putDataMapRequest.getDataMap();
         dataMap.putString(ConfigurationConstant.INTERACTIVE_COLOR.toString(), backgroundColor);
         Wearable.getDataClient(this).putDataItem(putDataMapRequest.asPutDataRequest());

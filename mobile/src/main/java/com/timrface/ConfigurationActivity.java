@@ -328,14 +328,14 @@ public class ConfigurationActivity extends AppCompatActivity {
     }
 
     private void sendDataItem(ConfigurationConstant configurationConstant, String value) {
-        PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(ConfigurationConstant.CONFIG_PATH.toString());
+        PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(ConfigurationConstant.CONFIG_PATH.toString() + configurationConstant.toString());
         putDataMapRequest.getDataMap().putString(configurationConstant.toString(), value);
         PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest().setUrgent();
         Wearable.getDataClient(ConfigurationActivity.this).putDataItem(putDataReq);
     }
 
     private void sendDataItem(ConfigurationConstant configurationConstant, boolean value) {
-        PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(ConfigurationConstant.CONFIG_PATH.toString());
+        PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(ConfigurationConstant.CONFIG_PATH.toString() + configurationConstant.toString());
         putDataMapRequest.getDataMap().putBoolean(configurationConstant.toString(), value);
         PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
         Wearable.getDataClient(ConfigurationActivity.this).putDataItem(putDataReq);

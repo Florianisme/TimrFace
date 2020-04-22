@@ -10,7 +10,7 @@ public class ConfigUpdater {
 
     public static void updateConfig(Configuration configuration, DataItem item) {
 
-        if (ConfigurationConstant.CONFIG_PATH.toString().equals(item.getUri().getPath())) {
+        if (item.getUri().getPath().startsWith(ConfigurationConstant.CONFIG_PATH.toString())) {
             DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
             if (dataMap.containsKey(ConfigurationConstant.SMOOTH_SECONDS.toString())) {
                 configuration.setSmoothScrolling(dataMap.getBoolean(ConfigurationConstant.SMOOTH_SECONDS.toString()));

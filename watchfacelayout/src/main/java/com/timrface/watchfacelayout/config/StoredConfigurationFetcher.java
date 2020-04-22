@@ -25,21 +25,22 @@ public class StoredConfigurationFetcher {
     }
 
     private void getDataByNodeId(String nodeId, DataClient dataClient, final Configuration configuration, final ConfigUpdateFinished configUpdateFinished) {
-        String basePath = "/watch_face_config";
-        Uri uri = new Uri.Builder()
-                .scheme(PutDataRequest.WEAR_URI_SCHEME)
-                .path(basePath)
-                .authority(nodeId)
-                .build();
-        dataClient.getDataItems(uri).addOnSuccessListener(new OnSuccessListener<DataItemBuffer>() {
-            @Override
-            public void onSuccess(DataItemBuffer dataItems) {
-                for (DataItem item : dataItems) {
-                    ConfigUpdater.updateConfig(configuration, item);
+        for (ConfigurationConstant configurationConstant : ConfigurationConstant.values()) {
+            Uri uri = new Uri.Builder()
+                    .scheme(PutDataRequest.WEAR_URI_SCHEME)
+                    .path(ConfigurationConstant.CONFIG_PATH.toString() + configurationConstant.toString())
+                    .authority(nodeId)
+                    .build();
+            dataClient.getDataItems(uri).addOnSuccessListener(new OnSuccessListener<DataItemBuffer>() {
+                @Override
+                public void onSuccess(DataItemBuffer dataItems) {
+                    for (DataItem item : dataItems) {
+                        ConfigUpdater.updateConfig(configuration, item);
+                    }
+                    dataItems.release();
+                    configUpdateFinished.onUpdateFinished(configuration);
                 }
-                dataItems.release();
-                configUpdateFinished.onUpdateFinished(configuration);
-            }
-        });
+            });
+        }
     }
 }
