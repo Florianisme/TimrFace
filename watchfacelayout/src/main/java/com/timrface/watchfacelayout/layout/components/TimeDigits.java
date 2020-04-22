@@ -16,6 +16,7 @@ public class TimeDigits extends Layout {
     private final Typeface robotoThin;
     private final Paint mHourPaint;
     private final Paint mMinutePaint;
+    private float measuredTwoDigitTextSize = 0f;
     SimpleDateFormat hourFormat;
 
     public TimeDigits(Configuration configuration, Typeface robotoLight, Typeface robotoThin) {
@@ -33,12 +34,16 @@ public class TimeDigits extends Layout {
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
         String hours = getHours(calendar);
         String minutes = getMinutes(calendar);
-        float hourWidthMeasured = mHourPaint.measureText(getHours(calendar));
-        float minutesWidthMeasured = mMinutePaint.measureText(getMinutes(calendar));
+        float hourWidthMeasured = hasTwoDigits(hours) ? measuredTwoDigitTextSize : measuredTwoDigitTextSize / 2;
+        float minutesWidthMeasured = hasTwoDigits(minutes) ? measuredTwoDigitTextSize : measuredTwoDigitTextSize / 2;
         float yPosition = centerY + centerY / 15;
 
         canvas.drawText(hours, centerX - (hourWidthMeasured + (hourWidthMeasured / 20)), yPosition, mHourPaint);
         canvas.drawText(minutes, centerX + (minutesWidthMeasured / 20), yPosition, mMinutePaint);
+    }
+
+    private boolean hasTwoDigits(String hours) {
+        return hours.length() == 2;
     }
 
     @Override
@@ -59,6 +64,7 @@ public class TimeDigits extends Layout {
     public void applyWindowInsets(WindowInsets windowInsets) {
         mHourPaint.setTextSize(windowInsets.getTimeTextSize());
         mMinutePaint.setTextSize(windowInsets.getTimeTextSize());
+        measuredTwoDigitTextSize = mHourPaint.measureText("00");
     }
 
     @Override
@@ -78,7 +84,7 @@ public class TimeDigits extends Layout {
         if (configuration.isShowZeroDigit()) {
             return number < 10 ? "0" + number : "" + number;
         }
-        return String.valueOf(number);
+        return Integer.toString(number);
     }
 
     private String getMinutes(Calendar calendar) {
