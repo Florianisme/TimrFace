@@ -77,17 +77,17 @@ public class TimeDigits extends Layout {
     }
 
     private String getHours(Calendar calendar) {
-        return formatTwoDigits(configuration.isAstronomicalClockFormat() ? calendar.get(Calendar.HOUR_OF_DAY) : calendar.get(Calendar.HOUR));
+        return formatTwoDigits(hourFormat.format(calendar.getTime()));
     }
 
-    private String formatTwoDigits(int number) {
+    private String formatTwoDigits(String number) {
         if (configuration.isShowZeroDigit()) {
-            return number < 10 ? "0" + number : "" + number;
+            return number.length() < 2 ? "0" + number : "" + number;
         }
-        return Integer.toString(number);
+        return number;
     }
 
     private String getMinutes(Calendar calendar) {
-        return formatTwoDigits(calendar.get(Calendar.MINUTE));
+        return formatTwoDigits(Integer.toString(calendar.get(Calendar.MINUTE)));
     }
 }
