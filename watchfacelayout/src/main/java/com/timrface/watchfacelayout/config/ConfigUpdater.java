@@ -1,6 +1,7 @@
 package com.timrface.watchfacelayout.config;
 
 import android.graphics.Color;
+import android.util.Log;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
@@ -12,6 +13,7 @@ public class ConfigUpdater {
 
         if (item.getUri().getPath().startsWith(ConfigurationConstant.CONFIG_PATH.toString())) {
             DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+            Log.d("DataFetching", "DataItem with keys " + dataMap.keySet());
             if (dataMap.containsKey(ConfigurationConstant.SMOOTH_SECONDS.toString())) {
                 configuration.setSmoothScrolling(dataMap.getBoolean(ConfigurationConstant.SMOOTH_SECONDS.toString()));
             }

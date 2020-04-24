@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
@@ -30,7 +31,7 @@ import com.timrface.watchfacelayout.config.*;
 
 import java.util.ArrayList;
 
-public class ConfigurationActivity extends AppCompatActivity {
+public class ConfigurationActivity extends AppCompatActivity implements DataClient.OnDataChangedListener {
 
     static ArrayList<String> list = new ArrayList<>();
     private static String ITEM_SKU = "com.timrface.donate";
@@ -163,6 +164,7 @@ public class ConfigurationActivity extends AppCompatActivity {
         showUnreadNotificationsCounter = findViewById(R.id.unreadNotifications);
 
         configuration = ConfigurationBuilder.getDefaultConfiguration(this);
+        Wearable.getDataClient(this).addListener(this);
 
         mUpdateTimeHandler = new Handler() {
             @Override
@@ -332,6 +334,10 @@ public class ConfigurationActivity extends AppCompatActivity {
         putDataMapRequest.getDataMap().putString(configurationConstant.toString(), value);
         PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest().setUrgent();
         Wearable.getDataClient(ConfigurationActivity.this).putDataItem(putDataReq);
+
+        if (configurationConstant == ConfigurationConstant.INTERACTIVE_COLOR) {
+            StoredConfigurationFetcher.deleteInteractiveColorSetByOtherDevice(Wearable.getNodeClient(this), Wearable.getDataClient(this));
+        }
     }
 
     private void sendDataItem(ConfigurationConstant configurationConstant, boolean value) {
@@ -339,5 +345,24 @@ public class ConfigurationActivity extends AppCompatActivity {
         putDataMapRequest.getDataMap().putBoolean(configurationConstant.toString(), value);
         PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
         Wearable.getDataClient(ConfigurationActivity.this).putDataItem(putDataReq);
+    }
+
+    @Override
+    public void onDataChanged(@NonNull DataEventBuffer dataEventBuffer) {
+        for (DataEvent event : dataEventBuffer) {
+            if (event.getType() == DataEvent.TYPE_CHANGED) {
+                DataItem item = event.getDataItem();
+                ConfigUpdater.updateConfig(configuration, item);
+            }
+        }
+        canvasView.updateConfig(configuration);
+        dataEventBuffer.release();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Wearable.getDataClient(this).removeListener(this);
+        mUpdateTimeHandler.removeMessages(0);
     }
 }

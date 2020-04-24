@@ -8,18 +8,36 @@ import java.util.List;
 
 public class StoredConfigurationFetcher {
 
+    private static String getConnectedNodeId(List<Node> nodes) {
+        for (Node node : nodes) {
+            if (!node.isNearby()) {
+                continue;
+            }
+            return node.getId();
+        }
+        throw new IllegalArgumentException("No connected node found");
+    }
+
+    public static void deleteInteractiveColorSetByOtherDevice(NodeClient nodeClient, final DataClient dataClient) {
+        nodeClient.getConnectedNodes().addOnSuccessListener(new OnSuccessListener<List<Node>>() {
+            @Override
+            public void onSuccess(List<Node> nodes) {
+                String connectedNodeId = StoredConfigurationFetcher.getConnectedNodeId(nodes);
+                Uri uri = new Uri.Builder()
+                        .scheme(PutDataRequest.WEAR_URI_SCHEME)
+                        .path(ConfigurationConstant.CONFIG_PATH.toString() + ConfigurationConstant.INTERACTIVE_COLOR.toString())
+                        .authority(connectedNodeId)
+                        .build();
+                dataClient.deleteDataItems(uri);
+            }
+        });
+    }
+
     public void updateConfig(NodeClient nodeClient, final DataClient dataClient, final Configuration configuration, final ConfigUpdateFinished configUpdateFinished) {
         nodeClient.getConnectedNodes().addOnSuccessListener(new OnSuccessListener<List<Node>>() {
             @Override
             public void onSuccess(List<Node> nodes) {
-                for (Node node : nodes) {
-                    if (!node.isNearby()) {
-                        continue;
-                    }
-                    String nodeId = node.getId();
-
-                    getDataByNodeId(nodeId, dataClient, configuration, configUpdateFinished);
-                }
+                getDataByNodeId(getConnectedNodeId(nodes), dataClient, configuration, configUpdateFinished);
             }
         });
     }
@@ -29,7 +47,7 @@ public class StoredConfigurationFetcher {
             Uri uri = new Uri.Builder()
                     .scheme(PutDataRequest.WEAR_URI_SCHEME)
                     .path(ConfigurationConstant.CONFIG_PATH.toString() + configurationConstant.toString())
-                    .authority(nodeId)
+                    .authority("*")
                     .build();
             dataClient.getDataItems(uri).addOnSuccessListener(new OnSuccessListener<DataItemBuffer>() {
                 @Override
