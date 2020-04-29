@@ -4,6 +4,18 @@ android {
     compileSdkVersion 29
     buildToolsVersion '29.0.2'
 
+    signingConfigs {
+        release {
+            storeFile file(System.getenv('KEYSTORE_PATH'))
+            storePassword System.getenv('KEYSTORE_PASSWORD')
+            keyAlias System.getenv('KEY_ALIAS')
+            keyPassword System.getenv('KEY_PASSWORD')
+
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
     defaultConfig {
         applicationId "com.timrface"
         minSdkVersion 18
@@ -18,18 +30,6 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-}
-
-signingConfigs {
-    release {
-        storeFile file(System.getenv('KEYSTORE_PATH'))
-        storePassword System.getenv('KEYSTORE_PASSWORD')
-        keyAlias System.getenv('KEY_ALIAS')
-        keyPassword System.getenv('KEY_PASSWORD')
-
-        v1SigningEnabled true
-        v2SigningEnabled true
     }
 }
 
