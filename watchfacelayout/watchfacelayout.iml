@@ -108,7 +108,6 @@
     <orderEntry type="library" name="Gradle: androidx.arch.core:core-common:2.1.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-common:2.1.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.annotation:annotation:1.1.0@jar" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains:annotations-java5:15.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.appcompat:appcompat:1.1.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.support:wearable:2.5.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-wearable:17.0.0@aar" level="project" />

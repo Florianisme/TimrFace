@@ -6,10 +6,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file(System.getenv('KEYSTORE_PATH'))
-            storePassword System.getenv('KEYSTORE_PASSWORD')
-            keyAlias System.getenv('KEY_ALIAS')
-            keyPassword System.getenv('KEY_PASSWORD')
+            storeFile file('KEYSTORE_PATH')
+            storePassword 'KEYSTORE_PASSWORD'
+            keyAlias 'KEY_ALIAS'
+            keyPassword 'KEY_PASSWORD'
 
             v1SigningEnabled true
             v2SigningEnabled true
