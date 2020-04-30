@@ -10,6 +10,7 @@ pipeline {
         }
         stage('Build') {
             steps {
+                sh script: 'chmod +x gradlew'
                 sh label: 'Gradle Build', script: './gradlew clean assembleRelease'
             }
         }
