@@ -6,10 +6,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file('KEYSTORE_PATH')
-            storePassword 'KEYSTORE_PASSWORD'
-            keyAlias 'KEY_ALIAS'
-            keyPassword 'KEY_PASSWORD'
+            storeFile file(project.property('KEYSTORE_PATH'))
+            storePassword project.property('KEYSTORE_PASSWORD')
+            keyAlias project.property('KEY_ALIAS')
+            keyPassword project.property('KEY_PASSWORD')
 
             v1SigningEnabled true
             v2SigningEnabled true

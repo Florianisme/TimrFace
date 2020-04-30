@@ -11,7 +11,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh script: 'chmod +x gradlew'
-                sh label: 'Gradle Build', script: './gradlew clean assembleRelease'
+                sh label: 'Gradle Build', script: './gradlew --parallel --max-workers=8  clean assembleRelease'
             }
         }
         stage('Archive Artifacts') {
