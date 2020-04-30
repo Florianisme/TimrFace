@@ -5,7 +5,7 @@ pipeline {
         stage('SCM Checkout') {
             steps {
                 cleanWs()
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']] userRemoteConfigs: [[credentialsId: '8f84c8ac-0ef9-40c3-a45d-7cd9a5831cc4', url: 'https://github.com/Florianisme/TimrFace.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[credentialsId: '8f84c8ac-0ef9-40c3-a45d-7cd9a5831cc4', url: 'https://github.com/Florianisme/TimrFace.git']]])
             }
         }
         stage('Build') {
