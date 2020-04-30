@@ -10,7 +10,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh label: 'Gradle Build', script: 'gradlew clean assembleRelease'
+                sh label: 'Gradle Build', script: './gradlew clean assembleRelease'
             }
         }
         stage('Archive Artifacts') {
