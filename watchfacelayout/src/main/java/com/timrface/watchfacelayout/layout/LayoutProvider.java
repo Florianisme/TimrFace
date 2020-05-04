@@ -27,8 +27,8 @@ public class LayoutProvider {
         Typeface robotoMedium = Typeface.createFromAsset(context.getAssets(), "Roboto-Medium.ttf");
 
         layoutList.add(new ChinLayout(configuration));
-        layoutList.add(new BackgroundLayout(configuration));
         layoutList.add(new TickLayout(configuration, robotoMedium));
+        layoutList.add(new BackgroundLayout(configuration));
         layoutList.add(new TimeDigits(configuration, robotoLight, robotoThin));
         layoutList.add(new DateLayout(configuration, robotoLight));
         layoutList.add(new BatteryLayout(configuration, context, robotoMedium, robotoLight));
