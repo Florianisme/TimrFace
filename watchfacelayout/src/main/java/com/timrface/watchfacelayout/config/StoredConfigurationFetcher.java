@@ -42,16 +42,12 @@ public class StoredConfigurationFetcher {
         nodeClient.getConnectedNodes().addOnSuccessListener(new OnSuccessListener<List<Node>>() {
             @Override
             public void onSuccess(List<Node> nodes) {
-                try {
-                    getDataByNodeId(getConnectedNodeId(nodes), dataClient, configuration, configUpdateFinished);
-                } catch (IllegalArgumentException e) {
-                    Log.e("ConfigFetcher", "IllegalArgumentException: " + e.getMessage());
-                }
+                updateConfigData(dataClient, configuration, configUpdateFinished);
             }
         });
     }
 
-    private void getDataByNodeId(String nodeId, DataClient dataClient, final Configuration configuration, final ConfigUpdateFinished configUpdateFinished) {
+    private void updateConfigData(DataClient dataClient, final Configuration configuration, final ConfigUpdateFinished configUpdateFinished) {
         for (ConfigurationConstant configurationConstant : ConfigurationConstant.values()) {
             Uri uri = new Uri.Builder()
                     .scheme(PutDataRequest.WEAR_URI_SCHEME)
