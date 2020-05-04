@@ -23,7 +23,13 @@ public abstract class Layout {
 
     public abstract boolean drawWhenInAmbientMode();
 
-    public abstract void applyWindowInsets(WindowInsets windowInsets);
+    public void applyWindowInsets(WindowInsets windowInsets) {
+
+    }
+
+    public void onSurfaceChanged(int width, int height) {
+
+    }
 
     public void updateConfiguration(Configuration configuration) {
         this.configuration = configuration;
@@ -35,7 +41,9 @@ public abstract class Layout {
         onAmbientModeChanged(inAmbientMode);
     }
 
-    abstract void onAmbientModeChanged(boolean inAmbientMode);
+    void onAmbientModeChanged(boolean inAmbientMode) {
+
+    }
 
     protected Paint createTextPaint(int color, Typeface typeface) {
         Paint paint = new Paint();

@@ -3,7 +3,6 @@ package com.timrface.watchfacelayout.layout.components;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import com.timrface.watchfacelayout.config.Configuration;
-import com.timrface.watchfacelayout.layout.WindowInsets;
 
 import java.util.Calendar;
 
@@ -30,15 +29,5 @@ public class ChinLayout extends Layout {
     @Override
     public boolean drawWhenInAmbientMode() {
         return false;
-    }
-
-    @Override
-    public void applyWindowInsets(WindowInsets windowInsets) {
-
-    }
-
-    @Override
-    public void onAmbientModeChanged(boolean inAmbientMode) {
-
     }
 }

@@ -78,9 +78,4 @@ public class TickLayout extends Layout {
         mTextTickPaint.setTextSize(windowInsets.getTickTextSize());
         twoDigitsTextWidth = mTextTickPaint.measureText("00"); // Measure two digit text so we reduce the drawing time later on
     }
-
-    @Override
-    void onAmbientModeChanged(boolean inAmbientMode) {
-
-    }
 }

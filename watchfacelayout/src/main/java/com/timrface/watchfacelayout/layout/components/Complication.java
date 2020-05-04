@@ -12,6 +12,4 @@ public abstract class Complication extends Layout {
 
     public abstract void onComplicationDataUpdate(ComplicationData complicationData, Context context);
 
-    public abstract void onSurfaceChanged(int width, int height);
-
 }

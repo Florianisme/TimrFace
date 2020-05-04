@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import com.timrface.watchfacelayout.config.Configuration;
-import com.timrface.watchfacelayout.layout.WindowInsets;
 
 import java.util.Calendar;
 
@@ -35,9 +34,6 @@ public class BackgroundLayout extends Layout {
         path.lineTo(centerX * 2, 0);
         path.lineTo(0, 0);
         canvas.drawPath(path, mBackgroundPaint);
-
-
-        //canvas.drawRect(0, 0, centerX * 2, centerY + centerY / 2.5f, mBackgroundPaint);
     }
 
     @Override
@@ -48,15 +44,5 @@ public class BackgroundLayout extends Layout {
     @Override
     public boolean drawWhenInAmbientMode() {
         return false;
-    }
-
-    @Override
-    public void applyWindowInsets(WindowInsets windowInsets) {
-
-    }
-
-    @Override
-    void onAmbientModeChanged(boolean inAmbientMode) {
-
     }
 }
