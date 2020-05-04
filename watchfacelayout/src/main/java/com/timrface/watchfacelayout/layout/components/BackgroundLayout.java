@@ -11,6 +11,7 @@ import java.util.Calendar;
 public class BackgroundLayout extends Layout {
 
     private final Paint mBackgroundPaint;
+    private Path backgroundPath = new Path();
 
     public BackgroundLayout(Configuration configuration) {
         super(configuration);
@@ -21,19 +22,24 @@ public class BackgroundLayout extends Layout {
 
     @Override
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
+        canvas.drawPath(backgroundPath, mBackgroundPaint);
+    }
+
+    @Override
+    public void onSurfaceChanged(int width, int height) {
+        float centerX = width / 2f;
+        float centerY = height / 2f;
         float positionY = centerY + centerY / 2.5f;
         float arrowSize = centerX * 0.15f;
 
-        Path path = new Path();
-        path.setFillType(Path.FillType.EVEN_ODD);
-        path.moveTo(0f, positionY);
-        path.lineTo(centerX - arrowSize, positionY);
-        path.lineTo(centerX, positionY + arrowSize);
-        path.lineTo(centerX + arrowSize, positionY);
-        path.lineTo(centerX * 2, positionY);
-        path.lineTo(centerX * 2, 0);
-        path.lineTo(0, 0);
-        canvas.drawPath(path, mBackgroundPaint);
+        backgroundPath.setFillType(Path.FillType.EVEN_ODD);
+        backgroundPath.moveTo(0f, positionY);
+        backgroundPath.lineTo(centerX - arrowSize, positionY);
+        backgroundPath.lineTo(centerX, positionY + arrowSize);
+        backgroundPath.lineTo(centerX + arrowSize, positionY);
+        backgroundPath.lineTo(width, positionY);
+        backgroundPath.lineTo(width, 0);
+        backgroundPath.lineTo(0, 0);
     }
 
     @Override

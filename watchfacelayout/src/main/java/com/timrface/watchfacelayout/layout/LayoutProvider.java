@@ -107,5 +107,8 @@ public class LayoutProvider {
         for (Complication complication : complicationList) {
             complication.onSurfaceChanged(width, height);
         }
+        for (Layout layout : layoutList) {
+            layout.onSurfaceChanged(width, height);
+        }
     }
 }
