@@ -126,7 +126,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
-            long start = System.currentTimeMillis();
             cal.setTimeInMillis(System.currentTimeMillis());
             float width = bounds.exactCenterX();
             float height = bounds.exactCenterY();
