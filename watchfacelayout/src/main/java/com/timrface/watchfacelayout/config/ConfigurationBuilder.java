@@ -3,7 +3,6 @@ package com.timrface.watchfacelayout.config;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.format.DateFormat;
-import com.timrface.watchfacelayout.R;
 
 public class ConfigurationBuilder {
 
@@ -12,7 +11,7 @@ public class ConfigurationBuilder {
                 .setShowBatteryLevel(true)
                 .setSmoothScrolling(true)
                 .setBackgroundColor(Color.parseColor("#FAFAFA"))
-                .setArrowResourceId(R.drawable.indicator)
+                .setArrowColor(Color.parseColor("#FAFAFA"))
                 .setInteractiveColor(Color.parseColor("#FF9800"))
                 .setTextColor(Color.parseColor("#424242"))
                 .setShowZeroDigit(true)

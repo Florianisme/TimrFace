@@ -28,7 +28,7 @@ public class LayoutProvider {
         layoutList.add(new BackgroundLayout(configuration));
         layoutList.add(new TickLayout(configuration, robotoMedium));
         layoutList.add(buildShadowPaint(configuration, context));
-        layoutList.add(buildArrowLayout(configuration, context));
+        layoutList.add(new ArrowLayout(configuration));
         layoutList.add(new TimeDigits(configuration, robotoLight, robotoThin));
         layoutList.add(new DateLayout(configuration, robotoLight));
         layoutList.add(new BatteryLayout(configuration, context, robotoMedium, robotoLight));
@@ -43,13 +43,6 @@ public class LayoutProvider {
         VectorDrawableCompat notifications = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_notifications, context.getTheme());
         VectorDrawableCompat notificationsOutline = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_notifications_outline, context.getTheme());
         return new UnreadNotificationsLayout(configuration, notifications, notificationsOutline, robotoMedium, robotoLight);
-    }
-
-    private Layout buildArrowLayout(Configuration configuration, Context context) {
-        Bitmap indicatorBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.indicator);
-        indicatorBitmap = Bitmap.createScaledBitmap(indicatorBitmap, 50, 25, true);
-
-        return new ArrowLayout(configuration, indicatorBitmap, context);
     }
 
     private Layout buildShadowPaint(Configuration configuration, Context context) {

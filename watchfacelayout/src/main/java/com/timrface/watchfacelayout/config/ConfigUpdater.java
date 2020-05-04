@@ -5,7 +5,6 @@ import android.util.Log;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
-import com.timrface.watchfacelayout.R;
 
 public class ConfigUpdater {
 
@@ -23,7 +22,7 @@ public class ConfigUpdater {
 
                 configuration.setBackgroundColor(backgroundColor);
                 configuration.setTextColor(isBackgroundColorWhite ? Color.parseColor("#424242") : Color.parseColor("#FAFAFA"));
-                configuration.setArrowResourceId(getArrowDrawableResourceIdByBackgroundColor(getStringFromDataMap(dataMap, ConfigurationConstant.BACKGROUND_COLOR, "#FAFAFA")));
+                configuration.setArrowColor(Color.parseColor(getStringFromDataMap(dataMap, ConfigurationConstant.BACKGROUND_COLOR, "#FAFAFA")));
             }
             if (dataMap.containsKey(ConfigurationConstant.INTERACTIVE_COLOR.toString())) {
                 configuration.setInteractiveColor(Color.parseColor(getStringFromDataMap(dataMap, ConfigurationConstant.INTERACTIVE_COLOR, "#FF9800")));
@@ -43,17 +42,5 @@ public class ConfigUpdater {
     private static String getStringFromDataMap(DataMap dataMap, ConfigurationConstant configurationConstant, String defaultValue) {
         String value = dataMap.getString(configurationConstant.toString());
         return value == null ? defaultValue : value;
-    }
-
-
-    private static int getArrowDrawableResourceIdByBackgroundColor(String color) {
-        switch (color) {
-            case "#424242":
-                return R.drawable.indicator_grey;
-            case "#000000":
-                return R.drawable.indicator_black;
-            default:
-                return R.drawable.indicator;
-        }
     }
 }

@@ -1,10 +1,8 @@
 package com.timrface.watchfacelayout.layout.components;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.layout.WindowInsets;
 
@@ -13,26 +11,28 @@ import java.util.Calendar;
 public class ArrowLayout extends Layout {
 
     private final Paint mArrowPaint;
-    private final Context context;
-    private Bitmap indicator;
 
-    public ArrowLayout(Configuration configuration, Bitmap indicator, Context context) {
+    public ArrowLayout(Configuration configuration) {
         super(configuration);
-        this.indicator = indicator;
-        this.context = context;
         mArrowPaint = new Paint();
+        mArrowPaint.setColor(configuration.getArrowColor());
     }
 
     @Override
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
-        canvas.drawBitmap(indicator, centerX - 25, centerY + centerY / 2.5f, mArrowPaint);
+        float positionY = centerY + centerY / 2.5f;
 
+        Path path = new Path();
+        path.setFillType(Path.FillType.EVEN_ODD);
+        path.moveTo(centerX - 25f, positionY);
+        path.lineTo(centerX + 25, positionY);
+        path.lineTo(centerX, positionY + 25);
+        canvas.drawPath(path, mArrowPaint);
     }
 
     @Override
     void onConfigurationUpdated(Configuration configuration) {
-        indicator = BitmapFactory.decodeResource(context.getResources(), configuration.getArrowResourceId());
-        indicator = Bitmap.createScaledBitmap(indicator, 50, 25, true);
+        mArrowPaint.setColor(configuration.getArrowColor());
     }
 
     @Override

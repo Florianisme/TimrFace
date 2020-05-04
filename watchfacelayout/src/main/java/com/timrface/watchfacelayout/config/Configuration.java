@@ -13,7 +13,7 @@ public class Configuration {
     private int interactiveColor;
     private int backgroundColor;
     private int textColor;
-    private int arrowResourceId;
+    private int arrowColor;
 
     public boolean isSmoothScrolling() {
         return smoothScrolling;
@@ -93,12 +93,12 @@ public class Configuration {
         return this;
     }
 
-    public int getArrowResourceId() {
-        return arrowResourceId;
+    public int getArrowColor() {
+        return arrowColor;
     }
 
-    public Configuration setArrowResourceId(int arrowResourceId) {
-        this.arrowResourceId = arrowResourceId;
+    public Configuration setArrowColor(int arrowColor) {
+        this.arrowColor = arrowColor;
         return this;
     }
 
