@@ -1,6 +1,7 @@
 package com.timrface.watchfacelayout.config;
 
 import android.net.Uri;
+import android.util.Log;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.wearable.*;
 
@@ -22,13 +23,17 @@ public class StoredConfigurationFetcher {
         nodeClient.getConnectedNodes().addOnSuccessListener(new OnSuccessListener<List<Node>>() {
             @Override
             public void onSuccess(List<Node> nodes) {
-                String connectedNodeId = StoredConfigurationFetcher.getConnectedNodeId(nodes);
-                Uri uri = new Uri.Builder()
-                        .scheme(PutDataRequest.WEAR_URI_SCHEME)
-                        .path(ConfigurationConstant.CONFIG_PATH.toString() + ConfigurationConstant.INTERACTIVE_COLOR.toString())
-                        .authority(connectedNodeId)
-                        .build();
-                dataClient.deleteDataItems(uri);
+                try {
+                    String connectedNodeId = StoredConfigurationFetcher.getConnectedNodeId(nodes);
+                    Uri uri = new Uri.Builder()
+                            .scheme(PutDataRequest.WEAR_URI_SCHEME)
+                            .path(ConfigurationConstant.CONFIG_PATH.toString() + ConfigurationConstant.INTERACTIVE_COLOR.toString())
+                            .authority(connectedNodeId)
+                            .build();
+                    dataClient.deleteDataItems(uri);
+                } catch (IllegalArgumentException e) {
+                    Log.e("ConfigFetcher", "IllegalArgumentException: " + e.getMessage());
+                }
             }
         });
     }
@@ -37,7 +42,11 @@ public class StoredConfigurationFetcher {
         nodeClient.getConnectedNodes().addOnSuccessListener(new OnSuccessListener<List<Node>>() {
             @Override
             public void onSuccess(List<Node> nodes) {
-                getDataByNodeId(getConnectedNodeId(nodes), dataClient, configuration, configUpdateFinished);
+                try {
+                    getDataByNodeId(getConnectedNodeId(nodes), dataClient, configuration, configUpdateFinished);
+                } catch (IllegalArgumentException e) {
+                    Log.e("ConfigFetcher", "IllegalArgumentException: " + e.getMessage());
+                }
             }
         });
     }
