@@ -2,7 +2,9 @@ package com.timrface.watchfacelayout.layout;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.wearable.complications.ComplicationData;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import com.timrface.watchfacelayout.R;
@@ -27,8 +29,6 @@ public class LayoutProvider {
         layoutList.add(new ChinLayout(configuration));
         layoutList.add(new BackgroundLayout(configuration));
         layoutList.add(new TickLayout(configuration, robotoMedium));
-        layoutList.add(buildShadowPaint(configuration, context));
-        layoutList.add(new ArrowLayout(configuration));
         layoutList.add(new TimeDigits(configuration, robotoLight, robotoThin));
         layoutList.add(new DateLayout(configuration, robotoLight));
         layoutList.add(new BatteryLayout(configuration, context, robotoMedium, robotoLight));
@@ -43,12 +43,6 @@ public class LayoutProvider {
         VectorDrawableCompat notifications = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_notifications, context.getTheme());
         VectorDrawableCompat notificationsOutline = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_notifications_outline, context.getTheme());
         return new UnreadNotificationsLayout(configuration, notifications, notificationsOutline, robotoMedium, robotoLight);
-    }
-
-    private Layout buildShadowPaint(Configuration configuration, Context context) {
-        Bitmap shadowBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.indicator_shadow);
-        shadowBitmap = Bitmap.createScaledBitmap(shadowBitmap, 50, 25, true);
-        return new ShadowLayout(configuration, shadowBitmap);
     }
 
     public void onConfigurationChange(final Configuration configuration) {

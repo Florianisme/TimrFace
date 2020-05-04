@@ -13,7 +13,6 @@ public class Configuration {
     private int interactiveColor;
     private int backgroundColor;
     private int textColor;
-    private int arrowColor;
 
     public boolean isSmoothScrolling() {
         return smoothScrolling;
@@ -90,15 +89,6 @@ public class Configuration {
 
     public Configuration setShowZeroDigit(boolean showZeroDigit) {
         this.showZeroDigit = showZeroDigit;
-        return this;
-    }
-
-    public int getArrowColor() {
-        return arrowColor;
-    }
-
-    public Configuration setArrowColor(int arrowColor) {
-        this.arrowColor = arrowColor;
         return this;
     }
 

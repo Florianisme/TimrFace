@@ -1,6 +1,7 @@
 package com.timrface.watchfacelayout.layout.components;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import com.timrface.watchfacelayout.config.Configuration;
@@ -16,17 +17,19 @@ public class ArrowLayout extends Layout {
         super(configuration);
         mArrowPaint = new Paint();
         mArrowPaint.setColor(configuration.getArrowColor());
+        mArrowPaint.setShadowLayer(10f, 0f, 5f, Color.BLACK);
     }
 
     @Override
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
         float positionY = centerY + centerY / 2.5f;
+        float arrowSize = centerX * 0.15f;
 
         Path path = new Path();
         path.setFillType(Path.FillType.EVEN_ODD);
-        path.moveTo(centerX - 25f, positionY);
-        path.lineTo(centerX + 25, positionY);
-        path.lineTo(centerX, positionY + 25);
+        path.moveTo(centerX - arrowSize, positionY);
+        path.lineTo(centerX + arrowSize, positionY);
+        path.lineTo(centerX, positionY + arrowSize);
         canvas.drawPath(path, mArrowPaint);
     }
 

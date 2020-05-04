@@ -11,7 +11,6 @@ public class ConfigurationBuilder {
                 .setShowBatteryLevel(true)
                 .setSmoothScrolling(true)
                 .setBackgroundColor(Color.parseColor("#FAFAFA"))
-                .setArrowColor(Color.parseColor("#FAFAFA"))
                 .setInteractiveColor(Color.parseColor("#FF9800"))
                 .setTextColor(Color.parseColor("#424242"))
                 .setShowZeroDigit(true)

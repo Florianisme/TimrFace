@@ -3,6 +3,7 @@ package com.timrface.watchfacelayout.layout.components;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.layout.WindowInsets;
 
@@ -21,7 +22,22 @@ public class BackgroundLayout extends Layout {
 
     @Override
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
-        canvas.drawRect(0, 0, centerX * 2, centerY + centerY / 2.5f, mBackgroundPaint);
+        float positionY = centerY + centerY / 2.5f;
+        float arrowSize = centerX * 0.15f;
+
+        Path path = new Path();
+        path.setFillType(Path.FillType.EVEN_ODD);
+        path.moveTo(0f, positionY);
+        path.lineTo(centerX - arrowSize, positionY);
+        path.lineTo(centerX, positionY + arrowSize);
+        path.lineTo(centerX + arrowSize, positionY);
+        path.lineTo(centerX * 2, positionY);
+        path.lineTo(centerX * 2, 0);
+        path.lineTo(0, 0);
+        canvas.drawPath(path, mBackgroundPaint);
+
+
+        //canvas.drawRect(0, 0, centerX * 2, centerY + centerY / 2.5f, mBackgroundPaint);
     }
 
     @Override

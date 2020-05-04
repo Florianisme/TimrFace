@@ -22,7 +22,6 @@ public class ConfigUpdater {
 
                 configuration.setBackgroundColor(backgroundColor);
                 configuration.setTextColor(isBackgroundColorWhite ? Color.parseColor("#424242") : Color.parseColor("#FAFAFA"));
-                configuration.setArrowColor(Color.parseColor(getStringFromDataMap(dataMap, ConfigurationConstant.BACKGROUND_COLOR, "#FAFAFA")));
             }
             if (dataMap.containsKey(ConfigurationConstant.INTERACTIVE_COLOR.toString())) {
                 configuration.setInteractiveColor(Color.parseColor(getStringFromDataMap(dataMap, ConfigurationConstant.INTERACTIVE_COLOR, "#FF9800")));
