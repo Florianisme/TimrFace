@@ -305,7 +305,6 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
                     boolean isBackgroundColorWhite = Color.parseColor("#FAFAFA") == Color.parseColor(color);
                     String textColor = isBackgroundColorWhite ? "#424242" : "#FAFAFA";
                     configuration.setTextColor(textColor);
-                    configuration.setArrowColor(getArrowDrawableResourceIdByBackgroundColor(color));
                     canvasView.updateConfig(configuration);
                 } else if (key == 14) {
                     colorPicker.show();
