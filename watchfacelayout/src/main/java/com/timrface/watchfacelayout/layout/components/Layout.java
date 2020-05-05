@@ -50,6 +50,7 @@ public abstract class Layout {
         paint.setColor(color);
         paint.setTypeface(typeface);
         paint.setAntiAlias(true);
+        paint.setSubpixelText(true);
         paint.setLinearText(true);
         return paint;
     }
