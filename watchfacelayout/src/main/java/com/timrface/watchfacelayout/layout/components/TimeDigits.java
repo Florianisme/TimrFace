@@ -52,6 +52,7 @@ public class TimeDigits extends Layout {
             mHourPaint.setColor(configuration.getTextColor());
             mMinutePaint.setColor(configuration.getInteractiveColor());
         }
+        updateTypefaceOrStroke(isInAmbientMode());
         hourFormat.applyLocalizedPattern(configuration.isAstronomicalClockFormat() ? "H" : "h");
     }
 
@@ -72,8 +73,17 @@ public class TimeDigits extends Layout {
         adjustPaintColorToCurrentMode(mHourPaint, configuration.getTextColor(), ColorConstants.AMBIENT_TEXT_COLOR, ambientEnabled);
         adjustPaintColorToCurrentMode(mMinutePaint, configuration.getInteractiveColor(), ColorConstants.AMBIENT_TEXT_COLOR, ambientEnabled);
 
-        mHourPaint.setTypeface(ambientEnabled ? robotoThin : robotoLight);
-        mMinutePaint.setTypeface(ambientEnabled ? robotoThin : robotoLight);
+        updateTypefaceOrStroke(ambientEnabled);
+    }
+
+    private void updateTypefaceOrStroke(boolean ambientEnabled) {
+        if (configuration.isUseStrokeDigitsInAmbientMode()) {
+            mHourPaint.setStyle(ambientEnabled ? Paint.Style.STROKE : Paint.Style.FILL);
+            mMinutePaint.setStyle(ambientEnabled ? Paint.Style.STROKE : Paint.Style.FILL);
+        } else {
+            mHourPaint.setTypeface(ambientEnabled ? robotoThin : robotoLight);
+            mMinutePaint.setTypeface(ambientEnabled ? robotoThin : robotoLight);
+        }
     }
 
     private String getHours(Calendar calendar) {

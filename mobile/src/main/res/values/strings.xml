@@ -14,6 +14,7 @@
     <string name="dialog_title">Donation</string>
     <string name="buy">Donate!</string>
     <string name="cancel">Cancel</string>
+    <string name="strokeDigits">Use stroke digits in ambient mode</string>
 
     <string-array name="colors">
         <item>#FAFAFA</item>

@@ -45,6 +45,7 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
     CheckBox showBatteryLevelCheckBox;
     CheckBox showZeroDigitCheckBox;
     CheckBox showUnreadNotificationsCounter;
+    CheckBox useStrokeDigitsInAmbientMode;
 
     IabHelper.OnConsumeFinishedListener mConsumeFinishedListener =
             new IabHelper.OnConsumeFinishedListener() {
@@ -162,6 +163,7 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
         showBatteryLevelCheckBox = findViewById(R.id.battery);
         showZeroDigitCheckBox = findViewById(R.id.zero_digit);
         showUnreadNotificationsCounter = findViewById(R.id.unreadNotifications);
+        useStrokeDigitsInAmbientMode = findViewById(R.id.strokeDigitsInAmbientMode);
 
         configuration = ConfigurationBuilder.getDefaultConfiguration(this);
         Wearable.getDataClient(this).addListener(this);
@@ -203,6 +205,7 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
                 showBatteryLevelCheckBox.setChecked(configuration.isShowBatteryLevel());
                 showZeroDigitCheckBox.setChecked(configuration.isShowZeroDigit());
                 showUnreadNotificationsCounter.setChecked(configuration.isShowUnreadNotificationsCounter());
+                useStrokeDigitsInAmbientMode.setChecked(configuration.isUseStrokeDigitsInAmbientMode());
             }
         });
 
@@ -241,6 +244,15 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 sendDataItem(ConfigurationConstant.UNREAD_NOTIFICATIONS, isChecked);
                 configuration.setShowUnreadNotificationsCounter(isChecked);
+                canvasView.updateConfig(configuration);
+            }
+        });
+
+        useStrokeDigitsInAmbientMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                sendDataItem(ConfigurationConstant.STROKE_DIGITS, isChecked);
+                configuration.setUseStrokeDigitsInAmbientMode(isChecked);
                 canvasView.updateConfig(configuration);
             }
         });

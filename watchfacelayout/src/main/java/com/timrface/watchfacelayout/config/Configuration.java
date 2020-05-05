@@ -9,6 +9,7 @@ public class Configuration {
     private boolean showBatteryLevel;
     private boolean showZeroDigit;
     private boolean showUnreadNotificationsCounter;
+    private boolean useStrokeDigitsInAmbientMode;
 
     private int interactiveColor;
     private int backgroundColor;
@@ -98,6 +99,15 @@ public class Configuration {
 
     public Configuration setShowUnreadNotificationsCounter(boolean showUnreadNotificationsCounter) {
         this.showUnreadNotificationsCounter = showUnreadNotificationsCounter;
+        return this;
+    }
+
+    public boolean isUseStrokeDigitsInAmbientMode() {
+        return useStrokeDigitsInAmbientMode;
+    }
+
+    public Configuration setUseStrokeDigitsInAmbientMode(boolean useStrokeDigitsInAmbientMode) {
+        this.useStrokeDigitsInAmbientMode = useStrokeDigitsInAmbientMode;
         return this;
     }
 }
