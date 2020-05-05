@@ -37,6 +37,13 @@ public class CanvasView extends View {
         calendar = Calendar.getInstance();
         layoutProvider = new LayoutProvider().init(ConfigurationBuilder.getDefaultConfiguration(getContext()), getContext());
         layoutProvider.applyWindowInsets(getResources());
+
+        addOnLayoutChangeListener(new OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                layoutProvider.onSurfaceChanged(v.getWidth(), v.getHeight());
+            }
+        });
     }
 
     @Override
@@ -46,6 +53,7 @@ public class CanvasView extends View {
         float centerY = canvas.getHeight() / 2f;
         layoutProvider.update(canvas, centerX, centerY, calendar);
     }
+
 
     public void updateConfig(Configuration configuration) {
         layoutProvider.onConfigurationChange(configuration);
