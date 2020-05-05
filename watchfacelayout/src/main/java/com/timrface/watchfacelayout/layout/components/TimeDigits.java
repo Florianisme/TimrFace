@@ -78,8 +78,8 @@ public class TimeDigits extends Layout {
 
     private void setTypefaceAndStyle(boolean ambientEnabled) {
         if (configuration.isUseStrokeDigitsInAmbientMode()) {
-            mHourPaint.setTypeface(robotoThin);
-            mMinutePaint.setTypeface(robotoThin);
+            mHourPaint.setTypeface(robotoLight);
+            mMinutePaint.setTypeface(robotoLight);
             mHourPaint.setStyle(ambientEnabled ? Paint.Style.STROKE : Paint.Style.FILL);
             mMinutePaint.setStyle(ambientEnabled ? Paint.Style.STROKE : Paint.Style.FILL);
         } else {
