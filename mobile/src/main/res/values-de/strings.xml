@@ -14,5 +14,6 @@
     <string name="cancel">Abbrechen</string>
     <string name="zero_digit">Uhrzeit als zwei Ziffern</string>
     <string name="unreadNotifications">Benachrichtigungszähler anzeigen</string>
+    <string name="strokeDigits">Kontur für Uhrzeit im Ambient Modus benutzen</string>
 
 </resources>
