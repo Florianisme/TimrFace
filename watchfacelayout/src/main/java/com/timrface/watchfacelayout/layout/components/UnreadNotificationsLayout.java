@@ -22,8 +22,6 @@ public class UnreadNotificationsLayout extends Complication {
     private final Typeface robotoLight;
 
     private String complicationText = "-";
-    private int positionX;
-    private int positionY;
 
     public UnreadNotificationsLayout(Configuration configuration, VectorDrawableCompat unreadDrawable, VectorDrawableCompat unreadDrawableOutline, Typeface robotoMedium, Typeface robotoLight) {
         super(configuration);
@@ -45,8 +43,8 @@ public class UnreadNotificationsLayout extends Complication {
     @Override
     public void onSurfaceChanged(int width, int height) {
         float centerY = height / 2f;
-        positionX = (int) (width * 0.45);
-        positionY = (int) (centerY + centerY / 5.3f);
+        int positionX = (int) (width * 0.45);
+        int positionY = (int) (centerY + centerY / 5.3f);
         int boundsSize = (int) (width * 0.06);
 
         Rect iconRect = new Rect(positionX, positionY, positionX + boundsSize, positionY + boundsSize);
@@ -56,12 +54,14 @@ public class UnreadNotificationsLayout extends Complication {
 
     @Override
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
-        if (isInAmbientMode()) {
-            unreadDrawableOutline.draw(canvas);
-        } else {
-            unreadDrawable.draw(canvas);
+        if (configuration.isShowUnreadNotificationsCounter()) {
+            if (isInAmbientMode()) {
+                unreadDrawableOutline.draw(canvas);
+            } else {
+                unreadDrawable.draw(canvas);
+            }
+            canvas.drawText(complicationText, centerX * 1.02f, centerY + centerY / 3.5f, mCountPaint);
         }
-        canvas.drawText(complicationText, centerX * 1.02f, centerY + centerY / 3.5f, mCountPaint);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class UnreadNotificationsLayout extends Complication {
 
     @Override
     public boolean drawWhenInAmbientMode() {
-        return configuration.isShowUnreadNotificationsCounter();
+        return true;
     }
 
     @Override
