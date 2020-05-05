@@ -18,7 +18,7 @@ public class BatteryLayout extends Layout {
     private final Paint mBatteryPaint;
     private final Typeface robotoMedium;
     private final Typeface robotoLight;
-    private String batteryLevel;
+    private String batteryLevel = "-%";
 
     public BatteryLayout(Configuration configuration, Context context, Typeface robotoMedium, Typeface robotoLight) {
         super(configuration);
