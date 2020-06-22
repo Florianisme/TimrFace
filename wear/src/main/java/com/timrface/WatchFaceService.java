@@ -66,6 +66,8 @@ public class WatchFaceService extends CanvasWatchFaceService {
     public class Engine extends CanvasWatchFaceService.Engine implements DataClient.OnDataChangedListener {
 
         static final int MSG_UPDATE_TIME = 0;
+        private final int UNREAD_NOTIFICATION_COMPLICATION_ID = 0;
+
         final Handler mUpdateTimeHandler = new UpdateIntervalHandler(this);
         private final TimeFormatChangedReceiver timeFormatChangedReceiver = new TimeFormatChangedReceiver();
 
@@ -99,7 +101,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             new StoredConfigurationFetcher().updateConfig(nodeClient, dataClient, configuration,
                     configuration -> layoutProvider.onConfigurationChange(configuration));
 
-            setActiveComplications(0);
+            setActiveComplications(UNREAD_NOTIFICATION_COMPLICATION_ID);
             setDefaultSystemComplicationProvider(0, SystemProviders.UNREAD_NOTIFICATION_COUNT, ComplicationData.TYPE_SHORT_TEXT);
             new ProviderUpdateRequester(WatchFaceService.this, SystemProviders.unreadCountProvider()).requestUpdateAll();
         }
