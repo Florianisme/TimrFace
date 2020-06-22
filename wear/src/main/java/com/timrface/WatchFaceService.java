@@ -74,6 +74,10 @@ public class WatchFaceService extends CanvasWatchFaceService {
         private DataClient dataClient;
         private NodeClient nodeClient;
 
+        public Engine() {
+            super(true);
+        }
+
         @Override
         public void onCreate(SurfaceHolder holder) {
             super.onCreate(holder);
