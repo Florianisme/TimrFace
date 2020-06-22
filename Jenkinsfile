@@ -15,10 +15,4 @@ pipeline {
             }
         }
     }
-
-    post {
-      success {
-        slackSend channel: 'fme_jenkinsci', color: 'good', message: 'Job ${env.JOB_NAME} finished with status SUCCESSFUL \\nBuild Number: ${env.BUILD_NUMBER} \\nSee more: (<${env.BUILD_URL}|Build URL>)'
-      }
-    }
 }
