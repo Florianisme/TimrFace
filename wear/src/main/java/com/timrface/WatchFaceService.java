@@ -13,8 +13,15 @@ import android.support.wearable.watchface.WatchFaceStyle;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.WindowInsets;
+
 import androidx.annotation.NonNull;
-import com.google.android.gms.wearable.*;
+
+import com.google.android.gms.wearable.DataClient;
+import com.google.android.gms.wearable.DataEvent;
+import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.DataItem;
+import com.google.android.gms.wearable.NodeClient;
+import com.google.android.gms.wearable.Wearable;
 import com.timrface.watchfacelayout.config.ConfigUpdater;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.config.ConfigurationBuilder;
@@ -77,7 +84,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         private NodeClient nodeClient;
 
         public Engine() {
-            super(true);
+            super();
         }
 
         @Override

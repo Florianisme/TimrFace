@@ -15,11 +15,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
-import com.google.android.gms.wearable.*;
+
+import com.google.android.gms.wearable.DataClient;
+import com.google.android.gms.wearable.DataEvent;
+import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.DataItem;
+import com.google.android.gms.wearable.NodeClient;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.timrface.helper.CanvasView;
 import com.timrface.helper.SharedPreferences;
@@ -27,7 +36,12 @@ import com.timrface.util.IabHelper;
 import com.timrface.util.IabResult;
 import com.timrface.util.Inventory;
 import com.timrface.util.Purchase;
-import com.timrface.watchfacelayout.config.*;
+import com.timrface.watchfacelayout.config.ConfigUpdateFinished;
+import com.timrface.watchfacelayout.config.ConfigUpdater;
+import com.timrface.watchfacelayout.config.Configuration;
+import com.timrface.watchfacelayout.config.ConfigurationBuilder;
+import com.timrface.watchfacelayout.config.ConfigurationConstant;
+import com.timrface.watchfacelayout.config.StoredConfigurationFetcher;
 
 import java.util.ArrayList;
 
@@ -191,10 +205,6 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
             list.add(i, colors[i]);
         }
 
-        if (!SharedPreferences.getBoolean("donation", false, getApplicationContext())) {
-            dialog();
-        }
-
         NodeClient nodeClient = Wearable.getNodeClient(this);
         DataClient dataClient = Wearable.getDataClient(this);
         new StoredConfigurationFetcher().updateConfig(nodeClient, dataClient, configuration, new ConfigUpdateFinished() {
@@ -270,8 +280,7 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
 
     }
 
-    private void dialog() {
-
+    private void showDonationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ConfigurationActivity.this);
 
         builder.setMessage(R.string.dialog_message)
@@ -294,7 +303,7 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == 0) {
-            launchPurchaseFlow();
+            showDonationDialog();
         }
         return true;
     }

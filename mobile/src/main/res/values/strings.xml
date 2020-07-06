@@ -10,7 +10,7 @@
     <string name="unreadNotifications">Show unread notifications counter</string>
     <string name="zero_digit">Two-digit numbers</string>
 
-    <string name="dialog_message">A donation supports and helps me improving this app :) </string>
+    <string name="dialog_message">A donation supports and helps me improving this app :) No additional features will be unlocked after a donating, this app is entirely free</string>
     <string name="dialog_title">Donation</string>
     <string name="buy">Donate!</string>
     <string name="cancel">Cancel</string>
