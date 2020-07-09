@@ -1,8 +1,11 @@
 package com.timrface;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -44,6 +47,7 @@ import com.timrface.watchfacelayout.config.ConfigurationConstant;
 import com.timrface.watchfacelayout.config.StoredConfigurationFetcher;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class ConfigurationActivity extends AppCompatActivity implements DataClient.OnDataChangedListener {
 
@@ -149,19 +153,20 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
         setUpColorListener(R.id.white, 0, colors[0], R.drawable.white);
         setUpColorListener(R.id.dark, 1, colors[1], R.drawable.grey);
         setUpColorListener(R.id.black, 2, colors[2], R.drawable.black);
+        setUpColorListener(R.id.automatic, 3, colors[3], R.drawable.automatic);
 
-        setUpColorListener(R.id.orange, 3, colors[3], R.drawable.orange);
-        setUpColorListener(R.id.pink, 4, colors[4], R.drawable.pink);
-        setUpColorListener(R.id.purple, 5, colors[5], R.drawable.purple);
-        setUpColorListener(R.id.deep_blue, 6, colors[6], R.drawable.deep_blue);
-        setUpColorListener(R.id.blue, 7, colors[7], R.drawable.blue);
-        setUpColorListener(R.id.light_blue, 8, colors[8], R.drawable.light_blue);
-        setUpColorListener(R.id.teal, 9, colors[9], R.drawable.teal);
-        setUpColorListener(R.id.green, 10, colors[10], R.drawable.green);
-        setUpColorListener(R.id.deep_orange, 11, colors[11], R.drawable.deep_orange);
-        setUpColorListener(R.id.red, 12, colors[12], R.drawable.red);
-        setUpColorListener(R.id.amber, 13, colors[13], R.drawable.amber);
-        setUpColorListener(R.id.wheel, 14, colors[14], R.drawable.wheel);
+        setUpColorListener(R.id.orange, 4, colors[4], R.drawable.orange);
+        setUpColorListener(R.id.pink, 5, colors[5], R.drawable.pink);
+        setUpColorListener(R.id.purple, 6, colors[6], R.drawable.purple);
+        setUpColorListener(R.id.deep_blue, 7, colors[7], R.drawable.deep_blue);
+        setUpColorListener(R.id.blue, 8, colors[8], R.drawable.blue);
+        setUpColorListener(R.id.light_blue, 9, colors[9], R.drawable.light_blue);
+        setUpColorListener(R.id.teal, 10, colors[10], R.drawable.teal);
+        setUpColorListener(R.id.green, 11, colors[11], R.drawable.green);
+        setUpColorListener(R.id.deep_orange, 12, colors[12], R.drawable.deep_orange);
+        setUpColorListener(R.id.red, 13, colors[13], R.drawable.red);
+        setUpColorListener(R.id.amber, 14, colors[14], R.drawable.amber);
+        setUpColorListener(R.id.wheel, 15, colors[15], R.drawable.wheel);
     }
 
     @Override
@@ -278,6 +283,26 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
             }
         });
 
+        BroadcastReceiver tickReceiver = new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if(intent.getAction().compareTo(Intent.ACTION_TIME_TICK) == 0) {
+                    if (configuration.isAutomaticLightDarkMode()) {
+                        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+                        if (hour > 19) {
+                            configuration.setBackgroundColor("#000000");
+                            configuration.setTextColor("#FAFAFA");
+                            canvasView.updateConfig(configuration);
+                        } else if (hour < 6) {
+                            configuration.setBackgroundColor("#FAFAFA");
+                            configuration.setTextColor("#424242");
+                            canvasView.updateConfig(configuration);
+                        }
+                    }
+                }
+            }
+        };
+        registerReceiver(tickReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
     }
 
     private void showDonationDialog() {
@@ -322,10 +347,16 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
             public void onClick(View v) {
                 if (key < 3) {
                     sendDataItem(ConfigurationConstant.BACKGROUND_COLOR, color);
+                    sendDataItem(ConfigurationConstant.AUTOMATIC_DARK_LIGHT, false);
                     configuration.setBackgroundColor(color);
                     boolean isBackgroundColorWhite = Color.parseColor("#FAFAFA") == Color.parseColor(color);
                     String textColor = isBackgroundColorWhite ? "#424242" : "#FAFAFA";
                     configuration.setTextColor(textColor);
+                    configuration.setAutomaticDarkLightMode(false);
+                    canvasView.updateConfig(configuration);
+                } else if (key == 4) {
+                    sendDataItem(ConfigurationConstant.AUTOMATIC_DARK_LIGHT, true);
+                    configuration.setAutomaticDarkLightMode(true);
                     canvasView.updateConfig(configuration);
                 } else if (key == 14) {
                     colorPicker.show();

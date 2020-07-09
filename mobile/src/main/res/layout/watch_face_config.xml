@@ -87,6 +87,14 @@
                 android:layout_marginRight="15dp"
                 android:background="@drawable/black" />
 
+            <Button
+                android:id="@+id/automatic"
+                style="?android:borderlessButtonStyle"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/automatic" />
+
         </LinearLayout>
 
         <TextView

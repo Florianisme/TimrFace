@@ -10,6 +10,7 @@ public class Configuration {
     private boolean showZeroDigit;
     private boolean showUnreadNotificationsCounter;
     private boolean useStrokeDigitsInAmbientMode;
+    private boolean automaticLightDarkMode;
 
     private int interactiveColor;
     private int backgroundColor;
@@ -52,6 +53,11 @@ public class Configuration {
         return this;
     }
 
+    public Configuration setAutomaticDarkLightMode(boolean darkLightMode) {
+        this.automaticLightDarkMode = darkLightMode;
+        return this;
+    }
+
     public boolean isAstronomicalClockFormat() {
         return astronomicalClockFormat;
     }
@@ -59,6 +65,10 @@ public class Configuration {
     public Configuration setAstronomicalClockFormat(boolean astronomicalClockFormat) {
         this.astronomicalClockFormat = astronomicalClockFormat;
         return this;
+    }
+
+    public boolean isAutomaticLightDarkMode() {
+        return automaticLightDarkMode;
     }
 
     public boolean isShowBatteryLevel() {
