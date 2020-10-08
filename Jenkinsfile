@@ -15,4 +15,19 @@ pipeline {
             }
         }
     }
+	post {
+		failure {
+			script {
+				currentBuild.result = 'FAILURE'
+			}
+		}
+		unstable {
+			script {
+				currentBuild.result = 'UNSTABLE'
+			}
+		}
+		always {
+			step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']])])
+		}
+	}
 }
