@@ -4,6 +4,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+		    sh 'printenv'
                 sh script: 'chmod +x gradlew'
                 sh label: 'Gradle Build', script: './gradlew --parallel --max-workers=8  clean assembleRelease'
             }
