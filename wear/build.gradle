@@ -1,49 +1,6 @@
 apply plugin: 'com.android.application'
-
-
-android {
-    compileSdkVersion 29
-    buildToolsVersion '29.0.2'
-
-    signingConfigs {
-        release {
-            storeFile file(project.property('KEYSTORE_PATH'))
-            storePassword project.property('KEYSTORE_PASSWORD')
-            keyAlias project.property('KEY_ALIAS')
-            keyPassword project.property('KEY_PASSWORD')
-
-            v1SigningEnabled true
-            v2SigningEnabled true
-        }
-    }
-
-    defaultConfig {
-        applicationId "com.timrface"
-        minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 38
-        versionName "3.4.2"
-        vectorDrawables.useSupportLibrary = true
-    }
-    buildTypes {
-        release {
-            signingConfig signingConfigs.release
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-    sourceSets { main { assets.srcDirs = ['src/main/assets', 'assets/'] } }
-    compileOptions {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
-    }
-}
+apply from: "$rootProject.projectDir/shared-build.gradle"
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.google.android.gms:play-services-wearable:17.0.0'
-    implementation 'com.google.android.support:wearable:2.7.0'
-    compileOnly 'com.google.android.wearable:wearable:2.7.0'
-    implementation project(path: ':watchfacelayout')
 }

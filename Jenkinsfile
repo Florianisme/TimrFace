@@ -15,14 +15,16 @@ pipeline {
             }
         }
 	    stage('Publish to Play Store') {
-			when {
- 		 expression {env.GIT_BRANCH == 'origin/master'}
-		}
-
 		    steps {
-			    androidApkUpload deobfuscationFilesPattern: 'mobile/build/outputs/mapping/release/mapping.txt', filesPattern: 'mobile/build/outputs/apk/release/mobile-release.apk', googleCredentialsId: 'Florianisme', rolloutPercentage: '100', trackName: 'beta'
-	    }
-	    }
+			    script {
+                    if (env.BRANCH_NAME == 'origin/master') {
+                        androidApkUpload deobfuscationFilesPattern: 'mobile/build/outputs/mapping/release/mapping.txt', filesPattern: 'mobile/build/outputs/apk/release/mobile-release.apk', googleCredentialsId: 'Florianisme', rolloutPercentage: '100', trackName: 'beta'
+                    } else if (env.BRANCH_NAME == 'origin/release'){
+                        androidApkUpload deobfuscationFilesPattern: 'mobile/build/outputs/mapping/release/mapping.txt', filesPattern: 'mobile/build/outputs/apk/release/mobile-release.apk', googleCredentialsId: 'Florianisme', rolloutPercentage: '100', trackName: 'internal'
+                    }
+                }
+            }
+		}
     }
 	post {
 		failure {

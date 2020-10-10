@@ -1,0 +1,61 @@
+apply plugin: 'com.android.application'
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    repositories {
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.6.3'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
+
+    signingConfigs {
+        release {
+            storeFile file(project.property('KEYSTORE_PATH'))
+            storePassword project.property('KEYSTORE_PASSWORD')
+            keyAlias project.property('KEY_ALIAS')
+            keyPassword project.property('KEY_PASSWORD')
+
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.timrface"
+        minSdkVersion 18
+        targetSdkVersion 29
+        versionCode 38
+        versionName "3.4.2"
+        vectorDrawables.useSupportLibrary = true
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        google()
+    }
+}
+dependencies {
+    implementation project(path: ':watchfacelayout')
+    implementation 'com.google.android.support:wearable:2.8.1'
+    compileOnly 'com.google.android.wearable:wearable:2.8.1'
+    implementation 'com.google.android.gms:play-services-wearable:17.0.0'
+}
