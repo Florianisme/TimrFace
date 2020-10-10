@@ -14,6 +14,16 @@ pipeline {
                 archiveArtifacts artifacts: 'mobile/build/outputs/mapping/release/mapping.txt', followSymlinks: false, onlyIfSuccessful: true
             }
         }
+	    stage('Publish to Play Store') {
+			when {
+				anyOf {
+					branch 'master'
+				}
+			}
+		    steps {
+			    androidApkUpload deobfuscationFilesPattern: 'mobile/build/outputs/mapping/release/mapping.txt', filesPattern: 'mobile/build/outputs/apk/release/mobile-release.apk', googleCredentialsId: 'Florianisme', rolloutPercentage: '100', trackName: 'beta'
+	    }
+	    }
     }
 	post {
 		failure {
