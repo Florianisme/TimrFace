@@ -18,10 +18,13 @@ pipeline {
 		    steps {
 			    script {
                     if (env.BRANCH_NAME == 'origin/master') {
+                        echo 'Publishing APK to Beta channel'
                         androidApkUpload deobfuscationFilesPattern: 'mobile/build/outputs/mapping/release/mapping.txt', filesPattern: 'mobile/build/outputs/apk/release/mobile-release.apk', googleCredentialsId: 'Florianisme', rolloutPercentage: '100', trackName: 'beta'
                     } else if (env.BRANCH_NAME == 'origin/release'){
+                        echo 'Publishing APK to Internal channel'
                         androidApkUpload deobfuscationFilesPattern: 'mobile/build/outputs/mapping/release/mapping.txt', filesPattern: 'mobile/build/outputs/apk/release/mobile-release.apk', googleCredentialsId: 'Florianisme', rolloutPercentage: '100', trackName: 'internal'
                     } else if (env.BRANCH_NAME == 'origin/develop'){
+                        echo 'Publishing APK to Internal channel'
                         androidApkUpload deobfuscationFilesPattern: 'mobile/build/outputs/mapping/release/mapping.txt', filesPattern: 'mobile/build/outputs/apk/release/mobile-release.apk', googleCredentialsId: 'Florianisme', rolloutPercentage: '100', trackName: 'internal'
                     }
                 }
