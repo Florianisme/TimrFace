@@ -4,7 +4,6 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-		    sh 'printenv'
                 sh script: 'chmod +x gradlew'
                 sh label: 'Gradle Build', script: './gradlew --parallel --max-workers=8  clean assembleRelease'
             }
@@ -17,7 +16,7 @@ pipeline {
         }
 	    stage('Publish to Play Store') {
 			when {
- 		 expression {env.GIT_BRANCH == 'refs/remotes/origin/master'}
+ 		 expression {env.GIT_BRANCH == 'origin/master'}
 		}
 
 		    steps {
