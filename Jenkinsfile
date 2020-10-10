@@ -21,6 +21,8 @@ pipeline {
                         androidApkUpload deobfuscationFilesPattern: 'mobile/build/outputs/mapping/release/mapping.txt', filesPattern: 'mobile/build/outputs/apk/release/mobile-release.apk', googleCredentialsId: 'Florianisme', rolloutPercentage: '100', trackName: 'beta'
                     } else if (env.BRANCH_NAME == 'origin/release'){
                         androidApkUpload deobfuscationFilesPattern: 'mobile/build/outputs/mapping/release/mapping.txt', filesPattern: 'mobile/build/outputs/apk/release/mobile-release.apk', googleCredentialsId: 'Florianisme', rolloutPercentage: '100', trackName: 'internal'
+                    } else if (env.BRANCH_NAME == 'origin/develop'){
+                        androidApkUpload deobfuscationFilesPattern: 'mobile/build/outputs/mapping/release/mapping.txt', filesPattern: 'mobile/build/outputs/apk/release/mobile-release.apk', googleCredentialsId: 'Florianisme', rolloutPercentage: '100', trackName: 'internal'
                     }
                 }
             }

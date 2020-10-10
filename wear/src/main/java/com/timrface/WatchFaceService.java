@@ -1,5 +1,6 @@
 package com.timrface;
 
+import android.content.ComponentName;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -110,7 +111,11 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
             setActiveComplications(UNREAD_NOTIFICATION_COMPLICATION_ID);
             setDefaultSystemComplicationProvider(0, SystemProviders.UNREAD_NOTIFICATION_COUNT, ComplicationData.TYPE_SHORT_TEXT);
-            new ProviderUpdateRequester(WatchFaceService.this, SystemProviders.unreadCountProvider()).requestUpdateAll();
+            new ProviderUpdateRequester(WatchFaceService.this, getUnreadNotificationCountProvider()).requestUpdateAll();
+        }
+
+        private ComponentName getUnreadNotificationCountProvider() {
+            return new ComponentName("com.google.android.wearable.app", "com.google.android.clockwork.home.complications.providers.UnreadNotificationsProviderService");
         }
 
         @Override
