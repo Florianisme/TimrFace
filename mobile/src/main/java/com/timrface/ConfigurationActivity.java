@@ -83,17 +83,6 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
         mUpdateTimeHandler.sendEmptyMessage(0);
     }
 
-    private int getArrowDrawableResourceIdByBackgroundColor(String color) {
-        switch (color) {
-            case "#424242":
-                return R.drawable.indicator_grey;
-            case "#000000":
-                return R.drawable.indicator_black;
-            default:
-                return R.drawable.indicator;
-        }
-    }
-
     private IabHelper mHelper;
 
     @Override
@@ -354,7 +343,7 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
                     configuration.setTextColor(textColor);
                     configuration.setAutomaticDarkLightMode(false);
                     canvasView.updateConfig(configuration);
-                } else if (key == 4) {
+                } else if (key == 3) {
                     sendDataItem(ConfigurationConstant.AUTOMATIC_DARK_LIGHT, true);
                     configuration.setAutomaticDarkLightMode(true);
                     canvasView.updateConfig(configuration);
