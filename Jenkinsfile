@@ -16,7 +16,7 @@ pipeline {
         }
 	    stage('Publish to Play Store') {
 			when {
- 		 branch '**/master'
+ 		 expression {env.GIT_BRANCH == 'refs/remotes/origin/master'}
 		}
 
 		    steps {
