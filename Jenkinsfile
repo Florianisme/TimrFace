@@ -26,6 +26,8 @@ pipeline {
                     } else if (env.BRANCH_NAME == 'origin/develop'){
                         echo 'Publishing APK to Internal channel'
                         androidApkUpload deobfuscationFilesPattern: 'mobile/build/outputs/mapping/release/mapping.txt', filesPattern: 'mobile/build/outputs/apk/release/mobile-release.apk', googleCredentialsId: 'Florianisme', rolloutPercentage: '100', trackName: 'internal'
+                    } else {
+                        echo 'Publishing criteria not met'
                     }
                 }
             }
