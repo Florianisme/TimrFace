@@ -12,6 +12,8 @@ import com.timrface.watchfacelayout.config.ConfigurationBuilder;
 import com.timrface.watchfacelayout.layout.LayoutProvider;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 
 public class CanvasView extends View {
@@ -57,5 +59,10 @@ public class CanvasView extends View {
 
     public void updateConfig(Configuration configuration) {
         layoutProvider.onConfigurationChange(configuration);
+    }
+
+    public void updateTimezone(TimeZone timeZone) {
+        this.calendar.setTimeZone(timeZone);
+        this.calendar.getTime();
     }
 }

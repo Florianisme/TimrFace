@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Filter;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,9 +46,13 @@ import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.config.ConfigurationBuilder;
 import com.timrface.watchfacelayout.config.ConfigurationConstant;
 import com.timrface.watchfacelayout.config.StoredConfigurationFetcher;
+import com.timrface.watchfacelayout.util.DayNightBroadcastReceiver;
+import com.timrface.watchfacelayout.util.FilteredBroadcastReceiver;
+import com.timrface.watchfacelayout.util.TimeFormatChangedReceiver;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 public class ConfigurationActivity extends AppCompatActivity implements DataClient.OnDataChangedListener {
 
@@ -57,6 +62,9 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
     ColorPicker colorPicker;
     Handler mUpdateTimeHandler;
     private Configuration configuration;
+
+    private FilteredBroadcastReceiver dayNightBroadcastReceiver;
+    private FilteredBroadcastReceiver timeFormatChangedReceiver;
 
     CanvasView canvasView;
     CheckBox smoothSecondsCheckBox;
@@ -272,27 +280,16 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
             }
         });
 
-        BroadcastReceiver tickReceiver = new BroadcastReceiver(){
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if(intent.getAction().compareTo(Intent.ACTION_TIME_TICK) == 0) {
-                    if (configuration.isAutomaticLightDarkMode()) {
-                        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-                        if (hour > 19) {
-                            configuration.setBackgroundColor("#000000");
-                            configuration.setTextColor("#FAFAFA");
-                            canvasView.updateConfig(configuration);
-                        } else if (hour < 6) {
-                            configuration.setBackgroundColor("#FAFAFA");
-                            configuration.setTextColor("#424242");
-                            canvasView.updateConfig(configuration);
-                        }
-                    }
-                }
-            }
-        };
-        registerReceiver(tickReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
+        dayNightBroadcastReceiver = new DayNightBroadcastReceiver(configuration, canvasView::updateConfig);
+        timeFormatChangedReceiver = new TimeFormatChangedReceiver(configuration, this::updateTimezone);
+        dayNightBroadcastReceiver.register(this);
+        timeFormatChangedReceiver.register(this);
     }
+
+    private void updateTimezone(Configuration configuration) {
+        canvasView.updateTimezone(TimeZone.getDefault());
+    }
+
 
     private void showDonationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ConfigurationActivity.this);
@@ -347,6 +344,7 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
                     sendDataItem(ConfigurationConstant.AUTOMATIC_DARK_LIGHT, true);
                     configuration.setAutomaticDarkLightMode(true);
                     canvasView.updateConfig(configuration);
+                    dayNightBroadcastReceiver.updateInternalConfigurationState(configuration);
                 } else if (key == 14) {
                     colorPicker.show();
                     Button okColor = (Button) colorPicker.findViewById(R.id.okColorButton);
@@ -404,5 +402,7 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
         super.onDestroy();
         Wearable.getDataClient(this).removeListener(this);
         mUpdateTimeHandler.removeMessages(0);
+        dayNightBroadcastReceiver.unregister(this);
+        timeFormatChangedReceiver.unregister(this);
     }
 }
