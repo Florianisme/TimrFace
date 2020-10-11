@@ -36,6 +36,9 @@ public class ConfigUpdater {
             if (dataMap.containsKey(ConfigurationConstant.STROKE_DIGITS.toString())) {
                 configuration.setUseStrokeDigitsInAmbientMode(dataMap.getBoolean(ConfigurationConstant.STROKE_DIGITS.toString(), true));
             }
+            if (dataMap.containsKey(ConfigurationConstant.AUTOMATIC_DARK_LIGHT.toString())) {
+                configuration.setAutomaticDarkLightMode(dataMap.getBoolean(ConfigurationConstant.AUTOMATIC_DARK_LIGHT.toString(), false));
+            }
         }
     }
 
