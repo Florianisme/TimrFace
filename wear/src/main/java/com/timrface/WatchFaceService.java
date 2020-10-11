@@ -86,7 +86,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             layoutProvider = new LayoutProvider().init(configuration, WatchFaceService.this);
 
             timeFormatChangedReceiver = new TimeZoneBroadcastReceiver(configuration, this::updateTimezone);
-            dayNightBroadcastReceiver = new DayNightBroadcastReceiver(configuration, this::updateConfiguration);
+            dayNightBroadcastReceiver = new DayNightBroadcastReceiver(configuration, this::updateUiToConfiguration);
             timeFormatChangedReceiver.register(WatchFaceService.this);
             dayNightBroadcastReceiver.register(WatchFaceService.this);
 
@@ -139,14 +139,14 @@ public class WatchFaceService extends CanvasWatchFaceService {
         public void onAmbientModeChanged(boolean inAmbientMode) {
             super.onAmbientModeChanged(inAmbientMode);
             ambientMode = inAmbientMode;
-            layoutProvider.onAmbientModeChanged(inAmbientMode);
-
-            invalidate();
             updateTimer();
+
             if (!inAmbientMode) {
-                new StoredConfigurationFetcher().updateConfig(nodeClient, dataClient, configuration,
-                        configuration -> layoutProvider.onConfigurationChange(configuration));
+                new StoredConfigurationFetcher().updateConfig(nodeClient, dataClient, configuration, this::updateConfiguration);
             }
+
+            layoutProvider.onAmbientModeChanged(inAmbientMode);
+            invalidate();
         }
 
         @Override
@@ -170,6 +170,12 @@ public class WatchFaceService extends CanvasWatchFaceService {
         }
 
         private void updateConfiguration(Configuration configuration) {
+            dayNightBroadcastReceiver.updateInternalConfigurationState(configuration);
+            timeFormatChangedReceiver.updateInternalConfigurationState(configuration);
+            updateUiToConfiguration(configuration);
+        }
+
+        private void updateUiToConfiguration(Configuration configuration) {
             layoutProvider.onConfigurationChange(configuration);
             invalidate();
         }
@@ -202,8 +208,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
                     ConfigUpdater.updateConfig(configuration, item);
                 }
             }
-            dayNightBroadcastReceiver.updateInternalConfigurationState(configuration);
-            timeFormatChangedReceiver.updateInternalConfigurationState(configuration);
             updateConfiguration(configuration);
             dataEventBuffer.release();
         }

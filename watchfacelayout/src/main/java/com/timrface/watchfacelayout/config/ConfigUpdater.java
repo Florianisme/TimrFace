@@ -34,7 +34,7 @@ public class ConfigUpdater {
                 configuration.setShowUnreadNotificationsCounter(dataMap.getBoolean(ConfigurationConstant.UNREAD_NOTIFICATIONS.toString(), true));
             }
             if (dataMap.containsKey(ConfigurationConstant.STROKE_DIGITS.toString())) {
-                configuration.setUseStrokeDigitsInAmbientMode(dataMap.getBoolean(ConfigurationConstant.STROKE_DIGITS.toString(), true));
+                configuration.setUseStrokeDigitsInAmbientMode(dataMap.getBoolean(ConfigurationConstant.STROKE_DIGITS.toString(), false));
             }
             if (dataMap.containsKey(ConfigurationConstant.AUTOMATIC_DARK_LIGHT.toString())) {
                 configuration.setAutomaticDarkLightMode(dataMap.getBoolean(ConfigurationConstant.AUTOMATIC_DARK_LIGHT.toString(), false));
