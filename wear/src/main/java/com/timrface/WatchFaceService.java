@@ -36,9 +36,9 @@ import java.lang.ref.WeakReference;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-public class WatchFaceService extends CanvasWatchFaceService {
+import static com.timrface.UpdateIntervalHandler.MSG_UPDATE_TIME;
 
-    private static final int MSG_UPDATE_TIME = 0;
+public class WatchFaceService extends CanvasWatchFaceService {
 
     private LayoutProvider layoutProvider;
     private Configuration configuration;
@@ -48,30 +48,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
     @Override
     public Engine onCreateEngine() {
         return new Engine();
-    }
-
-    private static final class UpdateIntervalHandler extends Handler {
-
-        private final WeakReference<Engine> mWeakReference;
-
-        public UpdateIntervalHandler(WatchFaceService.Engine reference) {
-            mWeakReference = new WeakReference<>(reference);
-        }
-
-        @Override
-        public void handleMessage(@NonNull Message message) {
-            Engine engine = mWeakReference.get();
-            if (engine != null) {
-                if (message.what == MSG_UPDATE_TIME) {
-                    engine.invalidate();
-                    if (engine.shouldTimerBeRunning()) {
-                        long timeMs = System.currentTimeMillis();
-                        long delayMs = 16 - (timeMs % 16);
-                        sendEmptyMessageDelayed(MSG_UPDATE_TIME, delayMs);
-                    }
-                }
-            }
-        }
     }
 
     public class Engine extends CanvasWatchFaceService.Engine implements DataClient.OnDataChangedListener {
@@ -153,10 +129,10 @@ public class WatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
             calendar.setTimeInMillis(System.currentTimeMillis());
-            float width = bounds.exactCenterX();
-            float height = bounds.exactCenterY();
+            float centerX = bounds.exactCenterX();
+            float centerY = bounds.exactCenterY();
 
-            layoutProvider.update(canvas, width, height, calendar);
+            layoutProvider.update(canvas, centerX, centerY, calendar);
         }
 
         @Override
@@ -214,7 +190,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             super.onDestroy();
         }
 
-        private boolean shouldTimerBeRunning() {
+        boolean shouldTimerBeRunning() {
             return isVisible() && !isInAmbientMode();
         }
 
