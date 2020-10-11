@@ -53,6 +53,8 @@ public class TimeDigits extends Layout {
             mMinutePaint.setColor(configuration.getInteractiveColor());
         }
         setTypefaceAndStyle(isInAmbientMode());
+
+        hourFormat = new SimpleDateFormat();
         hourFormat.applyLocalizedPattern(configuration.isAstronomicalClockFormat() ? "H" : "h");
     }
 

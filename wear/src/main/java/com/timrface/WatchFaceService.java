@@ -30,20 +30,20 @@ import com.timrface.watchfacelayout.config.StoredConfigurationFetcher;
 import com.timrface.watchfacelayout.layout.LayoutProvider;
 import com.timrface.watchfacelayout.util.DayNightBroadcastReceiver;
 import com.timrface.watchfacelayout.util.FilteredBroadcastReceiver;
-import com.timrface.watchfacelayout.util.TimeFormatChangedReceiver;
+import com.timrface.watchfacelayout.util.TimeZoneBroadcastReceiver;
 
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import static com.timrface.WatchFaceService.Engine.MSG_UPDATE_TIME;
-
 public class WatchFaceService extends CanvasWatchFaceService {
 
+    private static final int MSG_UPDATE_TIME = 0;
+
     private LayoutProvider layoutProvider;
+    private Configuration configuration;
 
     boolean ambientMode = false;
-    private Configuration configuration;
 
     @Override
     public Engine onCreateEngine() {
@@ -76,7 +76,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
     public class Engine extends CanvasWatchFaceService.Engine implements DataClient.OnDataChangedListener {
 
-        static final int MSG_UPDATE_TIME = 0;
         private final int UNREAD_NOTIFICATION_COMPLICATION_ID = 0;
 
         final Handler mUpdateTimeHandler = new UpdateIntervalHandler(this);
@@ -84,7 +83,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
         private FilteredBroadcastReceiver timeFormatChangedReceiver;
         private FilteredBroadcastReceiver dayNightBroadcastReceiver;
 
-        Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+        private final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 
         private DataClient dataClient;
         private NodeClient nodeClient;
@@ -110,7 +109,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             configuration = ConfigurationBuilder.getDefaultConfiguration(WatchFaceService.this);
             layoutProvider = new LayoutProvider().init(configuration, WatchFaceService.this);
 
-            timeFormatChangedReceiver = new TimeFormatChangedReceiver(configuration, this::updateTimezone);
+            timeFormatChangedReceiver = new TimeZoneBroadcastReceiver(configuration, this::updateTimezone);
             dayNightBroadcastReceiver = new DayNightBroadcastReceiver(configuration, this::updateConfiguration);
             timeFormatChangedReceiver.register(WatchFaceService.this);
             dayNightBroadcastReceiver.register(WatchFaceService.this);
@@ -153,11 +152,11 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
-            cal.setTimeInMillis(System.currentTimeMillis());
+            calendar.setTimeInMillis(System.currentTimeMillis());
             float width = bounds.exactCenterX();
             float height = bounds.exactCenterY();
 
-            layoutProvider.update(canvas, width, height, cal);
+            layoutProvider.update(canvas, width, height, calendar);
         }
 
         @Override
@@ -188,7 +187,8 @@ public class WatchFaceService extends CanvasWatchFaceService {
         }
 
         private void updateTimezone(Configuration configuration) {
-            cal.setTimeZone(TimeZone.getDefault());
+            calendar.clear();
+            calendar.setTimeZone(TimeZone.getDefault());
 
             updateConfiguration(configuration);
         }

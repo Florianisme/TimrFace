@@ -15,12 +15,12 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 
-public class TimeFormatChangedReceiver extends FilteredBroadcastReceiver {
+public class TimeZoneBroadcastReceiver extends FilteredBroadcastReceiver {
 
     private Configuration configuration;
     private final ConfigurationChangeCallback configurationChangeCallback;
 
-    public TimeFormatChangedReceiver(Configuration configuration, ConfigurationChangeCallback configurationChangeCallback) {
+    public TimeZoneBroadcastReceiver(Configuration configuration, ConfigurationChangeCallback configurationChangeCallback) {
         this.configuration = configuration;
         this.configurationChangeCallback = configurationChangeCallback;
     }

@@ -1,11 +1,8 @@
 package com.timrface;
 
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -18,7 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Filter;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,10 +44,9 @@ import com.timrface.watchfacelayout.config.ConfigurationConstant;
 import com.timrface.watchfacelayout.config.StoredConfigurationFetcher;
 import com.timrface.watchfacelayout.util.DayNightBroadcastReceiver;
 import com.timrface.watchfacelayout.util.FilteredBroadcastReceiver;
-import com.timrface.watchfacelayout.util.TimeFormatChangedReceiver;
+import com.timrface.watchfacelayout.util.TimeZoneBroadcastReceiver;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.TimeZone;
 
 public class ConfigurationActivity extends AppCompatActivity implements DataClient.OnDataChangedListener {
@@ -281,13 +276,14 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
         });
 
         dayNightBroadcastReceiver = new DayNightBroadcastReceiver(configuration, canvasView::updateConfig);
-        timeFormatChangedReceiver = new TimeFormatChangedReceiver(configuration, this::updateTimezone);
+        timeFormatChangedReceiver = new TimeZoneBroadcastReceiver(configuration, this::updateTimezone);
         dayNightBroadcastReceiver.register(this);
         timeFormatChangedReceiver.register(this);
     }
 
     private void updateTimezone(Configuration configuration) {
         canvasView.updateTimezone(TimeZone.getDefault());
+        canvasView.updateConfig(configuration);
     }
 
 

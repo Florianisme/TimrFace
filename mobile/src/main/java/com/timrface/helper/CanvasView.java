@@ -13,6 +13,7 @@ import com.timrface.watchfacelayout.layout.LayoutProvider;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 
@@ -20,7 +21,7 @@ public class CanvasView extends View {
 
     public long INTERACTIVE_UPDATE_RATE_MS = 30;
     String batteryLevel = "";
-    private final Calendar calendar;
+    private Calendar calendar;
     private final LayoutProvider layoutProvider;
 
     public CanvasView(Context context, AttributeSet attributeSet) {
@@ -62,7 +63,7 @@ public class CanvasView extends View {
     }
 
     public void updateTimezone(TimeZone timeZone) {
+        this.calendar.clear();
         this.calendar.setTimeZone(timeZone);
-        this.calendar.getTime();
     }
 }
