@@ -19,9 +19,6 @@
             android:layout_height="200dp"
             android:layout_marginTop="8dp">
 
-        <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
 
         <com.timrface.helper.CanvasView
                 android:id="@+id/canvas_layout"
@@ -29,6 +26,14 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="105dp"
                 android:layout_marginRight="105dp"/>
+
+        <com.timrface.helper.RoundCanvas
+            android:id="@+id/round_canvas"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layerType="software"
+            android:layout_marginLeft="105dp"
+            android:layout_marginRight="105dp"/>
     </FrameLayout>
 
     <ScrollView
