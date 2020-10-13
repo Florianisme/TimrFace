@@ -25,9 +25,11 @@ public class TickLayout extends Layout {
         mTickPaint.setColor(ColorConstants.TICK_COLOR);
         mTickPaint.setStyle(Paint.Style.STROKE);
         mTickPaint.setStrokeWidth(2f);
+        mTickPaint.setStrokeCap(Paint.Cap.ROUND);
 
         mThickTickPaint = new Paint(mTickPaint);
         mThickTickPaint.setStrokeWidth(4f);
+        mThickTickPaint.setStrokeCap(Paint.Cap.ROUND);
 
         mTextTickPaint = createTextPaint(ColorConstants.TICK_COLOR, robotoLight);
     }
