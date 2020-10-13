@@ -1,5 +1,6 @@
 package com.timrface.helper;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -25,15 +26,11 @@ public class RoundCanvas extends View {
 
 
     private final int backgroundColor = Color.parseColor("#FAFAFA");
-    private final Paint shadowPaint;
 
     public RoundCanvas(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
-
-        shadowPaint = new Paint();
-        shadowPaint.setStyle(Paint.Style.STROKE);
-        shadowPaint.setStrokeWidth(2f);
     }
+
 
     @Override
     public void onDraw(Canvas canvas) {
@@ -48,7 +45,13 @@ public class RoundCanvas extends View {
         backgroundPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
         canvas.drawCircle(centerX, centerY, centerX, backgroundPaint);
 
-        canvas.drawCircle(centerX, centerY, centerX, shadowPaint);
+        Paint circlePaint = new Paint();
+        circlePaint.setStyle(Paint.Style.STROKE);
+        circlePaint.setColor(Color.DKGRAY);
+        circlePaint.setStrokeWidth(3);
+        circlePaint.setAntiAlias(true);
+        circlePaint.setShadowLayer(8.0f, 0.0f, 8.0f, Color.parseColor("#2C000000"));
+        canvas.drawCircle(centerX, centerY, centerX - 2, circlePaint);
 
     }
 }
