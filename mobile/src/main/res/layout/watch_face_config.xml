@@ -6,40 +6,40 @@
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/primary"
-            android:elevation="4dp"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/Toolbar"/>
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:elevation="4dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/Toolbar" />
 
     <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="8dp">
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="8dp">
 
 
         <com.timrface.helper.CanvasView
-                android:id="@+id/canvas_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="105dp"
-                android:layout_marginRight="105dp"/>
+            android:id="@+id/canvas_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="105dp"
+            android:layout_marginRight="105dp" />
 
         <com.timrface.helper.RoundCanvas
             android:id="@+id/round_canvas"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layerType="software"
             android:layout_marginLeft="105dp"
-            android:layout_marginRight="105dp"/>
+            android:layout_marginRight="105dp"
+            android:layerType="software" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2px"
-            android:background="#8A000000"
-            android:layout_gravity="bottom"/>
+            android:layout_gravity="bottom"
+            android:background="#8A000000" />
     </FrameLayout>
 
     <ScrollView
@@ -47,253 +47,401 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:orientation="vertical">
-
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="20dp"
-                    android:orientation="vertical">
-
-                <TextView
-                        android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/background"
-            android:textIsSelectable="false"
-            android:textSize="15dp"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/white"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="15dp"
-                android:background="@drawable/white" />
-
-            <Button
-                android:id="@+id/dark"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="15dp"
-                android:background="@drawable/grey" />
-
-            <Button
-                android:id="@+id/black"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="15dp"
-                android:background="@drawable/black" />
-
-            <Button
-                android:id="@+id/automatic"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="15dp"
-                android:background="@drawable/automatic" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/colors"
-            android:textIsSelectable="false"
-            android:textSize="15dp"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/orange"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="13dp"
-                android:background="@drawable/orange" />
-
-            <Button
-                android:id="@+id/pink"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="13dp"
-                android:background="@drawable/pink" />
-
-            <Button
-                android:id="@+id/purple"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="13dp"
-                android:background="@drawable/purple" />
-
-            <Button
-                android:id="@+id/deep_blue"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="13dp"
-                android:background="@drawable/deep_blue" />
-
-            <Button
-                android:id="@+id/blue"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="13dp"
-                android:background="@drawable/blue" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/light_blue"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="13dp"
-                android:background="@drawable/light_blue" />
-
-            <Button
-                android:id="@+id/teal"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="13dp"
-                android:background="@drawable/teal" />
-
-            <Button
-                android:id="@+id/green"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="13dp"
-                android:background="@drawable/green" />
-
-            <Button
-                android:id="@+id/deep_orange"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="13dp"
-                android:background="@drawable/deep_orange" />
-
-            <Button
-                android:id="@+id/red"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="13dp"
-                android:background="@drawable/red" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/amber"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="13dp"
-                android:background="@drawable/amber" />
-
-            <Button
-                android:id="@+id/wheel"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="13dp"
-                android:background="@drawable/wheel" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginBottom="16dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView3"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="10dp"
-                android:text="@string/view"
-                android:textIsSelectable="false"
-                android:textSize="15dp"
-                android:textStyle="bold" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
 
-            <CheckBox
-                    android:id="@+id/seconds"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/orange"
-                    android:checked="true"
-                    android:text="@string/seconds"/>
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:text="@string/background"
+                    android:textIsSelectable="false"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
 
-            <CheckBox
-                    android:id="@+id/battery"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/orange"
-                    android:checked="true"
-                    android:text="@string/battery"/>
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="16dp"
+                    android:orientation="horizontal">
 
-            <CheckBox
-                    android:id="@+id/unreadNotifications"
-                    android:layout_width="wrap_content"
+                    <Button
+                        android:id="@+id/white"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/white" />
+
+                    <Button
+                        android:id="@+id/dark"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/grey" />
+
+                    <Button
+                        android:id="@+id/black"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/black" />
+
+                    <Button
+                        android:id="@+id/automatic"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/automatic" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2px"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="#8A000000" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/orange"
-                    android:checked="true"
-                    android:text="@string/unreadNotifications"/>
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:text="@string/colors"
+                    android:textIsSelectable="false"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
 
-            <CheckBox
-                    android:id="@+id/strokeDigitsInAmbientMode"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/orange"
-                    android:checked="true"
-                    android:text="@string/strokeDigits"/>
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="16dp"
+                    android:orientation="horizontal">
 
-            <CheckBox
-                    android:id="@+id/zero_digit"
-                    android:layout_width="wrap_content"
+                    <Button
+                        android:id="@+id/orange"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="13dp"
+                        android:background="@drawable/orange" />
+
+                    <Button
+                        android:id="@+id/pink"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="13dp"
+                        android:background="@drawable/pink" />
+
+                    <Button
+                        android:id="@+id/purple"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="13dp"
+                        android:background="@drawable/purple" />
+
+                    <Button
+                        android:id="@+id/deep_blue"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="13dp"
+                        android:background="@drawable/deep_blue" />
+
+                    <Button
+                        android:id="@+id/blue"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="13dp"
+                        android:background="@drawable/blue" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/orange"
-                    android:checked="true"
-                    android:text="@string/zero_digit"/>
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="16dp"
+                    android:orientation="horizontal">
 
-        </LinearLayout>
+                    <Button
+                        android:id="@+id/light_blue"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="13dp"
+                        android:background="@drawable/light_blue" />
 
-    </LinearLayout>
+                    <Button
+                        android:id="@+id/teal"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="13dp"
+                        android:background="@drawable/teal" />
+
+                    <Button
+                        android:id="@+id/green"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="13dp"
+                        android:background="@drawable/green" />
+
+                    <Button
+                        android:id="@+id/deep_orange"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="13dp"
+                        android:background="@drawable/deep_orange" />
+
+                    <Button
+                        android:id="@+id/red"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="13dp"
+                        android:background="@drawable/red" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="16dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/amber"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="13dp"
+                        android:background="@drawable/amber" />
+
+                    <Button
+                        android:id="@+id/wheel"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="13dp"
+                        android:background="@drawable/wheel" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2px"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="#8A000000" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:paddingBottom="10dp"
+                        android:text="@string/view"
+                        android:textIsSelectable="false"
+                        android:textSize="15dp"
+                        android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp">
+
+                        <TextView
+                            android:id="@+id/setting_smooth_seconds"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:paddingBottom="2dp"
+                            android:text="@string/seconds"
+                            android:textColor="@color/black_86p"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/setting_smooth_seconds"
+                            android:layout_marginRight="96dp"
+                            android:paddingBottom="10dp"
+                            android:text="Animate Seconds to show smooth animations"
+                            android:textColor="@color/black_54p"
+                            android:textSize="12sp" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/seconds"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:checked="true" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:paddingBottom="2dp"
+                            android:text="@string/battery"
+                            android:textColor="@color/black_86p"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/battery"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:gravity="center"
+                            android:checked="true" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp">
+
+                        <TextView
+                            android:id="@+id/setting_unread_notifications"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:paddingBottom="2dp"
+                            android:text="@string/unreadNotifications"
+                            android:textColor="@color/black_86p"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/setting_unread_notifications"
+                            android:layout_marginRight="96dp"
+                            android:paddingBottom="10dp"
+                            android:text="Animate Seconds to show smooth animations"
+                            android:textColor="@color/black_54p"
+                            android:textSize="12sp" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/unreadNotifications"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:checked="true" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp">
+
+                        <TextView
+                            android:id="@+id/setting_stroke_digits"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:paddingBottom="2dp"
+                            android:text="@string/strokeDigits"
+                            android:textColor="@color/black_86p"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/setting_stroke_digits"
+                            android:layout_marginRight="96dp"
+                            android:paddingBottom="10dp"
+                            android:text="Animate Seconds to show smooth animations"
+                            android:textColor="@color/black_54p"
+                            android:textSize="12sp" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/strokeDigitsInAmbientMode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:checked="true" />
+                    </RelativeLayout>
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="32dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp">
+
+                        <TextView
+                            android:id="@+id/setting_zero_digit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:paddingBottom="2dp"
+                            android:text="@string/zero_digit"
+                            android:textColor="@color/black_86p"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/setting_zero_digit"
+                            android:layout_marginRight="96dp"
+                            android:paddingBottom="10dp"
+                            android:text="Animate Seconds to show smooth animations"
+                            android:textColor="@color/black_54p"
+                            android:textSize="12sp" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/zero_digit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:checked="true" />
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>

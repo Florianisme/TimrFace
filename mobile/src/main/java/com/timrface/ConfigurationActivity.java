@@ -18,6 +18,7 @@ import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
 
@@ -62,11 +63,11 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
     private FilteredBroadcastReceiver timeFormatChangedReceiver;
 
     CanvasView canvasView;
-    CheckBox smoothSecondsCheckBox;
-    CheckBox showBatteryLevelCheckBox;
-    CheckBox showZeroDigitCheckBox;
-    CheckBox showUnreadNotificationsCounter;
-    CheckBox useStrokeDigitsInAmbientMode;
+    SwitchCompat smoothSecondsCheckBox;
+    SwitchCompat showBatteryLevelCheckBox;
+    SwitchCompat showZeroDigitCheckBox;
+    SwitchCompat showUnreadNotificationsCounter;
+    SwitchCompat useStrokeDigitsInAmbientMode;
 
     IabHelper.OnConsumeFinishedListener mConsumeFinishedListener =
             new IabHelper.OnConsumeFinishedListener() {
