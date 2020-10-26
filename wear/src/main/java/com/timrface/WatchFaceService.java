@@ -1,13 +1,10 @@
 package com.timrface;
 
-import android.content.ComponentName;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.wearable.complications.ComplicationData;
-import android.support.wearable.complications.ProviderUpdateRequester;
 import android.support.wearable.complications.SystemProviders;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
@@ -32,7 +29,6 @@ import com.timrface.watchfacelayout.util.DayNightBroadcastReceiver;
 import com.timrface.watchfacelayout.util.FilteredBroadcastReceiver;
 import com.timrface.watchfacelayout.util.TimeZoneBroadcastReceiver;
 
-import java.lang.ref.WeakReference;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -94,13 +90,9 @@ public class WatchFaceService extends CanvasWatchFaceService {
                     configuration -> layoutProvider.onConfigurationChange(configuration));
 
             setActiveComplications(UNREAD_NOTIFICATION_COMPLICATION_ID);
-            setDefaultSystemComplicationProvider(0, SystemProviders.UNREAD_NOTIFICATION_COUNT, ComplicationData.TYPE_SHORT_TEXT);
-            new ProviderUpdateRequester(WatchFaceService.this, getUnreadNotificationCountProvider()).requestUpdateAll();
+            setDefaultSystemComplicationProvider(UNREAD_NOTIFICATION_COMPLICATION_ID, SystemProviders.UNREAD_NOTIFICATION_COUNT, ComplicationData.TYPE_SHORT_TEXT);
         }
 
-        private ComponentName getUnreadNotificationCountProvider() {
-            return new ComponentName("com.google.android.wearable.app", "com.google.android.clockwork.home.complications.providers.UnreadNotificationsProviderService");
-        }
 
         @Override
         public void onTimeTick() {
