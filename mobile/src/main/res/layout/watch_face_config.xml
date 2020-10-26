@@ -80,33 +80,37 @@
                     <Button
                         android:id="@+id/white"
                         style="?android:borderlessButtonStyle"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="15dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="12dp"
                         android:background="@drawable/white" />
 
                     <Button
                         android:id="@+id/dark"
                         style="?android:borderlessButtonStyle"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="15dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="12dp"
                         android:background="@drawable/grey" />
 
                     <Button
                         android:id="@+id/black"
                         style="?android:borderlessButtonStyle"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="15dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="12dp"
                         android:background="@drawable/black" />
 
                     <Button
                         android:id="@+id/automatic"
                         style="?android:borderlessButtonStyle"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="15dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="12dp"
                         android:background="@drawable/automatic" />
 
                 </LinearLayout>
@@ -129,9 +133,10 @@
                     android:textSize="15dp"
                     android:textStyle="bold" />
 
-                <LinearLayout
+                <com.google.android.flexbox.FlexboxLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    app:flexWrap="wrap"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="16dp"
@@ -140,117 +145,112 @@
                     <Button
                         android:id="@+id/orange"
                         style="?android:borderlessButtonStyle"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="13dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="12dp"
                         android:background="@drawable/orange" />
 
                     <Button
                         android:id="@+id/pink"
                         style="?android:borderlessButtonStyle"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="13dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="12dp"
                         android:background="@drawable/pink" />
 
                     <Button
                         android:id="@+id/purple"
                         style="?android:borderlessButtonStyle"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="13dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="12dp"
                         android:background="@drawable/purple" />
 
                     <Button
                         android:id="@+id/deep_blue"
                         style="?android:borderlessButtonStyle"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="13dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="12dp"
                         android:background="@drawable/deep_blue" />
 
                     <Button
                         android:id="@+id/blue"
                         style="?android:borderlessButtonStyle"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="13dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="12dp"
                         android:background="@drawable/blue" />
-                </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginRight="16dp"
-                    android:orientation="horizontal">
 
                     <Button
                         android:id="@+id/light_blue"
                         style="?android:borderlessButtonStyle"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="13dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="12dp"
                         android:background="@drawable/light_blue" />
 
                     <Button
                         android:id="@+id/teal"
                         style="?android:borderlessButtonStyle"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="13dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="12dp"
                         android:background="@drawable/teal" />
 
                     <Button
                         android:id="@+id/green"
                         style="?android:borderlessButtonStyle"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="13dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="12dp"
                         android:background="@drawable/green" />
 
                     <Button
                         android:id="@+id/deep_orange"
                         style="?android:borderlessButtonStyle"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="13dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="12dp"
                         android:background="@drawable/deep_orange" />
 
                     <Button
                         android:id="@+id/red"
                         style="?android:borderlessButtonStyle"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="13dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="12dp"
                         android:background="@drawable/red" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginRight="16dp"
-                    android:orientation="horizontal">
 
                     <Button
                         android:id="@+id/amber"
                         style="?android:borderlessButtonStyle"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="13dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="12dp"
                         android:background="@drawable/amber" />
 
                     <Button
                         android:id="@+id/wheel"
                         style="?android:borderlessButtonStyle"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="13dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginBottom="12dp"
                         android:background="@drawable/wheel" />
-                </LinearLayout>
+                </com.google.android.flexbox.FlexboxLayout>
 
                 <View
                     android:layout_width="match_parent"
