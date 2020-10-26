@@ -14,7 +14,9 @@
     <string name="dialog_title">Donation</string>
     <string name="buy">Donate!</string>
     <string name="cancel">Cancel</string>
-    <string name="strokeDigits">Use stroke for time digits in ambient mode</string>
+    <string name="strokeDigits">Stroke digits in ambient mode</string>
+    <string name="seconds_description">Use smooth scrolling animation for the seconds. May increase battery usage</string>
+    <string name="stroke_digits_description">Use stroked text style for the time in ambient mode</string>
 
     <string-array name="colors">
         <item>#FAFAFA</item>

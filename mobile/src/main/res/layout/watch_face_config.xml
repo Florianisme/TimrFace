@@ -279,6 +279,8 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:minHeight="48dp"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp">
 
@@ -297,8 +299,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@id/setting_smooth_seconds"
                             android:layout_marginRight="96dp"
-                            android:paddingBottom="10dp"
-                            android:text="Animate Seconds to show smooth animations"
+                            android:text="@string/seconds_description"
                             android:textColor="@color/black_54p"
                             android:textSize="12sp" />
 
@@ -307,12 +308,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
                             android:checked="true" />
                     </RelativeLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
                         android:minHeight="48dp"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp">
@@ -321,6 +324,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
+                            android:layout_centerVertical="true"
                             android:paddingBottom="2dp"
                             android:text="@string/battery"
                             android:textColor="@color/black_86p"
@@ -331,13 +335,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:gravity="center"
+                            android:layout_centerVertical="true"
                             android:checked="true" />
                     </RelativeLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:minHeight="48dp"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp">
 
@@ -346,32 +352,26 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
+                            android:layout_centerVertical="true"
                             android:paddingBottom="2dp"
                             android:text="@string/unreadNotifications"
                             android:textColor="@color/black_86p"
                             android:textSize="14sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/setting_unread_notifications"
-                            android:layout_marginRight="96dp"
-                            android:paddingBottom="10dp"
-                            android:text="Animate Seconds to show smooth animations"
-                            android:textColor="@color/black_54p"
-                            android:textSize="12sp" />
 
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/unreadNotifications"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
                             android:checked="true" />
                     </RelativeLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:minHeight="48dp"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp">
 
@@ -390,8 +390,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@id/setting_stroke_digits"
                             android:layout_marginRight="96dp"
-                            android:paddingBottom="10dp"
-                            android:text="Animate Seconds to show smooth animations"
+                            android:text="@string/stroke_digits_description"
                             android:textColor="@color/black_54p"
                             android:textSize="12sp" />
 
@@ -399,6 +398,7 @@
                             android:id="@+id/strokeDigitsInAmbientMode"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
                             android:layout_alignParentRight="true"
                             android:checked="true" />
                     </RelativeLayout>
@@ -407,7 +407,8 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="32dp"
+                        android:layout_marginBottom="4dp"
+                        android:minHeight="48dp"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp">
 
@@ -416,26 +417,18 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
+                            android:layout_centerVertical="true"
                             android:paddingBottom="2dp"
                             android:text="@string/zero_digit"
                             android:textColor="@color/black_86p"
                             android:textSize="14sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/setting_zero_digit"
-                            android:layout_marginRight="96dp"
-                            android:paddingBottom="10dp"
-                            android:text="Animate Seconds to show smooth animations"
-                            android:textColor="@color/black_54p"
-                            android:textSize="12sp" />
 
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/zero_digit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
                             android:checked="true" />
                     </RelativeLayout>
 

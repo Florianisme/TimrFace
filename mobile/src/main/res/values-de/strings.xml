@@ -14,6 +14,8 @@
     <string name="cancel">Abbrechen</string>
     <string name="zero_digit">Uhrzeit als zwei Ziffern</string>
     <string name="unreadNotifications">Benachrichtigungszähler anzeigen</string>
-    <string name="strokeDigits">Kontur für Uhrzeit im Ambient Modus benutzen</string>
+    <string name="strokeDigits">Kontur im Inaktivmodus</string>
+    <string name="seconds_description">Zeige eine weiche Animation für den Sekundenzähler. Kann eventuell den Akkverbrauch erhöhen</string>
+    <string name="stroke_digits_description">Zeige die Kontur der Uhrzeit im Inaktivmodus an</string>
 
 </resources>

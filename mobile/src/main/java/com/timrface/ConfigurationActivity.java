@@ -342,7 +342,7 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
                     configuration.setAutomaticDarkLightMode(true);
                     canvasView.updateConfig(configuration);
                     dayNightBroadcastReceiver.updateInternalConfigurationState(configuration);
-                } else if (key == 14) {
+                } else if (key == 15) {
                     colorPicker.show();
                     Button okColor = (Button) colorPicker.findViewById(R.id.okColorButton);
                     okColor.setOnClickListener(new View.OnClickListener() {
