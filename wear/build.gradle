@@ -7,6 +7,6 @@ dependencies {
 
 android {
     defaultConfig {
-        versionCode 55
+        versionCode 56
     }
 }

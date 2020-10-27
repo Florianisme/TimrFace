@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:background="@color/primary"
         android:elevation="4dp"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/Toolbar" />
 
     <FrameLayout
@@ -33,6 +32,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="105dp"
             android:layout_marginRight="105dp"
+            app:overdraw_background="?android:colorBackground"
             android:layerType="software" />
 
         <View
@@ -291,7 +291,7 @@
                             android:gravity="left"
                             android:paddingBottom="2dp"
                             android:text="@string/seconds"
-                            android:textColor="@color/black_86p"
+                            android:textStyle="bold"
                             android:textSize="14sp" />
 
                         <TextView
@@ -300,7 +300,6 @@
                             android:layout_below="@id/setting_smooth_seconds"
                             android:layout_marginRight="96dp"
                             android:text="@string/seconds_description"
-                            android:textColor="@color/black_54p"
                             android:textSize="12sp" />
 
                         <androidx.appcompat.widget.SwitchCompat
@@ -326,8 +325,8 @@
                             android:gravity="left"
                             android:layout_centerVertical="true"
                             android:paddingBottom="2dp"
+                            android:textStyle="bold"
                             android:text="@string/battery"
-                            android:textColor="@color/black_86p"
                             android:textSize="14sp" />
 
                         <androidx.appcompat.widget.SwitchCompat
@@ -354,8 +353,8 @@
                             android:gravity="left"
                             android:layout_centerVertical="true"
                             android:paddingBottom="2dp"
+                            android:textStyle="bold"
                             android:text="@string/unreadNotifications"
-                            android:textColor="@color/black_86p"
                             android:textSize="14sp" />
 
                         <androidx.appcompat.widget.SwitchCompat
@@ -381,8 +380,8 @@
                             android:layout_height="wrap_content"
                             android:gravity="left"
                             android:paddingBottom="2dp"
+                            android:textStyle="bold"
                             android:text="@string/strokeDigits"
-                            android:textColor="@color/black_86p"
                             android:textSize="14sp" />
 
                         <TextView
@@ -391,7 +390,6 @@
                             android:layout_below="@id/setting_stroke_digits"
                             android:layout_marginRight="96dp"
                             android:text="@string/stroke_digits_description"
-                            android:textColor="@color/black_54p"
                             android:textSize="12sp" />
 
                         <androidx.appcompat.widget.SwitchCompat
@@ -419,8 +417,8 @@
                             android:gravity="left"
                             android:layout_centerVertical="true"
                             android:paddingBottom="2dp"
+                            android:textStyle="bold"
                             android:text="@string/zero_digit"
-                            android:textColor="@color/black_86p"
                             android:textSize="14sp" />
 
                         <androidx.appcompat.widget.SwitchCompat

@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -14,6 +15,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.timrface.R;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.config.ConfigurationBuilder;
 import com.timrface.watchfacelayout.layout.LayoutProvider;
@@ -25,10 +27,18 @@ import java.util.TimeZone;
 public class RoundCanvas extends View {
 
 
-    private final int backgroundColor = Color.parseColor("#FAFAFA");
+    private final int backgroundColor;
 
     public RoundCanvas(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
+
+        TypedArray a = context.obtainStyledAttributes(attributeSet, R.styleable.round_canvas);
+
+        try {
+            backgroundColor = a.getColor(R.styleable.round_canvas_overdraw_background, 0);
+        } finally {
+            a.recycle();
+        }
     }
 
 

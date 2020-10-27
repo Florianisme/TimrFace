@@ -1,9 +1,10 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/primary</item>
+        <item name="colorAccent">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="android:buttonStyle">?android:borderlessButtonStyle</item>
 
@@ -13,7 +14,7 @@
         <item name="android:colorForeground">#FF9800</item>
     </style>
 
-    <style name="Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+    <style name="Toolbar" parent="ThemeOverlay.AppCompat.Light">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/primary</item>
