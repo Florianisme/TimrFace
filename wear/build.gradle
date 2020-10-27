@@ -4,3 +4,9 @@ apply from: "$rootProject.projectDir/shared-build.gradle"
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 }
+
+android {
+    defaultConfig {
+        versionCode 55
+    }
+}
