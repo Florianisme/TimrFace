@@ -12,6 +12,8 @@ pipeline {
             steps {
                 archiveArtifacts artifacts: 'mobile/build/outputs/apk/release/mobile-release.apk', followSymlinks: false, onlyIfSuccessful: true
                 archiveArtifacts artifacts: 'mobile/build/outputs/mapping/release/mapping.txt', followSymlinks: false, onlyIfSuccessful: true
+                archiveArtifacts artifacts: 'wear/build/outputs/apk/release/wear-release.apk', followSymlinks: false, onlyIfSuccessful: true
+                archiveArtifacts artifacts: 'wear/build/outputs/mapping/release/mapping.txt', followSymlinks: false, onlyIfSuccessful: true
             }
         }
 	    stage('Publish to Play Store') {
