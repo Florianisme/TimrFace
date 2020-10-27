@@ -3,9 +3,14 @@ apply from: "$rootProject.projectDir/shared-build.gradle"
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    wearApp project(':wear')
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.pes.materialcolorpicker:library:1.2.5'
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'com.google.android:flexbox:2.0.1'
+}
+
+android {
+    defaultConfig {
+        wearAppUnbundled true
+    }
 }
