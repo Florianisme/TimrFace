@@ -19,14 +19,14 @@ pipeline {
 			    script {
                     if (env.BRANCH_NAME == 'master') {
                         echo 'Publishing APK to Beta channel'
-                        androidApkUpload deobfuscationFilesPattern: 'mobile/build/outputs/mapping/release/mapping.txt,wear/build/outputs/mapping/release/mapping.txt', filesPattern: 'mobile/build/outputs/apk/release/mobile-release.apk,wear/build/outputs/apk/release/mobile-release.apk', googleCredentialsId: 'Florianisme', rolloutPercentage: '100', trackName: 'beta'
+                        androidApkUpload deobfuscationFilesPattern: 'mobile/build/outputs/mapping/release/mapping.txt,wear/build/outputs/mapping/release/mapping.txt', filesPattern: 'mobile/build/outputs/apk/release/mobile-release.apk,wear/build/outputs/apk/release/wear-release.apk', googleCredentialsId: 'Florianisme', rolloutPercentage: '100', trackName: 'beta'
                     } else if (env.BRANCH_NAME == 'release'){
                         echo 'Publishing APK to Internal channel'
-                        androidApkUpload deobfuscationFilesPattern: 'mobile/build/outputs/mapping/release/mapping.txt,wear/build/outputs/mapping/release/mapping.txt', filesPattern: 'mobile/build/outputs/apk/release/mobile-release.apk,wear/build/outputs/apk/release/mobile-release.apk', googleCredentialsId: 'Florianisme', rolloutPercentage: '100', trackName: 'internal'
+                        androidApkUpload deobfuscationFilesPattern: 'mobile/build/outputs/mapping/release/mapping.txt,wear/build/outputs/mapping/release/mapping.txt', filesPattern: 'mobile/build/outputs/apk/release/mobile-release.apk,wear/build/outputs/apk/release/wear-release.apk', googleCredentialsId: 'Florianisme', rolloutPercentage: '100', trackName: 'internal'
                     } else if (env.BRANCH_NAME == 'develop'){
                         echo 'Publishing APK to Internal channel'
                         try {
-                            androidApkUpload deobfuscationFilesPattern: 'mobile/build/outputs/mapping/release/mapping.txt,wear/build/outputs/mapping/release/mapping.txt', filesPattern: 'mobile/build/outputs/apk/release/mobile-release.apk,wear/build/outputs/apk/release/mobile-release.apk', googleCredentialsId: 'Florianisme', rolloutPercentage: '100', trackName: 'internal'
+                            androidApkUpload deobfuscationFilesPattern: 'mobile/build/outputs/mapping/release/mapping.txt,wear/build/outputs/mapping/release/mapping.txt', filesPattern: 'mobile/build/outputs/apk/release/mobile-release.apk,wear/build/outputs/apk/release/wear-release.apk', googleCredentialsId: 'Florianisme', rolloutPercentage: '100', trackName: 'internal'
                         } catch(error) {
                             currentBuild.result = 'SUCCESS'
                         }
