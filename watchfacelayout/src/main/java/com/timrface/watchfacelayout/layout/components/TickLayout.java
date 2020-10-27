@@ -47,7 +47,7 @@ public class TickLayout extends Layout {
                 int textForIndex = getTextForIndex(i);
                 float textWidth = textForIndex >= 10 ? twoDigitsTextWidth / 2 : twoDigitsTextWidth / 4f;
                 canvas.drawLine(xPosition, yStart, xPosition, yStart + 36f, mThickTickPaint);
-                canvas.drawText(Integer.toString(textForIndex), xPosition - textWidth, yStart + 58f, mTextTickPaint);
+                canvas.drawText(Integer.toString(textForIndex), xPosition - textWidth, yStart + 62f, mTextTickPaint);
             } else {
                 canvas.drawLine(xPosition, yStart, xPosition, yStart + 24f, mTickPaint);
             }
