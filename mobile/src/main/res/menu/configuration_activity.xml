@@ -7,9 +7,4 @@
         android:icon="@drawable/ic_watch"
         android:title="Open on Watch"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/donate"
-        android:icon="@drawable/coin"
-        android:title="Donate"
-        app:showAsAction="always" />
 </menu>

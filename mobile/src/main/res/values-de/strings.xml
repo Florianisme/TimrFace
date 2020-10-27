@@ -8,10 +8,6 @@
     <string name="seconds">Sekunden animieren</string>
     <string name="battery">Akkustand anzeigen</string>
 
-    <string name="dialog_message">Durch eine Spende können Sie mich bei meiner Arbeit unterstützen und mir helfen, diese App zu verbessern :) Es werden keine zusätzlichen Features durch die Spende freigeschaltet, diese App ist und bleibt komplett kostenlos!</string>
-    <string name="dialog_title">Spende</string>
-    <string name="buy">Spenden!</string>
-    <string name="cancel">Abbrechen</string>
     <string name="zero_digit">Uhrzeit als zwei Ziffern</string>
     <string name="unreadNotifications">Benachrichtigungszähler anzeigen</string>
     <string name="strokeDigits">Kontur im Inaktivmodus</string>

@@ -1,7 +1,5 @@
 package com.timrface;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -9,20 +7,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.MenuItemCompat;
 
 import com.google.android.gms.wearable.DataClient;
 import com.google.android.gms.wearable.DataEvent;
@@ -35,11 +30,6 @@ import com.google.android.gms.wearable.Wearable;
 import com.google.android.wearable.intent.RemoteIntent;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.timrface.helper.CanvasView;
-import com.timrface.helper.SharedPreferences;
-import com.timrface.util.IabHelper;
-import com.timrface.util.IabResult;
-import com.timrface.util.Inventory;
-import com.timrface.util.Purchase;
 import com.timrface.watchfacelayout.config.ConfigUpdateFinished;
 import com.timrface.watchfacelayout.config.ConfigUpdater;
 import com.timrface.watchfacelayout.config.Configuration;
@@ -56,7 +46,6 @@ import java.util.TimeZone;
 public class ConfigurationActivity extends AppCompatActivity implements DataClient.OnDataChangedListener {
 
     static ArrayList<String> list = new ArrayList<>();
-    private static String ITEM_SKU = "com.timrface.donate";
     String[] colors;
     ColorPicker colorPicker;
     Handler mUpdateTimeHandler;
@@ -72,68 +61,9 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
     SwitchCompat showUnreadNotificationsCounter;
     SwitchCompat useStrokeDigitsInAmbientMode;
 
-    IabHelper.OnConsumeFinishedListener mConsumeFinishedListener =
-            new IabHelper.OnConsumeFinishedListener() {
-                public void onConsumeFinished(Purchase purchase,
-                                              IabResult result) {
-
-                    if (result.isSuccess()) {
-                        Log.d("Billing", "Billing succed! Icon can be bought again");
-                    } else {
-                        Log.d("Billing", "Billing failed");
-                    }
-                }
-            };
-
     private void updateTimer() {
         mUpdateTimeHandler.removeMessages(0);
         mUpdateTimeHandler.sendEmptyMessage(0);
-    }
-
-    private IabHelper mHelper;
-
-
-    IabHelper.QueryInventoryFinishedListener mReceivedInventoryListener
-            = new IabHelper.QueryInventoryFinishedListener() {
-        public void onQueryInventoryFinished(IabResult result,
-                                             Inventory inventory) {
-
-
-            if (result.isFailure()) {
-                Log.d("Billing", "Billing failed");
-            } else {
-                mHelper.consumeAsync(inventory.getPurchase(ITEM_SKU),
-                        mConsumeFinishedListener);
-            }
-        }
-    };
-    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener
-            = new IabHelper.OnIabPurchaseFinishedListener() {
-        public void onIabPurchaseFinished(IabResult result,
-                                          Purchase purchase) {
-            if (result.isFailure()) {
-                Log.d("Billing", "Billing failed");
-                return;
-            } else if (purchase.getSku().equals(ITEM_SKU)) {
-                Log.d("Billing", "Bought item");
-                consume();
-            }
-            SharedPreferences.saveBoolean("donation", true, getApplicationContext());
-
-        }
-    };
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent data) {
-        if (!mHelper.handleActivityResult(requestCode,
-                resultCode, data)) {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    public void consume() {
-        mHelper.queryInventoryAsync(mReceivedInventoryListener);
     }
 
     private void setUpAllColors() {
@@ -259,17 +189,6 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
             }
         });
 
-        String base64EncodedPublicKey = getResources().getString(R.string.key);
-        mHelper = new IabHelper(this, base64EncodedPublicKey);
-
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
-                if (!result.isSuccess()) {
-                    Log.d("Billing", "Problem setting up In-app Billing: " + result);
-                }
-            }
-        });
-
         dayNightBroadcastReceiver = new DayNightBroadcastReceiver(configuration, canvasView::updateConfig);
         timeFormatChangedReceiver = new TimeZoneBroadcastReceiver(configuration, this::updateTimezone);
         dayNightBroadcastReceiver.register(this);
@@ -281,36 +200,9 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
         canvasView.updateConfig(configuration);
     }
 
-
-    private void showDonationDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ConfigurationActivity.this);
-
-        builder.setMessage(R.string.dialog_message)
-                .setTitle(R.string.dialog_title);
-
-        builder.setPositiveButton(R.string.buy, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                launchPurchaseFlow();
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.donate:
-                showDonationDialog();
-                break;
-            case R.id.open_on_watch:
-                RemoteIntent.startRemoteActivity(this, new Intent(Intent.ACTION_VIEW).addCategory(Intent.CATEGORY_BROWSABLE).setData(Uri.parse("market://details?id=com.timrface")), null);
-
+        if (item.getItemId() == R.id.open_on_watch) {
+            RemoteIntent.startRemoteActivity(this, new Intent(Intent.ACTION_VIEW).addCategory(Intent.CATEGORY_BROWSABLE).setData(Uri.parse("market://details?id=com.timrface")), null);
         }
         return true;
     }
@@ -320,11 +212,6 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.configuration_activity, menu);
         return true;
-    }
-
-    private void launchPurchaseFlow() {
-        mHelper.launchPurchaseFlow(this, ITEM_SKU, 10001,
-                mPurchaseFinishedListener, "token");
     }
 
     private void setUpColorListener(final int id, final int key, final String color, int original) {
