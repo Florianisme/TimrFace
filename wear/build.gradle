@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply from: "$rootProject.projectDir/shared-build.gradle"
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.wear:wear:1.1.0'
 }
 
 android {

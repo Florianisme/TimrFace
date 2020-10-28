@@ -1,45 +1,45 @@
 package com.timrface;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.wearable.view.BoxInsetLayout;
 import android.support.wearable.view.CircledImageView;
-import android.support.wearable.view.WearableListView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.wear.widget.BoxInsetLayout;
+import androidx.wear.widget.WearableRecyclerView;
+
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.timrface.watchfacelayout.config.ConfigurationConstant;
 import com.timrface.watchfacelayout.config.StoredConfigurationFetcher;
 
-public class WatchFaceConfiguration extends Activity implements
-        WearableListView.ClickListener, WearableListView.OnScrollListener {
+public class WatchFaceConfiguration extends Activity {
 
-    private TextView mHeader;
+    private WearableRecyclerView mColorSelectionRecyclerView;
+    private DigitalColorRecyclerViewAdapter mDigitalColorRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.watch_face_config);
 
-        mHeader = (TextView) findViewById(R.id.header);
-        WearableListView listView = (WearableListView) findViewById(R.id.color_picker);
         BoxInsetLayout content = (BoxInsetLayout) findViewById(R.id.content);
+
         // BoxInsetLayout adds padding by default on round devices. Add some on square devices.
         content.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
             @Override
             public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
                 if (!insets.isRound()) {
-                    v.setPaddingRelative(12,
+                    v.setPaddingRelative(
+                            (int) getResources().getDimensionPixelSize(R.dimen.content_padding_start),
                             v.getPaddingTop(),
                             v.getPaddingEnd(),
                             v.getPaddingBottom());
@@ -48,197 +48,96 @@ public class WatchFaceConfiguration extends Activity implements
             }
         });
 
-        listView.setHasFixedSize(true);
-        listView.setClickListener(this);
-        listView.addOnScrollListener(this);
+        mColorSelectionRecyclerView = findViewById(R.id.color_picker_recycler_view);
 
-        String[] colors = getResources().getStringArray(R.array.color_array);
-        listView.setAdapter(new ColorListAdapter(colors));
+        // Aligns the first and last items on the list vertically centered on the screen.
+        mColorSelectionRecyclerView.setEdgeItemsCenteringEnabled(true);
 
+        mColorSelectionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        String[] colorsValues = getResources().getStringArray(R.array.colors);
+        String[] colorsNames = getResources().getStringArray(R.array.color_array);
+
+
+        mDigitalColorRecyclerViewAdapter = new DigitalColorRecyclerViewAdapter(colorsValues, colorsNames);
+        mColorSelectionRecyclerView.setAdapter(mDigitalColorRecyclerViewAdapter);
     }
 
-    @Override // WearableListView.ClickListener
-    public void onClick(WearableListView.ViewHolder viewHolder) {
-        String[] array = getResources().getStringArray(R.array.colors);
-        ColorItemViewHolder colorItemViewHolder = (ColorItemViewHolder) viewHolder;
-        updateConfigDataItem(array[colorItemViewHolder.getPosition()]);
-        finish();
-    }
-
-    @Override // WearableListView.ClickListener
-    public void onTopEmptyRegionClick() {
-    }
-
-    @Override // WearableListView.OnScrollListener
-    public void onScroll(int scroll) {
-    }
-
-    @Override // WearableListView.OnScrollListener
-    public void onAbsoluteScrollChange(int scroll) {
-        float newTranslation = Math.min(-scroll, 0);
-        mHeader.setTranslationY(newTranslation);
-    }
-
-    @Override // WearableListView.OnScrollListener
-    public void onScrollStateChanged(int scrollState) {
-    }
-
-    @Override // WearableListView.OnScrollListener
-    public void onCentralPositionChanged(int centralPosition) {
-    }
-
-    private void updateConfigDataItem(final String backgroundColor) {
+    private void updateConfigDataItem(final String accentColor) {
         PutDataMapRequest putDataMapRequest = PutDataMapRequest
                 .create(ConfigurationConstant.CONFIG_PATH.toString() + ConfigurationConstant.INTERACTIVE_COLOR.toString())
                 .setUrgent();
         DataMap dataMap = putDataMapRequest.getDataMap();
-        dataMap.putString(ConfigurationConstant.INTERACTIVE_COLOR.toString(), backgroundColor);
+        dataMap.putString(ConfigurationConstant.INTERACTIVE_COLOR.toString(), accentColor);
         Wearable.getDataClient(this).putDataItem(putDataMapRequest.asPutDataRequest());
 
         StoredConfigurationFetcher.deleteInteractiveColorSetByOtherDevice(Wearable.getNodeClient(this), Wearable.getDataClient(this));
+        finish();
     }
 
-    /**
-     * The layout of a color item including image and label.
-     */
-    private static class ColorItem extends LinearLayout implements
-            WearableListView.OnCenterProximityListener {
-        /**
-         * The duration of the expand/shrink animation.
-         */
-        private static final int ANIMATION_DURATION_MS = 150;
-        /**
-         * The ratio for the size of a circle in shrink state.
-         */
-        private static final float SHRINK_CIRCLE_RATIO = .75f;
+    private class DigitalColorRecyclerViewAdapter extends
+            RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private static final float SHRINK_LABEL_ALPHA = .5f;
-        private static final float EXPAND_LABEL_ALPHA = 1f;
+        private final String[] colorValues;
+        private final String[] colorNames;
 
-        private final TextView mLabel;
-        private final CircledImageView mColor;
-
-        private final float mExpandCircleRadius;
-        private final float mShrinkCircleRadius;
-
-        private final ObjectAnimator mExpandCircleAnimator;
-        private final ObjectAnimator mExpandLabelAnimator;
-        private final AnimatorSet mExpandAnimator;
-
-        private final ObjectAnimator mShrinkCircleAnimator;
-        private final ObjectAnimator mShrinkLabelAnimator;
-        private final AnimatorSet mShrinkAnimator;
-
-        public ColorItem(Context context) {
-            super(context);
-            View.inflate(context, R.layout.color_picker_item, this);
-
-            mLabel = (TextView) findViewById(R.id.label);
-            mColor = (CircledImageView) findViewById(R.id.color);
-
-            mExpandCircleRadius = mColor.getCircleRadius();
-            mShrinkCircleRadius = mExpandCircleRadius * SHRINK_CIRCLE_RATIO;
-
-            mShrinkCircleAnimator = ObjectAnimator.ofFloat(mColor, "circleRadius",
-                    mExpandCircleRadius, mShrinkCircleRadius);
-            mShrinkLabelAnimator = ObjectAnimator.ofFloat(mLabel, "alpha",
-                    EXPAND_LABEL_ALPHA, SHRINK_LABEL_ALPHA);
-            mShrinkAnimator = new AnimatorSet().setDuration(ANIMATION_DURATION_MS);
-            mShrinkAnimator.playTogether(mShrinkCircleAnimator, mShrinkLabelAnimator);
-
-            mExpandCircleAnimator = ObjectAnimator.ofFloat(mColor, "circleRadius",
-                    mShrinkCircleRadius, mExpandCircleRadius);
-            mExpandLabelAnimator = ObjectAnimator.ofFloat(mLabel, "alpha",
-                    SHRINK_LABEL_ALPHA, EXPAND_LABEL_ALPHA);
-            mExpandAnimator = new AnimatorSet().setDuration(ANIMATION_DURATION_MS);
-            mExpandAnimator.playTogether(mExpandCircleAnimator, mExpandLabelAnimator);
+        public DigitalColorRecyclerViewAdapter(String[] colorValues, String[] colorNames) {
+            this.colorValues = colorValues;
+            this.colorNames = colorNames;
         }
 
         @Override
-        public void onCenterPosition(boolean animate) {
-            if (animate) {
-                mShrinkAnimator.cancel();
-                if (!mExpandAnimator.isRunning()) {
-                    mExpandCircleAnimator.setFloatValues(mColor.getCircleRadius(), mExpandCircleRadius);
-                    mExpandLabelAnimator.setFloatValues(mLabel.getAlpha(), EXPAND_LABEL_ALPHA);
-                    mExpandAnimator.start();
-                }
-            } else {
-                mExpandAnimator.cancel();
-                mColor.setCircleRadius(mExpandCircleRadius);
-                mLabel.setAlpha(EXPAND_LABEL_ALPHA);
-            }
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+            return new DigitalColorViewHolder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.color_picker_item, parent, false));
         }
 
         @Override
-        public void onNonCenterPosition(boolean animate) {
-            if (animate) {
-                mExpandAnimator.cancel();
-                if (!mShrinkAnimator.isRunning()) {
-                    mShrinkCircleAnimator.setFloatValues(mColor.getCircleRadius(), mShrinkCircleRadius);
-                    mShrinkLabelAnimator.setFloatValues(mLabel.getAlpha(), SHRINK_LABEL_ALPHA);
-                    mShrinkAnimator.start();
-                }
-            } else {
-                mShrinkAnimator.cancel();
-                mColor.setCircleRadius(mShrinkCircleRadius);
-                mLabel.setAlpha(SHRINK_LABEL_ALPHA);
-            }
-        }
+        public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+            String colorValue = colorValues[position];
+            String colorName = colorNames[position];
 
-        private void setColor(String colorName, int pos) {
-            String[] array = getResources().getStringArray(R.array.colors);
-            mLabel.setText(colorName);
-            mColor.setCircleColor(Color.parseColor(array[pos]));
-        }
+            Integer color = Color.parseColor(colorValue);
 
-    }
-
-    private static class ColorItemViewHolder extends WearableListView.ViewHolder {
-        private final ColorItem mColorItem;
-
-        public ColorItemViewHolder(ColorItem colorItem) {
-            super(colorItem);
-            mColorItem = colorItem;
-        }
-    }
-
-    private class ColorListAdapter extends WearableListView.Adapter {
-        private final String[] mColors;
-
-        public ColorListAdapter(String[] colors) {
-            mColors = colors;
-        }
-
-        @Override
-        public ColorItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ColorItemViewHolder(new ColorItem(parent.getContext()));
-        }
-
-        @Override
-        public void onBindViewHolder(WearableListView.ViewHolder holder, int position) {
-            ColorItemViewHolder colorItemViewHolder = (ColorItemViewHolder) holder;
-            String colorName = mColors[position];
-            colorItemViewHolder.mColorItem.setColor(colorName, position);
-
-            RecyclerView.LayoutParams layoutParams =
-                    new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT);
-            int colorPickerItemMargin = 32;
-            // Add margins to first and last item to make it possible for user to tap on them.
-            if (position == 0) {
-                layoutParams.setMargins(0, colorPickerItemMargin, 0, 0);
-            } else if (position == mColors.length - 1) {
-                layoutParams.setMargins(0, 0, 0, colorPickerItemMargin);
-            } else {
-                layoutParams.setMargins(0, 0, 0, 0);
-            }
-            colorItemViewHolder.itemView.setLayoutParams(layoutParams);
+            DigitalColorViewHolder colorViewHolder = (DigitalColorViewHolder) viewHolder;
+            colorViewHolder.setColor(color);
+            colorViewHolder.setColorName(colorName);
         }
 
         @Override
         public int getItemCount() {
-            return mColors.length;
+            return colorValues.length;
+        }
+
+        public class DigitalColorViewHolder extends RecyclerView.ViewHolder implements
+                View.OnClickListener {
+
+            private CircledImageView colorValue;
+            private TextView colorName;
+
+            public DigitalColorViewHolder(final View view) {
+                super(view);
+                colorValue = view.findViewById(R.id.color);
+                colorName = view.findViewById(R.id.label);
+
+                view.setOnClickListener(this);
+            }
+
+            public void setColor(int color) {
+                colorValue.setCircleColor(color);
+            }
+
+            public void setColorName(String name) {
+                colorName.setText(name);
+            }
+
+            @Override
+            public void onClick (View view) {
+                int position = getAdapterPosition();
+
+                updateConfigDataItem(colorValues[position]);
+            }
         }
     }
 }
