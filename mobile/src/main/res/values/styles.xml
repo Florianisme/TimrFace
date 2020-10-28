@@ -1,23 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
-        <item name="windowActionBar">false</item>
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight">
         <item name="colorPrimary">@color/primary</item>
-        <item name="colorAccent">@color/primary</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="android:buttonStyle">?android:borderlessButtonStyle</item>
 
-
-        <item name="colorControlActivated">@color/primary</item>
-        <item name="colorSwitchThumbNormal">@color/primary_dark</item>
-        <item name="android:colorForeground">#FF9800</item>
-    </style>
-
-    <style name="Toolbar" parent="ThemeOverlay.AppCompat.Light">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorAccent">@color/primary</item>
+        <item name="titleTextColor">@color/black_86p</item>
     </style>
 
 </resources>

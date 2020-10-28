@@ -90,9 +90,6 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.watch_face_config);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle(R.string.settings);
 
         canvasView = (CanvasView) findViewById(R.id.canvas_layout);
         smoothSecondsCheckBox = findViewById(R.id.seconds);
@@ -103,6 +100,8 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
 
         configuration = ConfigurationBuilder.getDefaultConfiguration(this);
         Wearable.getDataClient(this).addListener(this);
+
+        new WearAppInstalledTester(this);
 
         mUpdateTimeHandler = new Handler() {
             @Override
