@@ -8,11 +8,13 @@ import android.graphics.Typeface;
 import android.support.wearable.complications.ComplicationData;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import com.timrface.watchfacelayout.R;
+import com.timrface.watchfacelayout.config.ComplicationSide;
 import com.timrface.watchfacelayout.config.ComplicationType;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.layout.components.*;
 import com.timrface.watchfacelayout.layout.components.complications.BatteryLayout;
 import com.timrface.watchfacelayout.layout.components.complications.Complication;
+import com.timrface.watchfacelayout.layout.components.complications.StepsLayout;
 import com.timrface.watchfacelayout.layout.components.complications.UnreadNotificationsLayout;
 
 import java.util.ArrayList;
@@ -24,6 +26,12 @@ public class LayoutProvider {
     private final List<Layout> layoutList = new ArrayList<>();
     private final List<Complication> complicationList = new ArrayList<>();
     private boolean inAmbientMode;
+
+    private UnreadNotificationsLayout unreadNotificationComplication;
+    private BatteryLayout batteryComplication;
+    private StepsLayout stepsComplication;
+    private int width;
+    private int height;
 
     public LayoutProvider init(Configuration configuration, Context context) {
         Typeface robotoLight = Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");
@@ -37,10 +45,20 @@ public class LayoutProvider {
         layoutList.add(new DateLayout(configuration, robotoLight));
         layoutList.add(new AmPmLayout(configuration, robotoLight));
 
-        complicationList.add(buildUnreadNotificationComplication(configuration, context, robotoLight, robotoMedium));
-        complicationList.add(new BatteryLayout(configuration, context, robotoMedium, robotoLight));
+        unreadNotificationComplication = buildUnreadNotificationComplication(configuration, context, robotoLight, robotoMedium);
+        stepsComplication = buildStepsComplication(configuration, context, robotoLight, robotoMedium);
+        batteryComplication = new BatteryLayout(configuration, context, robotoMedium, robotoLight);
+
+        complicationList.add(unreadNotificationComplication);
+        complicationList.add(batteryComplication);
 
         return this;
+    }
+
+    private StepsLayout buildStepsComplication(Configuration configuration, Context context, Typeface robotoLight, Typeface robotoMedium) {
+        VectorDrawableCompat notifications = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_notifications, context.getTheme());
+        VectorDrawableCompat notificationsOutline = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_notifications_outline, context.getTheme());
+        return new StepsLayout(configuration, context, robotoMedium, robotoLight);
     }
 
     private UnreadNotificationsLayout buildUnreadNotificationComplication(Configuration configuration, Context context, Typeface robotoLight, Typeface robotoMedium) {
@@ -53,8 +71,40 @@ public class LayoutProvider {
         for (Layout layout : layoutList) {
             layout.updateConfiguration(configuration);
         }
+        rebuildComplications(configuration);
         for (Complication complication : complicationList) {
             complication.updateConfiguration(configuration);
+            complication.onSurfaceChanged(width, height);
+        }
+    }
+
+    private void rebuildComplications(Configuration configuration) {
+        complicationList.clear();
+        if (configuration.getLeftComplicationType() == ComplicationType.BATTERY) {
+            batteryComplication.setDrawSide(ComplicationSide.LEFT);
+            complicationList.add(batteryComplication);
+        }
+        if (configuration.getMiddleComplicationType() == ComplicationType.BATTERY) {
+            batteryComplication.setDrawSide(ComplicationSide.MIDDLE);
+            complicationList.add(batteryComplication);
+        }
+
+        if (configuration.getLeftComplicationType() == ComplicationType.NOTIFICATIONS) {
+            unreadNotificationComplication.setDrawSide(ComplicationSide.LEFT);
+            complicationList.add(unreadNotificationComplication);
+        }
+        if (configuration.getMiddleComplicationType() == ComplicationType.NOTIFICATIONS) {
+            unreadNotificationComplication.setDrawSide(ComplicationSide.MIDDLE);
+            complicationList.add(unreadNotificationComplication);
+        }
+
+        if (configuration.getLeftComplicationType() == ComplicationType.STEPS) {
+            stepsComplication.setDrawSide(ComplicationSide.LEFT);
+            complicationList.add(stepsComplication);
+        }
+        if (configuration.getMiddleComplicationType() == ComplicationType.STEPS) {
+            stepsComplication.setDrawSide(ComplicationSide.MIDDLE);
+            complicationList.add(stepsComplication);
         }
     }
 
@@ -110,6 +160,9 @@ public class LayoutProvider {
     }
 
     public void onSurfaceChanged(int width, int height) {
+        this.width = width;
+        this.height = height;
+
         for (Complication complication : complicationList) {
             complication.onSurfaceChanged(width, height);
         }

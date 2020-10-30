@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.wearable.complications.ComplicationData;
 
+import com.timrface.watchfacelayout.config.ComplicationSide;
 import com.timrface.watchfacelayout.config.ComplicationType;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.layout.ColorConstants;
@@ -34,8 +35,24 @@ public class BatteryLayout extends Complication {
     @Override
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
         if (configuration.isShowBatteryLevel()) {
-            canvas.drawText(batteryLevel, centerX / 3.5f, centerY + centerY / 3.5f, mBatteryPaint);
+            canvas.drawText(batteryLevel, getTextPosition(centerX), centerY + centerY / 3.5f, mBatteryPaint);
         }
+    }
+
+    protected float getTextPosition(float centerX) {
+        if (complicationSide == ComplicationSide.LEFT) {
+            return getLeftTextXPosition(centerX);
+        } else {
+            return getMiddleTextXPosition(centerX);
+        }
+    }
+
+    private float getLeftTextXPosition(float centerX) {
+        return centerX / 3.5f;
+    }
+
+    private float getMiddleTextXPosition(float centerX) {
+        return centerX * 0.90f;
     }
 
     @Override

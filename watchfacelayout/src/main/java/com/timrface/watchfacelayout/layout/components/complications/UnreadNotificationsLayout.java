@@ -10,6 +10,7 @@ import android.support.wearable.complications.ComplicationText;
 
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
+import com.timrface.watchfacelayout.config.ComplicationSide;
 import com.timrface.watchfacelayout.config.ComplicationType;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.layout.ColorConstants;
@@ -51,14 +52,35 @@ public class UnreadNotificationsLayout extends Complication {
 
     @Override
     public void onSurfaceChanged(int width, int height) {
+        Rect iconRect = getIconRect(width, height);
+        unreadDrawable.setBounds(iconRect);
+        unreadDrawableOutline.setBounds(iconRect);
+    }
+
+    private Rect getIconMiddleRect(int width, int height) {
         float centerY = height / 2f;
         int positionX = (int) (width * 0.45);
         int positionY = (int) (centerY + centerY / 5.3f);
         int boundsSize = (int) (width * 0.06);
 
-        Rect iconRect = new Rect(positionX, positionY, positionX + boundsSize, positionY + boundsSize);
-        unreadDrawable.setBounds(iconRect);
-        unreadDrawableOutline.setBounds(iconRect);
+        return new Rect(positionX, positionY, positionX + boundsSize, positionY + boundsSize);
+    }
+
+    private Rect getIconLeftRect(int width, int height) {
+        float centerY = height / 2f;
+        int positionX = (int) (width * 0.11);
+        int positionY = (int) (centerY + centerY / 5.3f);
+        int boundsSize = (int) (width * 0.06);
+
+        return new Rect(positionX, positionY, positionX + boundsSize, positionY + boundsSize);
+    }
+
+    protected Rect getIconRect(int width, int height) {
+        if (complicationSide == ComplicationSide.LEFT) {
+            return getIconLeftRect(width, height);
+        } else {
+            return getIconMiddleRect(width, height);
+        }
     }
 
     @Override
@@ -69,8 +91,24 @@ public class UnreadNotificationsLayout extends Complication {
             } else {
                 unreadDrawable.draw(canvas);
             }
-            canvas.drawText(complicationText, centerX * 1.02f, centerY + centerY / 3.5f, mCountPaint);
+            canvas.drawText(complicationText, getTextPosition(centerX), centerY + centerY / 3.5f, mCountPaint);
         }
+    }
+
+    protected float getTextPosition(float centerX) {
+        if (complicationSide == ComplicationSide.LEFT) {
+            return getLeftTextXPosition(centerX);
+        } else {
+            return getMiddleTextXPosition(centerX);
+        }
+    }
+
+    private float getLeftTextXPosition(float centerX) {
+        return centerX / 2.8f;
+    }
+
+    private float getMiddleTextXPosition(float centerX) {
+        return centerX * 1.02f;
     }
 
     @Override
