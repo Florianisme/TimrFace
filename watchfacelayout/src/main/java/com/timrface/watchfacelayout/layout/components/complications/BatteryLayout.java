@@ -1,4 +1,4 @@
-package com.timrface.watchfacelayout.layout.components;
+package com.timrface.watchfacelayout.layout.components.complications;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.layout.ColorConstants;
 import com.timrface.watchfacelayout.layout.WindowInsets;
+import com.timrface.watchfacelayout.layout.components.Layout;
 
 import java.util.Calendar;
 
@@ -45,7 +46,7 @@ public class BatteryLayout extends Layout {
     }
 
     @Override
-    void onConfigurationUpdated(Configuration configuration) {
+    public void onConfigurationUpdated(Configuration configuration) {
         if (!isInAmbientMode()) {
             mBatteryPaint.setColor(configuration.getTextColor());
         }
@@ -62,7 +63,7 @@ public class BatteryLayout extends Layout {
     }
 
     @Override
-    void onAmbientModeChanged(boolean inAmbientMode) {
+    public void onAmbientModeChanged(boolean inAmbientMode) {
         adjustPaintColorToCurrentMode(mBatteryPaint, configuration.getTextColor(), ColorConstants.AMBIENT_TEXT_COLOR, inAmbientMode);
         mBatteryPaint.setTypeface(inAmbientMode ? robotoLight : robotoMedium);
     }

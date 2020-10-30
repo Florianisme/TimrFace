@@ -19,7 +19,7 @@ public abstract class Layout {
 
     public abstract void update(Canvas canvas, float centerX, float centerY, Calendar calendar);
 
-    abstract void onConfigurationUpdated(Configuration configuration);
+    public abstract void onConfigurationUpdated(Configuration configuration);
 
     public abstract boolean drawWhenInAmbientMode();
 
@@ -41,7 +41,7 @@ public abstract class Layout {
         onAmbientModeChanged(inAmbientMode);
     }
 
-    void onAmbientModeChanged(boolean inAmbientMode) {
+    public void onAmbientModeChanged(boolean inAmbientMode) {
 
     }
 

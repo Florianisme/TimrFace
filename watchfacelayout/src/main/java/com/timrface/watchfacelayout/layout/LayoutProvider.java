@@ -10,6 +10,9 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import com.timrface.watchfacelayout.R;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.layout.components.*;
+import com.timrface.watchfacelayout.layout.components.complications.BatteryLayout;
+import com.timrface.watchfacelayout.layout.components.complications.Complication;
+import com.timrface.watchfacelayout.layout.components.complications.UnreadNotificationsLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;

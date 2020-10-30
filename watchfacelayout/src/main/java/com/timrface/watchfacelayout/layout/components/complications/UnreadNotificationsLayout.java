@@ -1,4 +1,4 @@
-package com.timrface.watchfacelayout.layout.components;
+package com.timrface.watchfacelayout.layout.components.complications;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -77,7 +77,7 @@ public class UnreadNotificationsLayout extends Complication {
     }
 
     @Override
-    void onConfigurationUpdated(Configuration configuration) {
+    public void onConfigurationUpdated(Configuration configuration) {
         if (!isInAmbientMode()) {
             mCountPaint.setColor(configuration.getTextColor());
             unreadDrawable.setTint(configuration.getTextColor());
@@ -95,7 +95,7 @@ public class UnreadNotificationsLayout extends Complication {
     }
 
     @Override
-    void onAmbientModeChanged(boolean inAmbientMode) {
+    public void onAmbientModeChanged(boolean inAmbientMode) {
         adjustPaintColorToCurrentMode(mCountPaint, configuration.getTextColor(), ColorConstants.AMBIENT_TEXT_COLOR, inAmbientMode);
         mCountPaint.setTypeface(inAmbientMode ? robotoLight : robotoMedium);
     }

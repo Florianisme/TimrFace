@@ -67,7 +67,7 @@ public class TickLayout extends Layout {
     }
 
     @Override
-    void onConfigurationUpdated(Configuration configuration) {
+    public void onConfigurationUpdated(Configuration configuration) {
     }
 
     @Override

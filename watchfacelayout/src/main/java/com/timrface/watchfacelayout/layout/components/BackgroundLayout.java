@@ -43,7 +43,7 @@ public class BackgroundLayout extends Layout {
     }
 
     @Override
-    void onConfigurationUpdated(Configuration configuration) {
+    public void onConfigurationUpdated(Configuration configuration) {
         mBackgroundPaint.setColor(configuration.getBackgroundColor());
     }
 
