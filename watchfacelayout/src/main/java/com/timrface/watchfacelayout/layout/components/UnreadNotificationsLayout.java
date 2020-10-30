@@ -6,6 +6,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.support.wearable.complications.ComplicationData;
+import android.support.wearable.complications.ComplicationText;
+
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.layout.ColorConstants;
@@ -37,7 +39,17 @@ public class UnreadNotificationsLayout extends Complication {
 
     @Override
     public void onComplicationDataUpdate(ComplicationData complicationData, Context context) {
-        complicationText = complicationData.getShortText().getText(context, System.currentTimeMillis()).toString();
+        ComplicationText shortText = complicationData.getShortText();
+        if (shortText == null) {
+            complicationText = "0";
+            return;
+        }
+        CharSequence text = shortText.getText(context, System.currentTimeMillis());
+        if (text == null) {
+            complicationText = "0";
+            return;
+        }
+        complicationText = text.toString();
     }
 
     @Override
