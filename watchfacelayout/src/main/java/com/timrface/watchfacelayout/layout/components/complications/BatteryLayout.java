@@ -7,6 +7,9 @@ import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.support.wearable.complications.ComplicationData;
+
+import com.timrface.watchfacelayout.config.ComplicationType;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.layout.ColorConstants;
 import com.timrface.watchfacelayout.layout.WindowInsets;
@@ -14,7 +17,7 @@ import com.timrface.watchfacelayout.layout.components.Layout;
 
 import java.util.Calendar;
 
-public class BatteryLayout extends Layout {
+public class BatteryLayout extends Complication {
 
     private final Paint mBatteryPaint;
     private final Typeface robotoMedium;
@@ -26,16 +29,6 @@ public class BatteryLayout extends Layout {
         this.robotoMedium = robotoMedium;
         this.robotoLight = robotoLight;
         mBatteryPaint = createTextPaint(configuration.getTextColor(), robotoMedium);
-
-        BroadcastReceiver updateBattery = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                int level = intent.getIntExtra("level", 0);
-                batteryLevel = level + "%";
-            }
-        };
-
-        context.registerReceiver(updateBattery, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     }
 
     @Override
@@ -66,5 +59,15 @@ public class BatteryLayout extends Layout {
     public void onAmbientModeChanged(boolean inAmbientMode) {
         adjustPaintColorToCurrentMode(mBatteryPaint, configuration.getTextColor(), ColorConstants.AMBIENT_TEXT_COLOR, inAmbientMode);
         mBatteryPaint.setTypeface(inAmbientMode ? robotoLight : robotoMedium);
+    }
+
+    @Override
+    public void onComplicationDataUpdate(ComplicationData complicationData, Context context) {
+        batteryLevel = getComplicationTextOrDefault(complicationData, "-%", context) + "%";
+    }
+
+    @Override
+    public ComplicationType getComplicationType() {
+        return ComplicationType.BATTERY;
     }
 }
