@@ -17,7 +17,9 @@ public class ConfigurationBuilder {
                 .setAstronomicalClockFormat(DateFormat.is24HourFormat(context))
                 .setShowUnreadNotificationsCounter(true)
                 .setUseStrokeDigitsInAmbientMode(false)
-                .setAutomaticDarkLightMode(false);
+                .setAutomaticDarkLightMode(false)
+                .setLeftComplicationType(ComplicationType.BATTERY)
+                .setMiddleComplicationType(ComplicationType.NOTIFICATIONS);
     }
 
 }

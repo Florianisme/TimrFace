@@ -20,6 +20,7 @@ import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.NodeClient;
 import com.google.android.gms.wearable.Wearable;
+import com.timrface.watchfacelayout.config.ComplicationType;
 import com.timrface.watchfacelayout.config.ConfigUpdater;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.config.ConfigurationBuilder;
@@ -89,8 +90,9 @@ public class WatchFaceService extends CanvasWatchFaceService {
             new StoredConfigurationFetcher().updateConfig(nodeClient, dataClient, configuration,
                     configuration -> layoutProvider.onConfigurationChange(configuration));
 
-            setActiveComplications(UNREAD_NOTIFICATION_COMPLICATION_ID);
-            setDefaultSystemComplicationProvider(UNREAD_NOTIFICATION_COMPLICATION_ID, SystemProviders.UNREAD_NOTIFICATION_COUNT, ComplicationData.TYPE_SHORT_TEXT);
+            setActiveComplications(ComplicationType.BATTERY.getId(), ComplicationType.NOTIFICATIONS.getId());
+            setDefaultSystemComplicationProvider(ComplicationType.BATTERY.getId(), ComplicationType.BATTERY.getSystemProvider(), ComplicationData.TYPE_SHORT_TEXT);
+            setDefaultSystemComplicationProvider(ComplicationType.NOTIFICATIONS.getId(), ComplicationType.NOTIFICATIONS.getSystemProvider(), ComplicationData.TYPE_SHORT_TEXT);
         }
 
 
@@ -102,7 +104,8 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
         @Override
         public void onComplicationDataUpdate(int watchFaceComplicationId, ComplicationData data) {
-            layoutProvider.updateComplicationData(data, WatchFaceService.this);
+            ComplicationType complicationForId = ComplicationType.getComplicationForId(watchFaceComplicationId);
+            layoutProvider.updateComplicationData(data, complicationForId, WatchFaceService.this);
             invalidate();
         }
 

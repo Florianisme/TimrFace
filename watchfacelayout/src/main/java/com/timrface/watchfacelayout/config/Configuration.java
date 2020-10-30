@@ -11,6 +11,8 @@ public class Configuration {
     private boolean showUnreadNotificationsCounter;
     private boolean useStrokeDigitsInAmbientMode;
     private boolean automaticLightDarkMode;
+    private ComplicationType leftComplicationType;
+    private ComplicationType middleComplicationType;
 
     private int interactiveColor;
     private int backgroundColor;
@@ -36,6 +38,24 @@ public class Configuration {
 
     public Configuration setInteractiveColor(String interactiveColor) {
         this.interactiveColor = Color.parseColor(interactiveColor);
+        return this;
+    }
+
+    public ComplicationType getLeftComplicationType() {
+        return leftComplicationType;
+    }
+
+    public Configuration setLeftComplicationType(ComplicationType leftComplicationType) {
+        this.leftComplicationType = leftComplicationType;
+        return this;
+    }
+
+    public ComplicationType getMiddleComplicationType() {
+        return middleComplicationType;
+    }
+
+    public Configuration setMiddleComplicationType(ComplicationType middleComplicationType) {
+        this.middleComplicationType = middleComplicationType;
         return this;
     }
 

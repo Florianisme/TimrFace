@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.support.wearable.complications.ComplicationData;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import com.timrface.watchfacelayout.R;
+import com.timrface.watchfacelayout.config.ComplicationType;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.layout.components.*;
 import com.timrface.watchfacelayout.layout.components.complications.BatteryLayout;
@@ -34,10 +35,10 @@ public class LayoutProvider {
         layoutList.add(new BackgroundLayout(configuration));
         layoutList.add(new TimeDigits(configuration, robotoLight, robotoThin));
         layoutList.add(new DateLayout(configuration, robotoLight));
-        layoutList.add(new BatteryLayout(configuration, context, robotoMedium, robotoLight));
         layoutList.add(new AmPmLayout(configuration, robotoLight));
 
         complicationList.add(buildUnreadNotificationComplication(configuration, context, robotoLight, robotoMedium));
+        complicationList.add(new BatteryLayout(configuration, context, robotoMedium, robotoLight));
 
         return this;
     }
@@ -100,9 +101,11 @@ public class LayoutProvider {
         }
     }
 
-    public void updateComplicationData(ComplicationData complicationData, Context context) {
+    public void updateComplicationData(ComplicationData complicationData, ComplicationType updatedComplication, Context context) {
         for (Complication complication : complicationList) {
-            complication.onComplicationDataUpdate(complicationData, context);
+            if (complication.getComplicationType() == updatedComplication) {
+                complication.onComplicationDataUpdate(complicationData, context);
+            }
         }
     }
 

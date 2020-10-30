@@ -1,9 +1,6 @@
 package com.timrface.watchfacelayout.layout.components.complications;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -13,35 +10,34 @@ import com.timrface.watchfacelayout.config.ComplicationType;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.layout.ColorConstants;
 import com.timrface.watchfacelayout.layout.WindowInsets;
-import com.timrface.watchfacelayout.layout.components.Layout;
 
 import java.util.Calendar;
 
-public class BatteryLayout extends Complication {
+public class StepsLayout extends Complication {
 
-    private final Paint mBatteryPaint;
+    private final Paint mStepPaint;
     private final Typeface robotoMedium;
     private final Typeface robotoLight;
-    private String batteryLevel = "-";
+    private String stepCount = "-";
 
-    public BatteryLayout(Configuration configuration, Context context, Typeface robotoMedium, Typeface robotoLight) {
+    public StepsLayout(Configuration configuration, Context context, Typeface robotoMedium, Typeface robotoLight) {
         super(configuration);
         this.robotoMedium = robotoMedium;
         this.robotoLight = robotoLight;
-        mBatteryPaint = createTextPaint(configuration.getTextColor(), robotoMedium);
+        mStepPaint = createTextPaint(configuration.getTextColor(), robotoMedium);
     }
 
     @Override
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
         if (configuration.isShowBatteryLevel()) {
-            canvas.drawText(batteryLevel, centerX / 3.5f, centerY + centerY / 3.5f, mBatteryPaint);
+            canvas.drawText(stepCount, centerX / 3.5f, centerY + centerY / 3.5f, mStepPaint);
         }
     }
 
     @Override
     public void onConfigurationUpdated(Configuration configuration) {
         if (!isInAmbientMode()) {
-            mBatteryPaint.setColor(configuration.getTextColor());
+            mStepPaint.setColor(configuration.getTextColor());
         }
     }
 
@@ -52,22 +48,22 @@ public class BatteryLayout extends Complication {
 
     @Override
     public void applyWindowInsets(WindowInsets windowInsets) {
-        mBatteryPaint.setTextSize(windowInsets.getInfoTextSize());
+        mStepPaint.setTextSize(windowInsets.getInfoTextSize());
     }
 
     @Override
     public void onAmbientModeChanged(boolean inAmbientMode) {
-        adjustPaintColorToCurrentMode(mBatteryPaint, configuration.getTextColor(), ColorConstants.AMBIENT_TEXT_COLOR, inAmbientMode);
-        mBatteryPaint.setTypeface(inAmbientMode ? robotoLight : robotoMedium);
+        adjustPaintColorToCurrentMode(mStepPaint, configuration.getTextColor(), ColorConstants.AMBIENT_TEXT_COLOR, inAmbientMode);
+        mStepPaint.setTypeface(inAmbientMode ? robotoLight : robotoMedium);
     }
 
     @Override
     public void onComplicationDataUpdate(ComplicationData complicationData, Context context) {
-        batteryLevel = getComplicationTextOrDefault(complicationData, "-%", context);
+        stepCount = getComplicationTextOrDefault(complicationData, "-", context);
     }
 
     @Override
     public ComplicationType getComplicationType() {
-        return ComplicationType.BATTERY;
+        return ComplicationType.STEPS;
     }
 }
