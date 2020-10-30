@@ -90,9 +90,9 @@ public class WatchFaceService extends CanvasWatchFaceService {
             new StoredConfigurationFetcher().updateConfig(nodeClient, dataClient, configuration,
                     configuration -> layoutProvider.onConfigurationChange(configuration));
 
-            setActiveComplications(ComplicationType.BATTERY.getId(), ComplicationType.NOTIFICATIONS.getId());
+            setActiveComplications(ComplicationType.BATTERY.getId(), ComplicationType.STEPS.getId());
             setDefaultSystemComplicationProvider(ComplicationType.BATTERY.getId(), ComplicationType.BATTERY.getSystemProvider(), ComplicationData.TYPE_SHORT_TEXT);
-            setDefaultSystemComplicationProvider(ComplicationType.NOTIFICATIONS.getId(), ComplicationType.NOTIFICATIONS.getSystemProvider(), ComplicationData.TYPE_SHORT_TEXT);
+            setDefaultSystemComplicationProvider(ComplicationType.STEPS.getId(), ComplicationType.STEPS.getSystemProvider(), ComplicationData.TYPE_SHORT_TEXT);
         }
 
 

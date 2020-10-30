@@ -19,7 +19,7 @@ public class ConfigurationBuilder {
                 .setUseStrokeDigitsInAmbientMode(false)
                 .setAutomaticDarkLightMode(false)
                 .setLeftComplicationType(ComplicationType.BATTERY)
-                .setMiddleComplicationType(ComplicationType.NOTIFICATIONS);
+                .setMiddleComplicationType(ComplicationType.STEPS);
     }
 
 }

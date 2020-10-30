@@ -56,9 +56,8 @@ public class LayoutProvider {
     }
 
     private StepsLayout buildStepsComplication(Configuration configuration, Context context, Typeface robotoLight, Typeface robotoMedium) {
-        VectorDrawableCompat notifications = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_notifications, context.getTheme());
-        VectorDrawableCompat notificationsOutline = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_notifications_outline, context.getTheme());
-        return new StepsLayout(configuration, context, robotoMedium, robotoLight);
+        VectorDrawableCompat shoe = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_shoe, context.getTheme());
+        return new StepsLayout(configuration, context, shoe, robotoMedium, robotoLight);
     }
 
     private UnreadNotificationsLayout buildUnreadNotificationComplication(Configuration configuration, Context context, Typeface robotoLight, Typeface robotoMedium) {
@@ -146,9 +145,10 @@ public class LayoutProvider {
         for (Layout layout : layoutList) {
             layout.applyWindowInsets(windowInsets);
         }
-        for (Complication complication : complicationList) {
-            complication.applyWindowInsets(windowInsets);
-        }
+
+        batteryComplication.applyWindowInsets(windowInsets);
+        unreadNotificationComplication.applyWindowInsets(windowInsets);
+        stepsComplication.applyWindowInsets(windowInsets);
     }
 
     public void updateComplicationData(ComplicationData complicationData, ComplicationType updatedComplication, Context context) {
