@@ -56,8 +56,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
     public class Engine extends CanvasWatchFaceService.Engine implements DataClient.OnDataChangedListener {
 
-        private final int UNREAD_NOTIFICATION_COMPLICATION_ID = 0;
-
         final Handler mUpdateTimeHandler = new UpdateIntervalHandler(this);
 
         private FilteredBroadcastReceiver timeFormatChangedReceiver;

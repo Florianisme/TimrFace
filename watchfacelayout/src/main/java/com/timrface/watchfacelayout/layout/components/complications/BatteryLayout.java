@@ -83,7 +83,7 @@ public class BatteryLayout extends Complication {
     @Override
     public void onComplicationDataUpdate(ComplicationData complicationData, Context context) {
         batteryLevel = getComplicationTextOrDefault(complicationData, "0%", context);
-        mBatteryPaint.getTextBounds(batteryLevel, 0, batteryLevel.length(), textRect);
+        mBatteryPaint.getTextBounds("00", 0, 1, textRect); // Just so that the percentage sign doesn't distort our measurement
     }
 
     @Override
