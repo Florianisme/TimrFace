@@ -64,7 +64,7 @@ public class BatteryLayout extends Complication {
 
     @Override
     public boolean drawWhenInAmbientMode() {
-        return configuration.isShowBatteryLevel();
+        return true;
     }
 
     @Override
