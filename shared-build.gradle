@@ -33,7 +33,7 @@ android {
         applicationId "com.timrface"
         minSdkVersion 24
         targetSdkVersion 30
-        versionName "3.4.14"
+        versionName "3.4.17"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
