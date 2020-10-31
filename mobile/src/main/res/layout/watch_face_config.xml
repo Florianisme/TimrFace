@@ -7,21 +7,20 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="208dp"
         android:layout_marginTop="8dp">
-
 
         <com.timrface.helper.CanvasView
             android:id="@+id/canvas_layout"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="200dp"
             android:layout_marginLeft="105dp"
             android:layout_marginRight="105dp" />
 
         <com.timrface.helper.RoundCanvas
             android:id="@+id/round_canvas"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="200dp"
             android:layout_marginLeft="105dp"
             android:layout_marginRight="105dp"
             app:overdraw_background="?android:colorBackground"

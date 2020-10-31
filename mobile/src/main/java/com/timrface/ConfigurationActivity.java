@@ -33,6 +33,7 @@ import com.google.android.gms.wearable.Wearable;
 import com.google.android.wearable.intent.RemoteIntent;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.timrface.helper.CanvasView;
+import com.timrface.helper.DisableItemArrayAdapter;
 import com.timrface.watchfacelayout.config.ComplicationType;
 import com.timrface.watchfacelayout.config.ConfigUpdateFinished;
 import com.timrface.watchfacelayout.config.ConfigUpdater;
@@ -102,15 +103,23 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
         showZeroDigitCheckBox = findViewById(R.id.zero_digit);
         useStrokeDigitsInAmbientMode = findViewById(R.id.strokeDigitsInAmbientMode);
 
-        ArrayAdapter<String> leftComplicationAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.complications));
-        ArrayAdapter<String> middleComplicationAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.complications));
+        configuration = ConfigurationBuilder.getDefaultConfiguration(this);
+
+        Wearable.getDataClient(this).addListener(this);
+        new WearAppInstalledTester(this);
+
+        DisableItemArrayAdapter leftComplicationAdapter = new DisableItemArrayAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.complications));
+        DisableItemArrayAdapter middleComplicationAdapter = new DisableItemArrayAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.complications));
+        leftComplicationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        middleComplicationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         leftComplicationSpinner.setAdapter(leftComplicationAdapter);
         middleComplicationSpinner.setAdapter(middleComplicationAdapter);
 
-        configuration = ConfigurationBuilder.getDefaultConfiguration(this);
-        Wearable.getDataClient(this).addListener(this);
+        leftComplicationAdapter.setDisabledId(configuration.getMiddleComplicationType().getId());
+        middleComplicationAdapter.setDisabledId(configuration.getLeftComplicationType().getId());
+        leftComplicationSpinner.setSelection(configuration.getLeftComplicationType().getId());
+        middleComplicationSpinner.setSelection(configuration.getMiddleComplicationType().getId());
 
-        new WearAppInstalledTester(this);
 
         mUpdateTimeHandler = new Handler() {
             @Override
@@ -167,6 +176,8 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
                 sendDataItem(ConfigurationConstant.LEFT_COMPLICATION_ID, position);
                 configuration.setLeftComplicationType(ComplicationType.getComplicationForId(position));
                 canvasView.updateConfig(configuration);
+
+                middleComplicationAdapter.setDisabledId(position);
             }
 
             @Override
@@ -181,6 +192,8 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
                 sendDataItem(ConfigurationConstant.MIDDLE_COMPLICATION_ID, position);
                 configuration.setMiddleComplicationType(ComplicationType.getComplicationForId(position));
                 canvasView.updateConfig(configuration);
+
+                leftComplicationAdapter.setDisabledId(position);
             }
 
             @Override
