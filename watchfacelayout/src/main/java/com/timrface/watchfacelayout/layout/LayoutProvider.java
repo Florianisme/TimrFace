@@ -47,12 +47,18 @@ public class LayoutProvider {
 
         unreadNotificationComplication = buildUnreadNotificationComplication(configuration, context, robotoLight, robotoMedium);
         stepsComplication = buildStepsComplication(configuration, context, robotoLight, robotoMedium);
-        batteryComplication = new BatteryLayout(configuration, context, robotoMedium, robotoLight);
+        batteryComplication = buildBatteryLayout(configuration, context, robotoLight, robotoMedium);
 
         complicationList.add(unreadNotificationComplication);
         complicationList.add(batteryComplication);
 
         return this;
+    }
+
+    private BatteryLayout buildBatteryLayout(Configuration configuration, Context context, Typeface robotoLight, Typeface robotoMedium) {
+        VectorDrawableCompat battery = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_battery, context.getTheme());
+        VectorDrawableCompat batteryOutline = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_battery_outline, context.getTheme());
+        return new BatteryLayout(configuration, context, battery, batteryOutline, robotoMedium, robotoLight);
     }
 
     private StepsLayout buildStepsComplication(Configuration configuration, Context context, Typeface robotoLight, Typeface robotoMedium) {

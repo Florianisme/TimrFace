@@ -6,7 +6,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.support.wearable.complications.ComplicationData;
-import android.support.wearable.complications.ComplicationText;
 
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
@@ -26,7 +25,7 @@ public class UnreadNotificationsLayout extends Complication {
     private final Typeface robotoMedium;
     private final Typeface robotoLight;
 
-    private String complicationText = "-";
+    private String complicationText = "0";
 
     public UnreadNotificationsLayout(Configuration configuration, VectorDrawableCompat unreadDrawable, VectorDrawableCompat unreadDrawableOutline, Typeface robotoMedium, Typeface robotoLight) {
         super(configuration);
@@ -42,7 +41,8 @@ public class UnreadNotificationsLayout extends Complication {
 
     @Override
     public void onComplicationDataUpdate(ComplicationData complicationData, Context context) {
-        complicationText = getComplicationTextOrDefault(complicationData, "-", context);
+        complicationText = getComplicationTextOrDefault(complicationData, "0", context);
+        mCountPaint.getTextBounds(complicationText, 0, complicationText.length(), textRect);
     }
 
     @Override
@@ -50,65 +50,22 @@ public class UnreadNotificationsLayout extends Complication {
         return ComplicationType.NOTIFICATIONS;
     }
 
-    @Override
-    public void onSurfaceChanged(int width, int height) {
-        Rect iconRect = getIconRect(width, height);
-        unreadDrawable.setBounds(iconRect);
-        unreadDrawableOutline.setBounds(iconRect);
-    }
-
-    private Rect getIconMiddleRect(int width, int height) {
-        float centerY = height / 2f;
-        int positionX = (int) (width * 0.45);
-        int positionY = (int) (centerY + centerY / 5.3f);
-        int boundsSize = (int) (width * 0.06);
-
-        return new Rect(positionX, positionY, positionX + boundsSize, positionY + boundsSize);
-    }
-
-    private Rect getIconLeftRect(int width, int height) {
-        float centerY = height / 2f;
-        int positionX = (int) (width * 0.11);
-        int positionY = (int) (centerY + centerY / 5.3f);
-        int boundsSize = (int) (width * 0.06);
-
-        return new Rect(positionX, positionY, positionX + boundsSize, positionY + boundsSize);
-    }
-
-    protected Rect getIconRect(int width, int height) {
-        if (complicationSide == ComplicationSide.LEFT) {
-            return getIconLeftRect(width, height);
-        } else {
-            return getIconMiddleRect(width, height);
-        }
-    }
 
     @Override
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
-        if (configuration.isShowUnreadNotificationsCounter()) {
-            if (isInAmbientMode()) {
-                unreadDrawableOutline.draw(canvas);
-            } else {
-                unreadDrawable.draw(canvas);
-            }
-            canvas.drawText(complicationText, getTextPosition(centerX), centerY + centerY / 3.5f, mCountPaint);
-        }
-    }
+        float textXPosition = getTextXPosition(centerX);
+        float textYPosition = getTextYPosition(centerY);
 
-    protected float getTextPosition(float centerX) {
-        if (complicationSide == ComplicationSide.LEFT) {
-            return getLeftTextXPosition(centerX);
+        Rect iconPositionRect = getIconPositionRect(textXPosition, textYPosition);
+
+        if (isInAmbientMode()) {
+            unreadDrawableOutline.setBounds(iconPositionRect);
+            unreadDrawableOutline.draw(canvas);
         } else {
-            return getMiddleTextXPosition(centerX);
+            unreadDrawable.setBounds(iconPositionRect);
+            unreadDrawable.draw(canvas);
         }
-    }
-
-    private float getLeftTextXPosition(float centerX) {
-        return centerX / 2.8f;
-    }
-
-    private float getMiddleTextXPosition(float centerX) {
-        return centerX * 1.02f;
+        canvas.drawText(complicationText, textXPosition, textYPosition, mCountPaint);
     }
 
     @Override

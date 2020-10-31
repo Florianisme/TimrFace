@@ -13,6 +13,7 @@ import com.timrface.watchfacelayout.layout.components.Layout;
 public abstract class Complication extends Layout {
 
     protected ComplicationSide complicationSide;
+    protected final Rect textRect = new Rect();
 
     public Complication(Configuration configuration) {
         super(configuration);
@@ -36,6 +37,31 @@ public abstract class Complication extends Layout {
 
     public void setDrawSide(ComplicationSide complicationSide) {
         this.complicationSide = complicationSide;
+    }
+
+    protected Rect getIconPositionRect(float textPositionX, float textPositionY) {
+        return new Rect((int) (textPositionX - textRect.height()), (int) (textPositionY - textRect.height()), (int) (textPositionX), (int) (textPositionY));
+    }
+
+    protected float getTextYPosition(float centerY) {
+        return centerY + centerY / 3.5f;
+    }
+
+    protected float getTextXPosition(float centerX) {
+        if (complicationSide == ComplicationSide.LEFT) {
+            return getLeftTextXPosition(centerX);
+        } else {
+            return getMiddleTextXPosition(centerX);
+        }
+    }
+
+    private float getLeftTextXPosition(float centerX) {
+        return (centerX * 0.33f) - (textRect.width() / 2f) + (textRect.height() / 2f);
+    }
+
+
+    private float getMiddleTextXPosition(float centerX) {
+        return centerX - (textRect.width() / 2f) + (textRect.height() / 2f);
     }
 
 }

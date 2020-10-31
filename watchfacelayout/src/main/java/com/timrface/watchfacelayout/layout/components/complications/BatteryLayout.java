@@ -1,58 +1,58 @@
 package com.timrface.watchfacelayout.layout.components.complications;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.support.wearable.complications.ComplicationData;
 
-import com.timrface.watchfacelayout.config.ComplicationSide;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
+
 import com.timrface.watchfacelayout.config.ComplicationType;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.layout.ColorConstants;
 import com.timrface.watchfacelayout.layout.WindowInsets;
-import com.timrface.watchfacelayout.layout.components.Layout;
 
 import java.util.Calendar;
 
 public class BatteryLayout extends Complication {
 
     private final Paint mBatteryPaint;
+    private final VectorDrawableCompat batteryDrawable;
+    private final VectorDrawableCompat batteryOutlineDrawable;
     private final Typeface robotoMedium;
     private final Typeface robotoLight;
     private String batteryLevel = "-";
 
-    public BatteryLayout(Configuration configuration, Context context, Typeface robotoMedium, Typeface robotoLight) {
+    public BatteryLayout(Configuration configuration, Context context, VectorDrawableCompat batteryDrawable, VectorDrawableCompat batteryOutlineDrawable, Typeface robotoMedium, Typeface robotoLight) {
         super(configuration);
+        this.batteryDrawable = batteryDrawable;
+        this.batteryOutlineDrawable = batteryOutlineDrawable;
         this.robotoMedium = robotoMedium;
         this.robotoLight = robotoLight;
         mBatteryPaint = createTextPaint(configuration.getTextColor(), robotoMedium);
+
+        this.batteryDrawable.setTint(configuration.getTextColor());
+        this.batteryOutlineDrawable.setTint(ColorConstants.AMBIENT_TEXT_COLOR);
     }
 
     @Override
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
-        if (configuration.isShowBatteryLevel()) {
-            canvas.drawText(batteryLevel, getTextPosition(centerX), centerY + centerY / 3.5f, mBatteryPaint);
-        }
-    }
+        float textYPosition = getTextYPosition(centerY);
+        float textXPosition = getTextXPosition(centerX);
 
-    protected float getTextPosition(float centerX) {
-        if (complicationSide == ComplicationSide.LEFT) {
-            return getLeftTextXPosition(centerX);
+        Rect iconPositionRect = getIconPositionRect(textXPosition, textYPosition);
+
+        if (isInAmbientMode()) {
+            batteryOutlineDrawable.setBounds(iconPositionRect);
+            batteryOutlineDrawable.draw(canvas);
         } else {
-            return getMiddleTextXPosition(centerX);
+            batteryDrawable.setBounds(iconPositionRect);
+            batteryDrawable.draw(canvas);
         }
-    }
 
-    private float getLeftTextXPosition(float centerX) {
-        return centerX / 3.5f;
-    }
-
-    private float getMiddleTextXPosition(float centerX) {
-        return centerX * 0.90f;
+        canvas.drawText(batteryLevel, textXPosition, textYPosition, mBatteryPaint);
     }
 
     @Override
@@ -81,6 +81,7 @@ public class BatteryLayout extends Complication {
     @Override
     public void onComplicationDataUpdate(ComplicationData complicationData, Context context) {
         batteryLevel = getComplicationTextOrDefault(complicationData, "-%", context);
+        mBatteryPaint.getTextBounds(batteryLevel, 0, batteryLevel.length(), textRect);
     }
 
     @Override
