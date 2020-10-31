@@ -50,7 +50,8 @@ public class TickLayout extends Layout {
                 canvas.drawLine(xPosition, yStart, xPosition, yStart + windowInsets.getTickHeight(), mThickTickPaint);
                 canvas.drawText(Integer.toString(textForIndex), xPosition - textWidth, yStart + windowInsets.getTickHeight() + windowInsets.getTickBottomDistance(), mTextTickPaint);
             } else {
-                canvas.drawLine(xPosition, yStart, xPosition, yStart + windowInsets.getShortTickHeight(), mTickPaint);
+                float shortLongDifference = (windowInsets.getTickHeight() - windowInsets.getShortTickHeight()) / 2f;
+                canvas.drawLine(xPosition, yStart + shortLongDifference, xPosition, yStart + windowInsets.getShortTickHeight() + shortLongDifference, mTickPaint);
             }
         }
     }
