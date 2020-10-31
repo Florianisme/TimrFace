@@ -24,14 +24,13 @@ import java.util.List;
 public class LayoutProvider {
 
     private final List<Layout> layoutList = new ArrayList<>();
-    private final List<Complication> complicationList = new ArrayList<>();
+    private final List<Complication> activeComplicationList = new ArrayList<>();
+    private final List<Complication> allComplicationsList = new ArrayList<>();
     private boolean inAmbientMode;
 
     private UnreadNotificationsLayout unreadNotificationComplication;
     private BatteryLayout batteryComplication;
     private StepsLayout stepsComplication;
-    private int width;
-    private int height;
 
     public LayoutProvider init(Configuration configuration, Context context) {
         Typeface robotoLight = Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");
@@ -49,8 +48,12 @@ public class LayoutProvider {
         stepsComplication = buildStepsComplication(configuration, context, robotoLight, robotoMedium);
         batteryComplication = buildBatteryLayout(configuration, context, robotoLight, robotoMedium);
 
-        complicationList.add(unreadNotificationComplication);
-        complicationList.add(batteryComplication);
+        activeComplicationList.add(unreadNotificationComplication);
+        activeComplicationList.add(batteryComplication);
+
+        allComplicationsList.add(unreadNotificationComplication);
+        allComplicationsList.add(stepsComplication);
+        allComplicationsList.add(batteryComplication);
 
         return this;
     }
@@ -77,38 +80,38 @@ public class LayoutProvider {
             layout.updateConfiguration(configuration);
         }
         rebuildComplications(configuration);
-        for (Complication complication : complicationList) {
+        for (Complication complication : allComplicationsList) {
             complication.updateConfiguration(configuration);
         }
     }
 
     private void rebuildComplications(Configuration configuration) {
-        complicationList.clear();
+        activeComplicationList.clear();
         if (configuration.getLeftComplicationType() == ComplicationType.BATTERY) {
             batteryComplication.setDrawSide(ComplicationSide.LEFT);
-            complicationList.add(batteryComplication);
+            activeComplicationList.add(batteryComplication);
         }
         if (configuration.getMiddleComplicationType() == ComplicationType.BATTERY) {
             batteryComplication.setDrawSide(ComplicationSide.MIDDLE);
-            complicationList.add(batteryComplication);
+            activeComplicationList.add(batteryComplication);
         }
 
         if (configuration.getLeftComplicationType() == ComplicationType.NOTIFICATIONS) {
             unreadNotificationComplication.setDrawSide(ComplicationSide.LEFT);
-            complicationList.add(unreadNotificationComplication);
+            activeComplicationList.add(unreadNotificationComplication);
         }
         if (configuration.getMiddleComplicationType() == ComplicationType.NOTIFICATIONS) {
             unreadNotificationComplication.setDrawSide(ComplicationSide.MIDDLE);
-            complicationList.add(unreadNotificationComplication);
+            activeComplicationList.add(unreadNotificationComplication);
         }
 
         if (configuration.getLeftComplicationType() == ComplicationType.STEPS) {
             stepsComplication.setDrawSide(ComplicationSide.LEFT);
-            complicationList.add(stepsComplication);
+            activeComplicationList.add(stepsComplication);
         }
         if (configuration.getMiddleComplicationType() == ComplicationType.STEPS) {
             stepsComplication.setDrawSide(ComplicationSide.MIDDLE);
-            complicationList.add(stepsComplication);
+            activeComplicationList.add(stepsComplication);
         }
     }
 
@@ -117,7 +120,7 @@ public class LayoutProvider {
         for (Layout layout : layoutList) {
             layout.updateAmbientMode(inAmbientMode);
         }
-        for (Complication complication : complicationList) {
+        for (Complication complication : allComplicationsList) {
             if (!inAmbientMode || complication.drawWhenInAmbientMode()) {
                 complication.updateAmbientMode(inAmbientMode);
             }
@@ -133,7 +136,7 @@ public class LayoutProvider {
                 layout.update(canvas, centerX, centerY, calendar);
             }
         }
-        for (Complication complication : complicationList) {
+        for (Complication complication : activeComplicationList) {
             if (!inAmbientMode || complication.drawWhenInAmbientMode()) {
                 complication.update(canvas, centerX, centerY, calendar);
             }
@@ -158,13 +161,13 @@ public class LayoutProvider {
             layout.applyWindowInsets(windowInsets);
         }
 
-        batteryComplication.applyWindowInsets(windowInsets);
-        unreadNotificationComplication.applyWindowInsets(windowInsets);
-        stepsComplication.applyWindowInsets(windowInsets);
+        for (Complication complication : allComplicationsList) {
+            complication.applyWindowInsets(windowInsets);
+        }
     }
 
     public void updateComplicationData(ComplicationData complicationData, ComplicationType updatedComplication, Context context) {
-        for (Complication complication : complicationList) {
+        for (Complication complication : activeComplicationList) {
             if (complication.getComplicationType() == updatedComplication) {
                 complication.onComplicationDataUpdate(complicationData, context);
             }
@@ -172,10 +175,7 @@ public class LayoutProvider {
     }
 
     public void onSurfaceChanged(int width, int height) {
-        this.width = width;
-        this.height = height;
-
-        for (Complication complication : complicationList) {
+        for (Complication complication : allComplicationsList) {
             complication.onSurfaceChanged(width, height);
         }
         for (Layout layout : layoutList) {
