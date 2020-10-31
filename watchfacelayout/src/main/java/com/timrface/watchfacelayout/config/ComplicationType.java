@@ -5,7 +5,8 @@ import android.support.wearable.complications.SystemProviders;
 public enum ComplicationType {
     BATTERY(0, SystemProviders.WATCH_BATTERY),
     NOTIFICATIONS(1, SystemProviders.UNREAD_NOTIFICATION_COUNT),
-    STEPS(2, SystemProviders.STEP_COUNT);
+    STEPS(2, SystemProviders.STEP_COUNT),
+    NONE(-1, -1);
 
     private final int id;
     private final int systemProvider;
