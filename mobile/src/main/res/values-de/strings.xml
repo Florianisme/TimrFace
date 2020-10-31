@@ -6,10 +6,8 @@
     <string name="colors">Akzentfarbe</string>
     <string name="view">Anzeige</string>
     <string name="seconds">Sekunden animieren</string>
-    <string name="battery">Akkustand anzeigen</string>
 
     <string name="zero_digit">Uhrzeit als zwei Ziffern</string>
-    <string name="unreadNotifications">Benachrichtigungszähler anzeigen</string>
     <string name="strokeDigits">Kontur im Inaktivmodus</string>
     <string name="seconds_description">Zeige eine weiche Animation für den Sekundenzähler. Kann eventuell den Akkverbrauch erhöhen</string>
     <string name="stroke_digits_description">Zeige die Kontur der Uhrzeit im Inaktivmodus an</string>
@@ -18,5 +16,7 @@
     <string name="dialog_app_missing_okay">Installieren</string>
     <string name="dialog_app_missing_no">Nicht jetzt</string>
     <string name="dialog_app_missing_later_message">Sie können das Watch Face jederzeit über den Menüpunkt auf der Uhr installieren</string>
+    <string name="middleComplication">Mittleres Datenfeld</string>
+    <string name="leftComplication">Linkes Datenfeld</string>
 
 </resources>
