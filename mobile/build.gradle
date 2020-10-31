@@ -12,6 +12,6 @@ dependencies {
 android {
     defaultConfig {
         wearAppUnbundled true
-        versionCode 63
+        versionCode 65
     }
 }

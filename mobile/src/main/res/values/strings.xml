@@ -6,8 +6,6 @@
     <string name="colors">Accent Color</string>
     <string name="view">View</string>
     <string name="seconds">Smooth Seconds</string>
-    <string name="battery">Show Battery Level</string>
-    <string name="unreadNotifications">Show unread notifications counter</string>
     <string name="zero_digit">Two-digit numbers</string>
 
     <string name="strokeDigits">Stroke digits in ambient mode</string>
@@ -18,6 +16,15 @@
     <string name="dialog_app_missing_okay">Install</string>
     <string name="dialog_app_missing_no">Not now</string>
     <string name="dialog_app_missing_later_message">You can install the app on your Watch with the menu button at the top</string>
+    <string name="middleComplication">Center Complication Data</string>
+    <string name="leftComplication">Left Complication Data</string>
+
+    <string-array name="complications">
+        <item>None</item>
+        <item>Battery</item>
+        <item>Notifications</item>
+        <item>Stepcount</item>
+    </string-array>
 
     <string-array name="colors">
         <item>#FAFAFA</item>

@@ -3,10 +3,10 @@ package com.timrface.watchfacelayout.config;
 import android.support.wearable.complications.SystemProviders;
 
 public enum ComplicationType {
-    BATTERY(0, SystemProviders.WATCH_BATTERY),
-    NOTIFICATIONS(1, SystemProviders.UNREAD_NOTIFICATION_COUNT),
-    STEPS(2, SystemProviders.STEP_COUNT),
-    NONE(-1, -1);
+    NONE(0, -1),
+    BATTERY(1, SystemProviders.WATCH_BATTERY),
+    NOTIFICATIONS(2, SystemProviders.UNREAD_NOTIFICATION_COUNT),
+    STEPS(3, SystemProviders.STEP_COUNT);
 
     private final int id;
     private final int systemProvider;

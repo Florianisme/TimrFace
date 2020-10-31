@@ -6,9 +6,7 @@ public class Configuration {
 
     private boolean smoothScrolling;
     private boolean astronomicalClockFormat;
-    private boolean showBatteryLevel;
     private boolean showZeroDigit;
-    private boolean showUnreadNotificationsCounter;
     private boolean useStrokeDigitsInAmbientMode;
     private boolean automaticLightDarkMode;
     private ComplicationType leftComplicationType;
@@ -91,15 +89,6 @@ public class Configuration {
         return automaticLightDarkMode;
     }
 
-    public boolean isShowBatteryLevel() {
-        return showBatteryLevel;
-    }
-
-    public Configuration setShowBatteryLevel(boolean showBatteryLevel) {
-        this.showBatteryLevel = showBatteryLevel;
-        return this;
-    }
-
     public int getTextColor() {
         return textColor;
     }
@@ -120,15 +109,6 @@ public class Configuration {
 
     public Configuration setShowZeroDigit(boolean showZeroDigit) {
         this.showZeroDigit = showZeroDigit;
-        return this;
-    }
-
-    public boolean isShowUnreadNotificationsCounter() {
-        return showUnreadNotificationsCounter;
-    }
-
-    public Configuration setShowUnreadNotificationsCounter(boolean showUnreadNotificationsCounter) {
-        this.showUnreadNotificationsCounter = showUnreadNotificationsCounter;
         return this;
     }
 

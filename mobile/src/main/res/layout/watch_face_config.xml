@@ -318,16 +318,15 @@
                             android:layout_centerVertical="true"
                             android:paddingBottom="2dp"
                             android:textStyle="bold"
-                            android:text="@string/battery"
+                            android:text="@string/leftComplication"
                             android:textSize="14sp" />
 
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/battery"
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/spinner_left_complication"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:checked="true" />
+                            android:layout_centerVertical="true"/>
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -339,23 +338,21 @@
                         android:layout_marginRight="16dp">
 
                         <TextView
-                            android:id="@+id/setting_unread_notifications"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
                             android:layout_centerVertical="true"
                             android:paddingBottom="2dp"
                             android:textStyle="bold"
-                            android:text="@string/unreadNotifications"
+                            android:text="@string/middleComplication"
                             android:textSize="14sp" />
 
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/unreadNotifications"
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/spinner_middle_complication"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:checked="true" />
+                            android:layout_centerVertical="true"/>
                     </RelativeLayout>
 
                     <RelativeLayout
