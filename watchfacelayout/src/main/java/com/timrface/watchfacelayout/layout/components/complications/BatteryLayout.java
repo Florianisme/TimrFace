@@ -25,7 +25,7 @@ public class BatteryLayout extends Complication {
     private final Typeface robotoLight;
     private String batteryLevel = "-";
 
-    public BatteryLayout(Configuration configuration, Context context, VectorDrawableCompat batteryDrawable, VectorDrawableCompat batteryOutlineDrawable, Typeface robotoMedium, Typeface robotoLight) {
+    public BatteryLayout(Configuration configuration, VectorDrawableCompat batteryDrawable, VectorDrawableCompat batteryOutlineDrawable, Typeface robotoMedium, Typeface robotoLight) {
         super(configuration);
         this.batteryDrawable = batteryDrawable;
         this.batteryOutlineDrawable = batteryOutlineDrawable;
@@ -61,6 +61,7 @@ public class BatteryLayout extends Complication {
         if (!isInAmbientMode()) {
             mBatteryPaint.setColor(configuration.getTextColor());
         }
+        batteryDrawable.setTint(configuration.getTextColor());
     }
 
     @Override

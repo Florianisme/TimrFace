@@ -58,12 +58,12 @@ public class LayoutProvider {
     private BatteryLayout buildBatteryLayout(Configuration configuration, Context context, Typeface robotoLight, Typeface robotoMedium) {
         VectorDrawableCompat battery = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_battery, context.getTheme());
         VectorDrawableCompat batteryOutline = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_battery_outline, context.getTheme());
-        return new BatteryLayout(configuration, context, battery, batteryOutline, robotoMedium, robotoLight);
+        return new BatteryLayout(configuration, battery, batteryOutline, robotoMedium, robotoLight);
     }
 
     private StepsLayout buildStepsComplication(Configuration configuration, Context context, Typeface robotoLight, Typeface robotoMedium) {
         VectorDrawableCompat shoe = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_shoe, context.getTheme());
-        return new StepsLayout(configuration, context, shoe, robotoMedium, robotoLight);
+        return new StepsLayout(configuration, shoe, robotoMedium, robotoLight);
     }
 
     private UnreadNotificationsLayout buildUnreadNotificationComplication(Configuration configuration, Context context, Typeface robotoLight, Typeface robotoMedium) {
@@ -79,7 +79,6 @@ public class LayoutProvider {
         rebuildComplications(configuration);
         for (Complication complication : complicationList) {
             complication.updateConfiguration(configuration);
-            complication.onSurfaceChanged(width, height);
         }
     }
 

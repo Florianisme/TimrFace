@@ -23,7 +23,7 @@ public class StepsLayout extends Complication {
     private final Typeface robotoLight;
     private String stepCount = "-";
 
-    public StepsLayout(Configuration configuration, Context context, VectorDrawableCompat shoeDrawable, Typeface robotoMedium, Typeface robotoLight) {
+    public StepsLayout(Configuration configuration, VectorDrawableCompat shoeDrawable, Typeface robotoMedium, Typeface robotoLight) {
         super(configuration);
         this.shoeDrawable = shoeDrawable;
         this.robotoMedium = robotoMedium;
@@ -49,6 +49,7 @@ public class StepsLayout extends Complication {
         if (!isInAmbientMode()) {
             mStepPaint.setColor(configuration.getTextColor());
         }
+        shoeDrawable.setTint(configuration.getTextColor());
     }
 
     @Override
