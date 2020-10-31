@@ -145,7 +145,14 @@ public class LayoutProvider {
         final float timeTextSize = resources.getDimension(R.dimen.text_size);
         final float tickTextSize = resources.getDimension(R.dimen.tick_size);
 
-        WindowInsets windowInsets = new WindowInsets(timeTextSize, infoTextSize, tickTextSize);
+        final float tickHorizontalDistance = resources.getDimension(R.dimen.tick_horizontal_distance);
+        final float tickBottomDistance = resources.getDimension(R.dimen.tick_bottom_distance);
+        final float thinTickWidth = resources.getDimension(R.dimen.tick_thin_width);
+        final float tickWidth = resources.getDimension(R.dimen.tick_width);
+        final float shortTickHeight = resources.getDimension(R.dimen.short_tick_height);
+        final float tickHeight = resources.getDimension(R.dimen.tick_height);
+
+        WindowInsets windowInsets = new WindowInsets(timeTextSize, infoTextSize, tickTextSize, tickHorizontalDistance, tickBottomDistance, thinTickWidth, tickWidth, shortTickHeight, tickHeight);
 
         for (Layout layout : layoutList) {
             layout.applyWindowInsets(windowInsets);

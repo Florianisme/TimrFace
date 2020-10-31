@@ -5,4 +5,11 @@
     <dimen name="info_size">12dp</dimen>
     <dimen name="tick_size">10dp</dimen>
 
+    <dimen name="tick_horizontal_distance">8dp</dimen>
+    <dimen name="tick_bottom_distance">12dp</dimen>
+    <dimen name="tick_thin_width">1dp</dimen>
+    <dimen name="tick_width">2dp</dimen>
+    <dimen name="short_tick_height">12dp</dimen>
+    <dimen name="tick_height">16dp</dimen>
+
 </resources>

@@ -15,9 +15,10 @@ public class TickLayout extends Layout {
     private final Paint mThickTickPaint;
     private final Paint mTextTickPaint;
     private final int[] textsForIndixes = new int[]{45, 50, 55, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 0, 5, 10, 15};
-    private final float distanceBetweenTicks = 16f;
     private final int visibleExtraTicksOnScreen = 16;
     private float twoDigitsTextWidth = 0f;
+
+    private WindowInsets windowInsets;
 
     public TickLayout(Configuration configuration, Typeface robotoLight) {
         super(configuration);
@@ -42,14 +43,14 @@ public class TickLayout extends Layout {
             if (i + visibleExtraTicksOnScreen < seconds || i - visibleExtraTicksOnScreen > seconds) {
                 continue;
             }
-            float xPosition = centerX + (distanceBetweenTicks * i) - (seconds * distanceBetweenTicks);
+            float xPosition = centerX + (windowInsets.getTickHorizontalDistance() * i) - (seconds * windowInsets.getTickHorizontalDistance());
             if (i % 5 == 0) {
                 int textForIndex = getTextForIndex(i);
                 float textWidth = textForIndex >= 10 ? twoDigitsTextWidth / 2 : twoDigitsTextWidth / 4f;
-                canvas.drawLine(xPosition, yStart, xPosition, yStart + 36f, mThickTickPaint);
-                canvas.drawText(Integer.toString(textForIndex), xPosition - textWidth, yStart + 60f, mTextTickPaint);
+                canvas.drawLine(xPosition, yStart, xPosition, yStart + windowInsets.getTickHeight(), mThickTickPaint);
+                canvas.drawText(Integer.toString(textForIndex), xPosition - textWidth, yStart + windowInsets.getTickHeight() + windowInsets.getTickBottomDistance(), mTextTickPaint);
             } else {
-                canvas.drawLine(xPosition, yStart, xPosition, yStart + 24f, mTickPaint);
+                canvas.drawLine(xPosition, yStart, xPosition, yStart + windowInsets.getShortTickHeight(), mTickPaint);
             }
         }
     }
@@ -79,5 +80,9 @@ public class TickLayout extends Layout {
     public void applyWindowInsets(WindowInsets windowInsets) {
         mTextTickPaint.setTextSize(windowInsets.getTickTextSize());
         twoDigitsTextWidth = mTextTickPaint.measureText("00"); // Measure two digit text so we reduce the drawing time later on
+
+        mThickTickPaint.setStrokeWidth(windowInsets.getTickWidth());
+        mTickPaint.setStrokeWidth(windowInsets.getThinTickWidth());
+        this.windowInsets = windowInsets;
     }
 }
