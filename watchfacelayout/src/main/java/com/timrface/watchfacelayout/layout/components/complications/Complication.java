@@ -24,6 +24,9 @@ public abstract class Complication extends Layout {
     public abstract ComplicationType getComplicationType();
 
     protected String getComplicationTextOrDefault(ComplicationData complicationData, String defaultText, Context context) {
+        if (complicationData == null) {
+            return defaultText;
+        }
         ComplicationText shortText = complicationData.getShortText();
         if (shortText == null) {
             return defaultText;

@@ -82,7 +82,7 @@ public class BatteryLayout extends Complication {
 
     @Override
     public void onComplicationDataUpdate(ComplicationData complicationData, Context context) {
-        batteryLevel = getComplicationTextOrDefault(complicationData, "-%", context);
+        batteryLevel = getComplicationTextOrDefault(complicationData, "0%", context);
         mBatteryPaint.getTextBounds(batteryLevel, 0, batteryLevel.length(), textRect);
     }
 

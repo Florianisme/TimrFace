@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.support.wearable.complications.ComplicationData;
 import android.util.AttributeSet;
 import android.view.View;
 import com.timrface.watchfacelayout.config.Configuration;
@@ -64,6 +65,8 @@ public class CanvasView extends View {
 
     public void updateConfig(Configuration configuration) {
         layoutProvider.onConfigurationChange(configuration);
+        layoutProvider.updateComplicationData(null, configuration.getLeftComplicationType(), getContext());
+        layoutProvider.updateComplicationData(null, configuration.getMiddleComplicationType(), getContext());
     }
 
     public void updateTimezone(TimeZone timeZone) {
