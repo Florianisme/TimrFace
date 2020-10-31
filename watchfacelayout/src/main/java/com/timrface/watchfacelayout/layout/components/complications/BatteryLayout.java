@@ -35,6 +35,7 @@ public class BatteryLayout extends Complication {
 
         this.batteryDrawable.setTint(configuration.getTextColor());
         this.batteryOutlineDrawable.setTint(ColorConstants.AMBIENT_TEXT_COLOR);
+        onAmbientModeChanged(isInAmbientMode());
     }
 
     @Override

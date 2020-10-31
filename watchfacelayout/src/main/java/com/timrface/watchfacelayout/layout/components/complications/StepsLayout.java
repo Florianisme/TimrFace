@@ -31,11 +31,7 @@ public class StepsLayout extends Complication {
 
         mStepPaint = createTextPaint(configuration.getTextColor(), robotoMedium);
 
-        if (isInAmbientMode()) {
-            this.shoeDrawable.setTint(ColorConstants.AMBIENT_TEXT_COLOR);
-        } else {
-            this.shoeDrawable.setTint(configuration.getTextColor());
-        }
+        onAmbientModeChanged(isInAmbientMode());
     }
 
     @Override

@@ -37,6 +37,8 @@ public class UnreadNotificationsLayout extends Complication {
 
         this.unreadDrawable.setTint(configuration.getTextColor());
         this.unreadDrawableOutline.setTint(ColorConstants.AMBIENT_TEXT_COLOR);
+
+        onAmbientModeChanged(isInAmbientMode());
     }
 
     @Override
