@@ -12,12 +12,13 @@
     <string name="seconds_description">Use smooth scrolling animation for the seconds. May increase battery usage</string>
     <string name="stroke_digits_description">Use stroked text style for the time in ambient mode</string>
     <string name="dialog_app_missing_title">Watch Face missing on Wear device</string>
-    <string name="dialog_app_missing_message">The Watch face is currently not installed on your Wear OS device. Would you like to install the app on your Watch?</string>
+    <string name="dialog_app_missing_message">The Watch face is currently not installed on your Wear OS device our outdated. Would you like to install the app on your Watch?</string>
     <string name="dialog_app_missing_okay">Install</string>
     <string name="dialog_app_missing_no">Not now</string>
     <string name="dialog_app_missing_later_message">You can install the app on your Watch with the menu button at the top</string>
     <string name="middleComplication">Center Complication Data</string>
     <string name="leftComplication">Left Complication Data</string>
+    <string name="wear_tester_opening_playstore">Opening Play Store on your Watch. Please tap \"Install\" there.</string>
 
     <string-array name="complications">
         <item>None</item>

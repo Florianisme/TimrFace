@@ -60,8 +60,7 @@ public class WearAppInstalledTester implements CapabilityClient.OnCapabilityChan
         protected void onReceiveResult(int resultCode, Bundle resultData) {
             if (resultCode == RemoteIntent.RESULT_OK) {
                 Toast toast = Toast.makeText(
-                        activity,
-                        "Opening Play Store on your Watch",
+                        activity, R.string.wear_tester_opening_playstore,
                         Toast.LENGTH_SHORT);
                 toast.show();
 
@@ -74,7 +73,7 @@ public class WearAppInstalledTester implements CapabilityClient.OnCapabilityChan
                 toast.show();
 
             } else {
-                throw new IllegalStateException("Unexpected result " + resultCode);
+                Log.e("WeatAppInstalledTester", "Unexpected result: " + resultCode);
             }
         }
     };
