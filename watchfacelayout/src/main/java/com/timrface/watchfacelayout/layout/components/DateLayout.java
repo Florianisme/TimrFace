@@ -31,7 +31,7 @@ public class DateLayout extends Layout {
     }
 
     @Override
-    void onConfigurationUpdated(Configuration configuration) {
+    public void onConfigurationUpdated(Configuration configuration) {
         if (!isInAmbientMode()) {
             mDatePaint.setColor(configuration.getTextColor());
         }
@@ -48,7 +48,7 @@ public class DateLayout extends Layout {
     }
 
     @Override
-    void onAmbientModeChanged(boolean inAmbientMode) {
+    public void onAmbientModeChanged(boolean inAmbientMode) {
         adjustPaintColorToCurrentMode(mDatePaint, configuration.getTextColor(), ColorConstants.AMBIENT_TEXT_COLOR, inAmbientMode);
     }
 

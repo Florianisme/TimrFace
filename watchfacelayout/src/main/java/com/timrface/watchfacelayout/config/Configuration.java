@@ -6,11 +6,11 @@ public class Configuration {
 
     private boolean smoothScrolling;
     private boolean astronomicalClockFormat;
-    private boolean showBatteryLevel;
     private boolean showZeroDigit;
-    private boolean showUnreadNotificationsCounter;
     private boolean useStrokeDigitsInAmbientMode;
     private boolean automaticLightDarkMode;
+    private ComplicationType leftComplicationType;
+    private ComplicationType middleComplicationType;
 
     private int interactiveColor;
     private int backgroundColor;
@@ -36,6 +36,24 @@ public class Configuration {
 
     public Configuration setInteractiveColor(String interactiveColor) {
         this.interactiveColor = Color.parseColor(interactiveColor);
+        return this;
+    }
+
+    public ComplicationType getLeftComplicationType() {
+        return leftComplicationType;
+    }
+
+    public Configuration setLeftComplicationType(ComplicationType leftComplicationType) {
+        this.leftComplicationType = leftComplicationType;
+        return this;
+    }
+
+    public ComplicationType getMiddleComplicationType() {
+        return middleComplicationType;
+    }
+
+    public Configuration setMiddleComplicationType(ComplicationType middleComplicationType) {
+        this.middleComplicationType = middleComplicationType;
         return this;
     }
 
@@ -71,15 +89,6 @@ public class Configuration {
         return automaticLightDarkMode;
     }
 
-    public boolean isShowBatteryLevel() {
-        return showBatteryLevel;
-    }
-
-    public Configuration setShowBatteryLevel(boolean showBatteryLevel) {
-        this.showBatteryLevel = showBatteryLevel;
-        return this;
-    }
-
     public int getTextColor() {
         return textColor;
     }
@@ -100,15 +109,6 @@ public class Configuration {
 
     public Configuration setShowZeroDigit(boolean showZeroDigit) {
         this.showZeroDigit = showZeroDigit;
-        return this;
-    }
-
-    public boolean isShowUnreadNotificationsCounter() {
-        return showUnreadNotificationsCounter;
-    }
-
-    public Configuration setShowUnreadNotificationsCounter(boolean showUnreadNotificationsCounter) {
-        this.showUnreadNotificationsCounter = showUnreadNotificationsCounter;
         return this;
     }
 

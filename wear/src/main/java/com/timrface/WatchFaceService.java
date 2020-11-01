@@ -13,6 +13,7 @@ import android.view.SurfaceHolder;
 import android.view.WindowInsets;
 
 import androidx.annotation.NonNull;
+import androidx.core.widget.ListViewAutoScrollHelper;
 
 import com.google.android.gms.wearable.DataClient;
 import com.google.android.gms.wearable.DataEvent;
@@ -20,6 +21,7 @@ import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.NodeClient;
 import com.google.android.gms.wearable.Wearable;
+import com.timrface.watchfacelayout.config.ComplicationType;
 import com.timrface.watchfacelayout.config.ConfigUpdater;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.config.ConfigurationBuilder;
@@ -29,8 +31,14 @@ import com.timrface.watchfacelayout.util.DayNightBroadcastReceiver;
 import com.timrface.watchfacelayout.util.FilteredBroadcastReceiver;
 import com.timrface.watchfacelayout.util.TimeZoneBroadcastReceiver;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.timrface.UpdateIntervalHandler.MSG_UPDATE_TIME;
 
@@ -47,8 +55,6 @@ public class WatchFaceService extends CanvasWatchFaceService {
     }
 
     public class Engine extends CanvasWatchFaceService.Engine implements DataClient.OnDataChangedListener {
-
-        private final int UNREAD_NOTIFICATION_COMPLICATION_ID = 0;
 
         final Handler mUpdateTimeHandler = new UpdateIntervalHandler(this);
 
@@ -89,8 +95,7 @@ public class WatchFaceService extends CanvasWatchFaceService {
             new StoredConfigurationFetcher().updateConfig(nodeClient, dataClient, configuration,
                     configuration -> layoutProvider.onConfigurationChange(configuration));
 
-            setActiveComplications(UNREAD_NOTIFICATION_COMPLICATION_ID);
-            setDefaultSystemComplicationProvider(UNREAD_NOTIFICATION_COMPLICATION_ID, SystemProviders.UNREAD_NOTIFICATION_COUNT, ComplicationData.TYPE_SHORT_TEXT);
+            setComplications(configuration);
         }
 
 
@@ -102,7 +107,8 @@ public class WatchFaceService extends CanvasWatchFaceService {
 
         @Override
         public void onComplicationDataUpdate(int watchFaceComplicationId, ComplicationData data) {
-            layoutProvider.updateComplicationData(data, WatchFaceService.this);
+            ComplicationType complicationForId = ComplicationType.getComplicationForId(watchFaceComplicationId);
+            layoutProvider.updateComplicationData(data, complicationForId, WatchFaceService.this);
             invalidate();
         }
 
@@ -164,12 +170,23 @@ public class WatchFaceService extends CanvasWatchFaceService {
         private void updateConfiguration(Configuration configuration) {
             dayNightBroadcastReceiver.updateInternalConfigurationState(configuration);
             timeFormatChangedReceiver.updateInternalConfigurationState(configuration);
+            setComplications(configuration);
             updateUiToConfiguration(configuration);
         }
 
         private void updateUiToConfiguration(Configuration configuration) {
             layoutProvider.onConfigurationChange(configuration);
             invalidate();
+        }
+
+        private void setComplications(Configuration configuration) {
+            List<ComplicationType> complicationTypes = Stream.of(configuration.getLeftComplicationType(), configuration.getMiddleComplicationType())
+                    .filter(complicationType -> complicationType != ComplicationType.NONE)
+                    .collect(Collectors.toList());
+            int[] complicationIds = complicationTypes.stream().mapToInt(ComplicationType::getId).toArray();
+
+            setActiveComplications(complicationIds);
+            complicationTypes.forEach(complicationType -> setDefaultSystemComplicationProvider(complicationType.getId(), complicationType.getSystemProvider(), ComplicationData.TYPE_SHORT_TEXT));
         }
 
         private void updateTimer() {

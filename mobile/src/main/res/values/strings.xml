@@ -3,16 +3,29 @@
     <string name="app_name">Timr Face</string>
     <string name="settings">Settings</string>
     <string name="background">Background Color</string>
-    <string name="colors">Main Color</string>
+    <string name="colors">Accent Color</string>
     <string name="view">View</string>
     <string name="seconds">Smooth Seconds</string>
-    <string name="battery">Show Battery Level</string>
-    <string name="unreadNotifications">Show unread notifications counter</string>
     <string name="zero_digit">Two-digit numbers</string>
 
     <string name="strokeDigits">Stroke digits in ambient mode</string>
     <string name="seconds_description">Use smooth scrolling animation for the seconds. May increase battery usage</string>
     <string name="stroke_digits_description">Use stroked text style for the time in ambient mode</string>
+    <string name="dialog_app_missing_title">Watch Face missing on Wear device</string>
+    <string name="dialog_app_missing_message">The Watch face is currently not installed on your Wear OS device our outdated. Would you like to install the app on your Watch?</string>
+    <string name="dialog_app_missing_okay">Install</string>
+    <string name="dialog_app_missing_no">Not now</string>
+    <string name="dialog_app_missing_later_message">You can install the app on your Watch with the menu button at the top</string>
+    <string name="middleComplication">Center Complication Data</string>
+    <string name="leftComplication">Left Complication Data</string>
+    <string name="wear_tester_opening_playstore">Opening Play Store on your Watch. Please tap \"Install\" there.</string>
+
+    <string-array name="complications">
+        <item>None</item>
+        <item>Battery</item>
+        <item>Notifications</item>
+        <item>Stepcount</item>
+    </string-array>
 
     <string-array name="colors">
         <item>#FAFAFA</item>

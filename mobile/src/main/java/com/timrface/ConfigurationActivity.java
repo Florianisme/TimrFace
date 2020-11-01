@@ -11,11 +11,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 
@@ -30,6 +33,8 @@ import com.google.android.gms.wearable.Wearable;
 import com.google.android.wearable.intent.RemoteIntent;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.timrface.helper.CanvasView;
+import com.timrface.helper.DisableItemArrayAdapter;
+import com.timrface.watchfacelayout.config.ComplicationType;
 import com.timrface.watchfacelayout.config.ConfigUpdateFinished;
 import com.timrface.watchfacelayout.config.ConfigUpdater;
 import com.timrface.watchfacelayout.config.Configuration;
@@ -56,9 +61,9 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
 
     CanvasView canvasView;
     SwitchCompat smoothSecondsCheckBox;
-    SwitchCompat showBatteryLevelCheckBox;
+    AppCompatSpinner leftComplicationSpinner;
+    AppCompatSpinner middleComplicationSpinner;
     SwitchCompat showZeroDigitCheckBox;
-    SwitchCompat showUnreadNotificationsCounter;
     SwitchCompat useStrokeDigitsInAmbientMode;
 
     private void updateTimer() {
@@ -90,19 +95,31 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.watch_face_config);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle(R.string.settings);
 
         canvasView = (CanvasView) findViewById(R.id.canvas_layout);
         smoothSecondsCheckBox = findViewById(R.id.seconds);
-        showBatteryLevelCheckBox = findViewById(R.id.battery);
+        leftComplicationSpinner = findViewById(R.id.spinner_left_complication);
+        middleComplicationSpinner = findViewById(R.id.spinner_middle_complication);
         showZeroDigitCheckBox = findViewById(R.id.zero_digit);
-        showUnreadNotificationsCounter = findViewById(R.id.unreadNotifications);
         useStrokeDigitsInAmbientMode = findViewById(R.id.strokeDigitsInAmbientMode);
 
         configuration = ConfigurationBuilder.getDefaultConfiguration(this);
+
         Wearable.getDataClient(this).addListener(this);
+        new WearAppInstalledTester(this);
+
+        DisableItemArrayAdapter leftComplicationAdapter = new DisableItemArrayAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.complications));
+        DisableItemArrayAdapter middleComplicationAdapter = new DisableItemArrayAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.complications));
+        leftComplicationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        middleComplicationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        leftComplicationSpinner.setAdapter(leftComplicationAdapter);
+        middleComplicationSpinner.setAdapter(middleComplicationAdapter);
+
+        leftComplicationAdapter.setDisabledId(configuration.getMiddleComplicationType().getId());
+        middleComplicationAdapter.setDisabledId(configuration.getLeftComplicationType().getId());
+        leftComplicationSpinner.setSelection(configuration.getLeftComplicationType().getId());
+        middleComplicationSpinner.setSelection(configuration.getMiddleComplicationType().getId());
+
 
         mUpdateTimeHandler = new Handler() {
             @Override
@@ -134,9 +151,9 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
             public void onUpdateFinished(Configuration configuration) {
                 canvasView.updateConfig(configuration);
                 smoothSecondsCheckBox.setChecked(configuration.isSmoothScrolling());
-                showBatteryLevelCheckBox.setChecked(configuration.isShowBatteryLevel());
+                leftComplicationSpinner.setSelection(configuration.getLeftComplicationType().getId());
+                middleComplicationSpinner.setSelection(configuration.getMiddleComplicationType().getId());
                 showZeroDigitCheckBox.setChecked(configuration.isShowZeroDigit());
-                showUnreadNotificationsCounter.setChecked(configuration.isShowUnreadNotificationsCounter());
                 useStrokeDigitsInAmbientMode.setChecked(configuration.isUseStrokeDigitsInAmbientMode());
             }
         });
@@ -153,12 +170,35 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
                                                          }
         );
 
-        showBatteryLevelCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        leftComplicationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                sendDataItem(ConfigurationConstant.BATTERY_INDICATOR, isChecked);
-                configuration.setShowBatteryLevel(isChecked);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                sendDataItem(ConfigurationConstant.LEFT_COMPLICATION_ID, position);
+                configuration.setLeftComplicationType(ComplicationType.getComplicationForId(position));
                 canvasView.updateConfig(configuration);
+
+                middleComplicationAdapter.setDisabledId(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        middleComplicationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                sendDataItem(ConfigurationConstant.MIDDLE_COMPLICATION_ID, position);
+                configuration.setMiddleComplicationType(ComplicationType.getComplicationForId(position));
+                canvasView.updateConfig(configuration);
+
+                leftComplicationAdapter.setDisabledId(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
@@ -171,14 +211,6 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
             }
         });
 
-        showUnreadNotificationsCounter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                sendDataItem(ConfigurationConstant.UNREAD_NOTIFICATIONS, isChecked);
-                configuration.setShowUnreadNotificationsCounter(isChecked);
-                canvasView.updateConfig(configuration);
-            }
-        });
 
         useStrokeDigitsInAmbientMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -271,6 +303,13 @@ public class ConfigurationActivity extends AppCompatActivity implements DataClie
     private void sendDataItem(ConfigurationConstant configurationConstant, boolean value) {
         PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(ConfigurationConstant.CONFIG_PATH.toString() + configurationConstant.toString());
         putDataMapRequest.getDataMap().putBoolean(configurationConstant.toString(), value);
+        PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
+        Wearable.getDataClient(ConfigurationActivity.this).putDataItem(putDataReq);
+    }
+
+    private void sendDataItem(ConfigurationConstant configurationConstant, int value) {
+        PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(ConfigurationConstant.CONFIG_PATH.toString() + configurationConstant.toString());
+        putDataMapRequest.getDataMap().putInt(configurationConstant.toString(), value);
         PutDataRequest putDataReq = putDataMapRequest.asPutDataRequest();
         Wearable.getDataClient(ConfigurationActivity.this).putDataItem(putDataReq);
     }

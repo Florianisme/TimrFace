@@ -1,4 +1,4 @@
-package com.timrface.watchfacelayout.layout.components;
+package com.timrface.watchfacelayout.layout.components.complications;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -6,9 +6,11 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.support.wearable.complications.ComplicationData;
-import android.support.wearable.complications.ComplicationText;
 
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
+
+import com.timrface.watchfacelayout.config.ComplicationSide;
+import com.timrface.watchfacelayout.config.ComplicationType;
 import com.timrface.watchfacelayout.config.Configuration;
 import com.timrface.watchfacelayout.layout.ColorConstants;
 import com.timrface.watchfacelayout.layout.WindowInsets;
@@ -23,7 +25,7 @@ public class UnreadNotificationsLayout extends Complication {
     private final Typeface robotoMedium;
     private final Typeface robotoLight;
 
-    private String complicationText = "-";
+    private String complicationText = "0";
 
     public UnreadNotificationsLayout(Configuration configuration, VectorDrawableCompat unreadDrawable, VectorDrawableCompat unreadDrawableOutline, Typeface robotoMedium, Typeface robotoLight) {
         super(configuration);
@@ -35,49 +37,41 @@ public class UnreadNotificationsLayout extends Complication {
 
         this.unreadDrawable.setTint(configuration.getTextColor());
         this.unreadDrawableOutline.setTint(ColorConstants.AMBIENT_TEXT_COLOR);
+
+        onAmbientModeChanged(isInAmbientMode());
     }
 
     @Override
     public void onComplicationDataUpdate(ComplicationData complicationData, Context context) {
-        ComplicationText shortText = complicationData.getShortText();
-        if (shortText == null) {
-            complicationText = "0";
-            return;
-        }
-        CharSequence text = shortText.getText(context, System.currentTimeMillis());
-        if (text == null) {
-            complicationText = "0";
-            return;
-        }
-        complicationText = text.toString();
+        complicationText = getComplicationTextOrDefault(complicationData, "0", context);
+        mCountPaint.getTextBounds(complicationText, 0, complicationText.length(), textRect);
     }
 
     @Override
-    public void onSurfaceChanged(int width, int height) {
-        float centerY = height / 2f;
-        int positionX = (int) (width * 0.45);
-        int positionY = (int) (centerY + centerY / 5.3f);
-        int boundsSize = (int) (width * 0.06);
-
-        Rect iconRect = new Rect(positionX, positionY, positionX + boundsSize, positionY + boundsSize);
-        unreadDrawable.setBounds(iconRect);
-        unreadDrawableOutline.setBounds(iconRect);
+    public ComplicationType getComplicationType() {
+        return ComplicationType.NOTIFICATIONS;
     }
+
 
     @Override
     public void update(Canvas canvas, float centerX, float centerY, Calendar calendar) {
-        if (configuration.isShowUnreadNotificationsCounter()) {
-            if (isInAmbientMode()) {
-                unreadDrawableOutline.draw(canvas);
-            } else {
-                unreadDrawable.draw(canvas);
-            }
-            canvas.drawText(complicationText, centerX * 1.02f, centerY + centerY / 3.5f, mCountPaint);
+        float textXPosition = getTextXPosition(centerX);
+        float textYPosition = getTextYPosition(centerY);
+
+        Rect iconPositionRect = getIconPositionRect(textXPosition, textYPosition);
+
+        if (isInAmbientMode()) {
+            unreadDrawableOutline.setBounds(iconPositionRect);
+            unreadDrawableOutline.draw(canvas);
+        } else {
+            unreadDrawable.setBounds(iconPositionRect);
+            unreadDrawable.draw(canvas);
         }
+        canvas.drawText(complicationText, textXPosition, textYPosition, mCountPaint);
     }
 
     @Override
-    void onConfigurationUpdated(Configuration configuration) {
+    public void onConfigurationUpdated(Configuration configuration) {
         if (!isInAmbientMode()) {
             mCountPaint.setColor(configuration.getTextColor());
             unreadDrawable.setTint(configuration.getTextColor());
@@ -95,7 +89,7 @@ public class UnreadNotificationsLayout extends Complication {
     }
 
     @Override
-    void onAmbientModeChanged(boolean inAmbientMode) {
+    public void onAmbientModeChanged(boolean inAmbientMode) {
         adjustPaintColorToCurrentMode(mCountPaint, configuration.getTextColor(), ColorConstants.AMBIENT_TEXT_COLOR, inAmbientMode);
         mCountPaint.setTypeface(inAmbientMode ? robotoLight : robotoMedium);
     }

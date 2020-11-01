@@ -24,14 +24,14 @@ public class ConfigUpdater {
             if (dataMap.containsKey(ConfigurationConstant.INTERACTIVE_COLOR.toString())) {
                 configuration.setInteractiveColor(Color.parseColor(getStringFromDataMap(dataMap, ConfigurationConstant.INTERACTIVE_COLOR, "#FF9800")));
             }
-            if (dataMap.containsKey(ConfigurationConstant.BATTERY_INDICATOR.toString())) {
-                configuration.setShowBatteryLevel(dataMap.getBoolean(ConfigurationConstant.BATTERY_INDICATOR.toString(), true));
+            if (dataMap.containsKey(ConfigurationConstant.LEFT_COMPLICATION_ID.toString())) {
+                configuration.setLeftComplicationType(ComplicationType.getComplicationForId(dataMap.getInt(ConfigurationConstant.LEFT_COMPLICATION_ID.toString(), 1)));
             }
             if (dataMap.containsKey(ConfigurationConstant.ZERO_DIGIT.toString())) {
                 configuration.setShowZeroDigit(dataMap.getBoolean(ConfigurationConstant.ZERO_DIGIT.toString(), true));
             }
-            if (dataMap.containsKey(ConfigurationConstant.UNREAD_NOTIFICATIONS.toString())) {
-                configuration.setShowUnreadNotificationsCounter(dataMap.getBoolean(ConfigurationConstant.UNREAD_NOTIFICATIONS.toString(), true));
+            if (dataMap.containsKey(ConfigurationConstant.MIDDLE_COMPLICATION_ID.toString())) {
+                configuration.setMiddleComplicationType(ComplicationType.getComplicationForId(dataMap.getInt(ConfigurationConstant.MIDDLE_COMPLICATION_ID.toString(), 2)));
             }
             if (dataMap.containsKey(ConfigurationConstant.STROKE_DIGITS.toString())) {
                 configuration.setUseStrokeDigitsInAmbientMode(dataMap.getBoolean(ConfigurationConstant.STROKE_DIGITS.toString(), false));

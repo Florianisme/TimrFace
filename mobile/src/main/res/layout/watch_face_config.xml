@@ -5,31 +5,22 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/primary"
-        android:elevation="4dp"
-        app:theme="@style/Toolbar" />
-
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="208dp"
         android:layout_marginTop="8dp">
-
 
         <com.timrface.helper.CanvasView
             android:id="@+id/canvas_layout"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="200dp"
             android:layout_marginLeft="105dp"
             android:layout_marginRight="105dp" />
 
         <com.timrface.helper.RoundCanvas
             android:id="@+id/round_canvas"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="200dp"
             android:layout_marginLeft="105dp"
             android:layout_marginRight="105dp"
             app:overdraw_background="?android:colorBackground"
@@ -326,16 +317,15 @@
                             android:layout_centerVertical="true"
                             android:paddingBottom="2dp"
                             android:textStyle="bold"
-                            android:text="@string/battery"
+                            android:text="@string/leftComplication"
                             android:textSize="14sp" />
 
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/battery"
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/spinner_left_complication"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:checked="true" />
+                            android:layout_centerVertical="true"/>
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -347,23 +337,21 @@
                         android:layout_marginRight="16dp">
 
                         <TextView
-                            android:id="@+id/setting_unread_notifications"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
                             android:layout_centerVertical="true"
                             android:paddingBottom="2dp"
                             android:textStyle="bold"
-                            android:text="@string/unreadNotifications"
+                            android:text="@string/middleComplication"
                             android:textSize="14sp" />
 
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/unreadNotifications"
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/spinner_middle_complication"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:checked="true" />
+                            android:layout_centerVertical="true"/>
                     </RelativeLayout>
 
                     <RelativeLayout
